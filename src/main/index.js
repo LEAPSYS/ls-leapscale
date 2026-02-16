@@ -3,7 +3,9 @@ import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { SerialPort } from 'serialport'
+import { ReadlineParser } from 'serialport'
 
+let mainWindow;
 let port;
 let parser;
 let isClosing = false;
@@ -14,7 +16,7 @@ const STABLE_RANGE = 0.002; // tolerance range (2 grams)
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 600,
     height: 400,
     show: false,
