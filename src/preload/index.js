@@ -2,7 +2,13 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  listPorts: () => ipcRenderer.invoke("list-ports"),
+  connectPort: (port) => ipcRenderer.invoke("connect-port", port),
+  disconnectPort: () => ipcRenderer.invoke("disconnect-port"),
+  onLiveWeight: (callback) => ipcRenderer.on("live-weight", (e, data) => callback(data)),
+  onStableWeight: (callback) => ipcRenderer.on("stable-weight", (e, data) => callback(data)),
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
