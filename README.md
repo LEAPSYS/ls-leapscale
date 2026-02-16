@@ -32,3 +32,7 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### Reference
+
+[electron-vite](https://electron-vite.org/guide/dev)
