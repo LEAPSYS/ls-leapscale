@@ -56,10 +56,12 @@ function App() {
   const onProceedFromLogin = () => setRoute('landing');
 
   return (
-    <div style={{ width: 760, height: 520 }}>
-      {route === 'login' && <Login onProceed={onProceedFromLogin} />}
-      {route === 'landing' && <Landing ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} />}
-      {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
+    <div>
+      <div style={{ flex: 1 }}>
+        {route === 'login' && <Login onProceed={onProceedFromLogin} />}
+        {route === 'landing' && <Landing ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
+      </div>
     </div>
   );
 }
