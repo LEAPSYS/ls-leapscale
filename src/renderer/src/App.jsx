@@ -1,29 +1,30 @@
 import { useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
-import Versions from './components/Versions';
-import electronLogo from './assets/electron.svg';
+import Login from './pages/Login';
+import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
 
 function App() {
+  const [route, setRoute] = useState('login'); // 'login' | 'landing' | 'dashboard'
+
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
-  const [connected, setConnected] = useState(false);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        if (window.api?.listPorts) {
-          const list = await window.api.listPorts();
-          setPorts(list || []);
-          if (list && list.length) setSelectedPort(list[0]);
-        }
-      } catch (e) {
-        console.error('list ports error', e);
+  const loadPorts = async () => {
+    try {
+      if (window.api?.listPorts) {
+        const list = await window.api.listPorts();
+        setPorts(list || []);
+        if (list && list.length && !selectedPort) setSelectedPort(list[0]);
       }
-    };
+    } catch (e) {
+      console.error('list ports error', e);
+    }
+  };
 
-    load();
+  useEffect(() => {
+    loadPorts();
 
     if (window.api?.onLiveWeight) {
       window.api.onLiveWeight((w) => setLive(Number(w).toFixed(3)));
@@ -37,7 +38,7 @@ function App() {
     if (!selectedPort) return;
     try {
       await window.api.connectPort(selectedPort);
-      setConnected(true);
+      setRoute('dashboard');
     } catch (e) {
       console.error('connect error', e);
     }
@@ -49,36 +50,17 @@ function App() {
     } catch (e) {
       console.error('disconnect error', e);
     }
-    setConnected(false);
+    setRoute('landing');
   };
 
-  return (
-    <>
-      <div className="serial-panel">
-        <div className="serial-controls">
-          <select id="ports" value={selectedPort} onChange={(e) => setSelectedPort(e.target.value)}>
-            {ports.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-          <Button id="connect" label="Connect" onClick={handleConnect} disabled={connected} className="p-button-success" />
-          <Button id="disconnect" label="Disconnect" onClick={handleDisconnect} disabled={!connected} className="p-button-secondary" />
-        </div>
+  const onProceedFromLogin = () => setRoute('landing');
 
-        <div className="weights">
-          <h3>Live Weight</h3>
-          <span className="live" id="live">
-            {live}
-          </span>
-          <h3>Stable Weight</h3>
-          <span className="stable" id="stable">
-            {stable}
-          </span>
-        </div>
-      </div>
-    </>
+  return (
+    <div style={{ width: 760, height: 520 }}>
+      {route === 'login' && <Login onProceed={onProceedFromLogin} />}
+      {route === 'landing' && <Landing ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} />}
+      {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
+    </div>
   );
 }
 
