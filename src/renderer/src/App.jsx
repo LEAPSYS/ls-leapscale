@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Button } from 'primereact/button';
 import Versions from './components/Versions';
 import electronLogo from './assets/electron.svg';
 
 function App() {
-  const ipcHandle = () => window.electron.ipcRenderer.send('ping');
-
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
   const [connected, setConnected] = useState(false);
@@ -55,27 +54,6 @@ function App() {
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-
       <div className="serial-panel">
         <div className="serial-controls">
           <select id="ports" value={selectedPort} onChange={(e) => setSelectedPort(e.target.value)}>
@@ -85,12 +63,8 @@ function App() {
               </option>
             ))}
           </select>
-          <button id="connect" onClick={handleConnect} disabled={connected}>
-            Connect
-          </button>
-          <button id="disconnect" onClick={handleDisconnect} disabled={!connected}>
-            Disconnect
-          </button>
+          <Button id="connect" label="Connect" onClick={handleConnect} disabled={connected} className="p-button-success" />
+          <Button id="disconnect" label="Disconnect" onClick={handleDisconnect} disabled={!connected} className="p-button-secondary" />
         </div>
 
         <div className="weights">
@@ -104,8 +78,6 @@ function App() {
           </span>
         </div>
       </div>
-
-      <Versions></Versions>
     </>
   );
 }

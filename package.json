@@ -21,7 +21,10 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "serialport": "^13.0.0"
+    "serialport": "^13.0.0",
+    "primereact": "^10.0.0",
+    "primeicons": "^7.0.0",
+    "primeflex": "^3.2.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.1.0",

@@ -17,8 +17,8 @@ const STABLE_RANGE = 0.002; // tolerance range (2 grams)
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+    width: 800,
+    height: 600,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
