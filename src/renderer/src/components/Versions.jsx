@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Versions() {
+export default function Versions() {
   const [versions] = useState(window.electron.process.versions);
 
   return (
@@ -11,5 +11,3 @@ function Versions() {
     </ul>
   );
 }
-
-export default Versions;

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 
 const DUMMY_LOCATIONS = ['Location A', 'Location B', 'Location C', 'Location D'];
 
-export default function Location({ onSelect }) {
+function Location({ onSelect }) {
   const [selected, setSelected] = useState(null);
 
   const startContent = (
@@ -38,3 +39,9 @@ export default function Location({ onSelect }) {
     </div>
   );
 }
+
+Location.propTypes = {
+  onSelect: PropTypes.func.isRequired
+};
+
+export default Location;

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 
-function Landing({ ports, selectedPort, onSelectPort, onConnect, onRefresh }) {
+export default function Landing({ ports, selectedPort, onSelectPort, onConnect, onRefresh }) {
+
   const startContent = (
     <React.Fragment>
       <Button label="Logout" disabled="true" className="p-button-plain" />
@@ -51,5 +52,3 @@ Landing.propTypes = {
   onConnect: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired
 };
-
-export default Landing;

@@ -1,8 +1,6 @@
 body {
   min-height: 100vh;
   overflow: hidden;
-  color: var(--color-text);
-  background: var(--color-background);
   line-height: 1.6;
   font-family:
     Inter,
