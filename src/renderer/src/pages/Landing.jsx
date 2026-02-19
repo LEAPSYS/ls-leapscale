@@ -4,7 +4,6 @@ import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 
 export default function Landing({ ports, selectedPort, onSelectPort, onConnect, onRefresh }) {
-
   const startContent = (
     <React.Fragment>
       <Button label="Logout" disabled="true" className="p-button-plain" />
