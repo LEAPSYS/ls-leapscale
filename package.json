@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An Electron application with React",
   "main": "./out/main/index.js",
-  "license": "Single User License",
+  "license": "Proprietary License / EULA",
   "author": "LEAPSYS SCPL",
   "homepage": "https://leapsys.net/leapscale",
   "scripts": {
