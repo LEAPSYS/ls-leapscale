@@ -73,16 +73,7 @@ function App() {
       <div style={{ flex: 1 }}>
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
-        {route === 'landing' && (
-          <Landing
-            ports={ports}
-            selectedPort={selectedPort}
-            onSelectPort={setSelectedPort}
-            onConnect={handleConnect}
-            onRefresh={loadPorts}
-            location={location}
-          />
-        )}
+        {route === 'landing' && <Landing ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
       </div>
     </div>
