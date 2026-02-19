@@ -4,6 +4,10 @@ import { Button } from 'primereact/button';
 import qrImage from '../assets/qr-auth-leapsys-in.svg';
 import { Toolbar } from 'primereact/toolbar';
 
+Login.propTypes = {
+  onProceed: PropTypes.func.isRequired
+};
+
 export default function Login({ onProceed }) {
   const startContent = (
     <React.Fragment>
@@ -30,7 +34,3 @@ export default function Login({ onProceed }) {
     </>
   );
 }
-
-Login.propTypes = {
-  onProceed: PropTypes.func.isRequired
-};

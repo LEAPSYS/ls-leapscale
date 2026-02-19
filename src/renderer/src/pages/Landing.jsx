@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 
+Landing.propTypes = {
+  ports: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedPort: PropTypes.string.isRequired,
+  onSelectPort: PropTypes.func.isRequired,
+  onConnect: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired
+};
+
 export default function Landing({ ports, selectedPort, onSelectPort, onConnect, onRefresh }) {
   const startContent = (
     <React.Fragment>
@@ -43,11 +51,3 @@ export default function Landing({ ports, selectedPort, onSelectPort, onConnect, 
     </>
   );
 }
-
-Landing.propTypes = {
-  ports: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedPort: PropTypes.string.isRequired,
-  onSelectPort: PropTypes.func.isRequired,
-  onConnect: PropTypes.func.isRequired,
-  onRefresh: PropTypes.func.isRequired
-};

@@ -2,8 +2,13 @@ import { Button } from 'primereact/button';
 import React from 'react';
 import { Toolbar } from 'primereact/toolbar';
 import { Skeleton } from 'primereact/skeleton';
-
 import PropTypes from 'prop-types';
+
+Dashboard.propTypes = {
+  live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  stable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onDisconnect: PropTypes.func.isRequired
+};
 
 export default function Dashboard({ live, stable, onDisconnect }) {
   const startContent = (
@@ -91,9 +96,3 @@ export default function Dashboard({ live, stable, onDisconnect }) {
     </>
   );
 }
-
-Dashboard.propTypes = {
-  live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  stable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onDisconnect: PropTypes.func.isRequired
-};

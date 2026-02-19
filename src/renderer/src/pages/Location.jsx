@@ -5,7 +5,11 @@ import { Toolbar } from 'primereact/toolbar';
 
 const DUMMY_LOCATIONS = ['Location A', 'Location B', 'Location C', 'Location D'];
 
-function Location({ onSelect }) {
+Location.propTypes = {
+  onSelect: PropTypes.func.isRequired
+};
+
+export default function Location({ onSelect }) {
   const [selected, setSelected] = useState(null);
 
   const startContent = (
@@ -39,9 +43,3 @@ function Location({ onSelect }) {
     </div>
   );
 }
-
-Location.propTypes = {
-  onSelect: PropTypes.func.isRequired
-};
-
-export default Location;

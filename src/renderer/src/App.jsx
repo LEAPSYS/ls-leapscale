@@ -4,9 +4,8 @@ import Location from './pages/Location';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 
-function App() {
+export default function App() {
   const [route, setRoute] = useState('login'); // 'login' | 'landing' | 'dashboard'
-
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
@@ -60,7 +59,6 @@ function App() {
   const onProceedFromLogin = () => setRoute('location');
 
   const handleSelectLocation = (loc) => {
-    // if loc is null treat as back to login
     if (!loc) {
       setRoute('login');
       setLocation(null);
@@ -81,5 +79,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
