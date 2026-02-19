@@ -2,8 +2,8 @@ name: Build Electron App
 
 on:
   push:
-    branch:
-      - 'master'
+    branches: 
+      - master
   workflow_dispatch:
 
 jobs:
