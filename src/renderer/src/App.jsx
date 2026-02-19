@@ -26,7 +26,9 @@ function App() {
   };
 
   useEffect(() => {
-    loadPorts();
+    (async () => {
+      await loadPorts();
+    })();
 
     if (window.api?.onLiveWeight) {
       window.api.onLiveWeight((w) => setLive(Number(w).toFixed(3)));
