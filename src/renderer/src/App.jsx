@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
+import Location from './pages/Location';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 
@@ -8,6 +9,7 @@ function App() {
 
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
+  const [location, setLocation] = useState(null);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
 
@@ -53,13 +55,34 @@ function App() {
     setRoute('landing');
   };
 
-  const onProceedFromLogin = () => setRoute('landing');
+  const onProceedFromLogin = () => setRoute('location');
+
+  const handleSelectLocation = (loc) => {
+    // if loc is null treat as back to login
+    if (!loc) {
+      setRoute('login');
+      setLocation(null);
+      return;
+    }
+    setLocation(loc);
+    setRoute('landing');
+  };
 
   return (
     <div>
       <div style={{ flex: 1 }}>
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
-        {route === 'landing' && <Landing ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} />}
+        {route === 'location' && <Location onSelect={handleSelectLocation} />}
+        {route === 'landing' && (
+          <Landing
+            ports={ports}
+            selectedPort={selectedPort}
+            onSelectPort={setSelectedPort}
+            onConnect={handleConnect}
+            onRefresh={loadPorts}
+            location={location}
+          />
+        )}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
       </div>
     </div>

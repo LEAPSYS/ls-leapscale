@@ -1,28 +1,100 @@
 import { Button } from 'primereact/button';
+import React from 'react';
+import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
+import { Toolbar } from 'primereact/toolbar';
+import { Skeleton } from 'primereact/skeleton';
+import { Divider } from 'primereact/divider';
 
 export default function Dashboard({ live, stable, onDisconnect }) {
-  return (
-    <div className="p-d-flex p-jc-center p-ai-center" style={{ height: '100%' }}>
-      <div style={{ width: 480, padding: 24, borderRadius: 8, boxShadow: '0 8px 20px rgba(0,0,0,0.12)' }}>
-        <h2 style={{ marginTop: 0, textAlign: 'center' }}>Scale Dashboard</h2>
-        <div className="p-d-flex p-jc-between p-ai-center p-mt-4" style={{ gap: 20 }}>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <h4>Live Weight</h4>
-            <div className="p-text-bold" style={{ fontSize: '1.8rem' }}>
-              {live}
+
+    const startContent = (
+        <React.Fragment>
+            <Button label="Disconnect" onClick={onDisconnect} className="p-button-secondary" />
+        </React.Fragment>
+    );
+
+    const centerContent = (
+        <span style={{ textAlign: 'center', marginTop: 0 }}>Weighing Dashboard</span>
+    );
+
+    const endContent = (
+        <React.Fragment>
+            <Button label="Submit" onClick={() => alert('Saved succesfully')} className="p-button-primary" />
+        </React.Fragment>
+    );
+
+
+    return (
+        <>
+            <Toolbar start={startContent} center={centerContent} end={endContent} />
+            <div className="grid">
+                <div className="col-4">
+                    <div className="border-round surface-border p-4">
+                        <ul className="m-0 p-0 list-none">
+                            <li className="mb-3">
+                                <div className="flex">
+                                    <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                                    <div style={{ flex: '1' }}>
+                                        <Skeleton width="100%" className="mb-2"></Skeleton>
+                                        <Skeleton width="75%"></Skeleton>
+                                    </div>
+                                </div>
+                            </li>
+                            <li className="mb-3">
+                                <div className="flex">
+                                    <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                                    <div style={{ flex: '1' }}>
+                                        <Skeleton width="100%" className="mb-2"></Skeleton>
+                                        <Skeleton width="75%"></Skeleton>
+                                    </div>
+                                </div>
+                            </li>
+                            <li className="mb-3">
+                                <div className="flex">
+                                    <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                                    <div style={{ flex: '1' }}>
+                                        <Skeleton width="100%" className="mb-2"></Skeleton>
+                                        <Skeleton width="75%"></Skeleton>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div className="flex">
+                                    <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                                    <div style={{ flex: '1' }}>
+                                        <Skeleton width="100%" className="mb-2"></Skeleton>
+                                        <Skeleton width="75%"></Skeleton>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="col-8">
+                    <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
+                        <div>
+                            <div className="p-d-flex p-jc-between p-ai-center p-mt-4" style={{ gap: 20 }}>
+                                <div style={{ flex: 1, textAlign: 'center' }}>
+                                    <h4>Live Weight</h4>
+                                    <div className="p-text-bold" style={{ fontSize: '1.8rem' }}>
+                                        {live}
+                                    </div>
+                                </div>
+                                <div style={{ flex: 1, textAlign: 'center' }}>
+                                    <h4>Stable Weight</h4>
+                                    <div className="p-text-bold" style={{ fontSize: '1.8rem' }}>
+                                        {stable}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-d-flex p-jc-center p-mt-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <h4>Stable Weight</h4>
-            <div className="p-text-bold" style={{ fontSize: '1.8rem' }}>
-              {stable}
-            </div>
-          </div>
-        </div>
-        <div className="p-d-flex p-jc-center p-mt-4">
-          <Button label="Disconnect" onClick={onDisconnect} className="p-button-secondary" />
-        </div>
-      </div>
-    </div>
-  );
+        </>
+
+
+    );
 }
