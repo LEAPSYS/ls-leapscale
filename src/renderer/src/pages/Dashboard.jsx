@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 export default function Dashboard({ live, stable, onDisconnect }) {
   const startContent = (
     <React.Fragment>
-      <Button label="Disconnect" onClick={onDisconnect} className="p-button-secondary" />
+      <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
     </React.Fragment>
   );
 
@@ -16,7 +16,7 @@ export default function Dashboard({ live, stable, onDisconnect }) {
 
   const endContent = (
     <React.Fragment>
-      <Button label="Submit" onClick={() => alert('Saved succesfully')} className="p-button-primary" />
+      <Button label="Submit" onClick={() => alert('Saved succesfully')} className="p-button-success" />
     </React.Fragment>
   );
 
