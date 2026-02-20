@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import qrImage from '../assets/qr-auth-leapsys-in.svg';
 import { Toolbar } from 'primereact/toolbar';
+
+import { useApi } from '../hooks/useApi';
+import authService from '../services/authService';
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired
@@ -11,7 +14,7 @@ Login.propTypes = {
 export default function Login({ onProceed }) {
   const startContent = (
     <React.Fragment>
-      <Button label="Back" disabled="true" className="p-button-plain" />
+      <Button label="Back" disabled={true} className="p-button-plain" />
     </React.Fragment>
   );
 
@@ -23,13 +26,36 @@ export default function Login({ onProceed }) {
     </React.Fragment>
   );
 
+  const [loginResult, setLoginResult] = useState(null);
+  const [loginError, setLoginError] = useState(null);
+  const { request, loading } = useApi(authService.login);
+
+  const handleLogin = async () => {
+    await request('pkishor@leapsys.net', 'moNu288*')
+      .then((result) => {
+        console.log(result);
+        setLoginResult(result?.data?.data);
+        authService.storeToken(result.data.data.access_token);
+      })
+      .catch((err) => {
+        setLoginError(err);
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Toolbar start={startContent} center={centerContent} end={endContent} />
       <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
         <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
-        <img src={qrImage} alt="QR code" style={{ width: 320, height: 320 }} />
-        <div></div>
+        <img src={qrImage} alt="QR code" style={{ width: 300, height: 300 }} />
+      </div>
+      <div>
+        <Button label="Test Login" onClick={() => handleLogin()} className="p-button-primary" />
+        {loading && <p>Loading...</p>}
+        {loginError && <p>Error: {JSON.stringify(loginError)}</p>}
+        {loginResult && <p>{loginResult.access_token}</p>}
+        <p>{true}</p>
       </div>
     </>
   );
