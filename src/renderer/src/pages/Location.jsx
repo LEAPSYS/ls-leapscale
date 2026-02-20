@@ -26,6 +26,14 @@ export default function Location({ onSelect }) {
     </React.Fragment>
   );
 
+  const getStyle = (loc) => {
+    if (selected === loc) {
+      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)' };
+    } else {
+      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px dashed var(--surface-500)' };
+    }
+  };
+
   return (
     <div className="p-d-flex p-jc-center p-ai-center" style={{ height: '100%' }}>
       <Toolbar start={startContent} center={centerContent} end={endContent} />
@@ -33,7 +41,7 @@ export default function Location({ onSelect }) {
         <div className="grid p-4">
           {DUMMY_LOCATIONS.map((loc) => (
             <div className="col-4" key={loc}>
-              <div className={`text-center p-6 border-round-sm font-bold ${selected === loc ? 'bg-primary' : 'bg-tertiary border-2 border-dashed border-300'}`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
+              <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
                 {loc}
               </div>
             </div>
