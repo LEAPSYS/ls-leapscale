@@ -121,6 +121,7 @@ app.on('before-quit', async (event) => {
 ipcMain.handle('disconnect-port', async () => {
   if (port && port.isOpen) {
     await closePort();
+    mainWindow.webContents.send('port-status', 'disconnected'); 
   }
 });
 
@@ -149,6 +150,13 @@ ipcMain.handle('connect-port', async (event, portPath) => {
         console.error('Open error', err.message);
         return reject(err.message);
       }
+    });
+  
+    port.on('open', () => {
+      mainWindow.webContents.send('port-status', 'connected');
+    });
+    port.on('close', () => {
+      mainWindow.webContents.send('port-status', 'disconnected');
     });
     parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
     parser.on('data', (data) => {

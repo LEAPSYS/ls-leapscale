@@ -11,6 +11,7 @@ export default function App() {
   const [location, setLocation] = useState(null);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
+  const [portStatus, setPortStatus] = useState('disconnected'); 
 
   const loadPorts = async () => {
     try {
@@ -34,6 +35,9 @@ export default function App() {
     }
     if (window.api?.onStableWeight) {
       window.api.onStableWeight((w) => setStable(Number(w).toFixed(3)));
+    }
+    if (window.api?.onPortStatus) {
+      window.api.onPortStatus((status) => setPortStatus(status));
     }
   }, []);
 
@@ -74,7 +78,7 @@ export default function App() {
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
-        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} />}
       </div>
     </div>
   );

@@ -7,10 +7,11 @@ import PropTypes from 'prop-types';
 Dashboard.propTypes = {
   live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onDisconnect: PropTypes.func.isRequired
+  onDisconnect: PropTypes.func.isRequired,
+  portStatus: PropTypes.string.isRequired
 };
 
-export default function Dashboard({ live, stable, onDisconnect }) {
+export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
   const startContent = (
     <React.Fragment>
       <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
@@ -59,6 +60,18 @@ export default function Dashboard({ live, stable, onDisconnect }) {
                   </div>
                 </div>
               </li>
+              <div style={{ textAlign: 'center', marginTop: 20 }}>
+                <h4>Scale Status</h4>
+                <div
+                  style={{
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                    color: portStatus === 'connected' ? 'green' : 'red'
+                  }}
+                >
+                  {portStatus.toUpperCase()}
+                </div>
+              </div>
               <li>
                 <div className="flex">
                   <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
