@@ -7,8 +7,9 @@ const api = {
   disconnectPort: () => ipcRenderer.invoke('disconnect-port'),
   onLiveWeight: (callback) => ipcRenderer.on('live-weight', (e, data) => callback(data)),
   onStableWeight: (callback) => ipcRenderer.on('stable-weight', (e, data) => callback(data)),
-  onPortStatus: (callback) => ipcRenderer.on('port-status', (e, status) => callback(status)) 
-};
+  onPortStatus: (callback) => ipcRenderer.on('port-status', (e, status) => callback(status)),
+  loadItems: () => ipcRenderer.invoke("load-items") 
+}; 
 
 if (process.contextIsolated) {
   try {

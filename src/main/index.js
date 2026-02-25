@@ -116,6 +116,19 @@ app.on('before-quit', async (event) => {
   setTimeout(() => app.quit(), 500);
 });
 
+//API JSON 
+ipcMain.handle("load-items", async () => {
+  try {
+    const response = await fetch("http://localhost:5000/items");
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("API Error:", error);
+    return { error: "Failed to fetch items" };
+  }
+});
+
 // IPC EVENTS
 
 ipcMain.handle('disconnect-port', async () => {
