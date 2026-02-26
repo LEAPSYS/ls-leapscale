@@ -1,5 +1,5 @@
 import { Button } from 'primereact/button';
-import React from 'react';
+import React, { useState } from 'react';
 import { Toolbar } from 'primereact/toolbar';
 import { Skeleton } from 'primereact/skeleton';
 import PropTypes from 'prop-types';
@@ -11,7 +11,8 @@ Dashboard.propTypes = {
   portStatus: PropTypes.string.isRequired
 };
 
-export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
+export default function Dashboard({ live, stable, ingredients, onDisconnect, portStatus }) {
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
   const startContent = (
     <React.Fragment>
       <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
@@ -26,13 +27,52 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
     </React.Fragment>
   );
 
+  function mangingStatus(item) {
+    if(item.requiredWeight === item.stableWeight) {
+      return 'Completed';
+    } else {
+      return 'Pending';
+    }
+    
+  }
   return (
     <>
       <Toolbar start={startContent} center={centerContent} end={endContent} />
       <div className="grid">
-        <div className="col-4">
+        <div className="col-5">
           <div className="border-round surface-border p-4">
             <ul className="m-0 p-0 list-none">
+              {!selectedIngredient &&
+                ingredients.map((ingredient) => (
+                  <li key={ingredient.id} className="mb-3">
+                    <div className="flex align-items-center" style={{ cursor: 'pointer' }} onClick={() => setSelectedIngredient(ingredient)}>
+                      <img src={ingredient.thumbnail} alt={ingredient.name} style={{ width: '4rem', height: '4rem', borderRadius: '50%', objectFit: 'cover', marginRight: '10px' }} />
+                      <div style={{ fontWeight: 'bold' }}>{ingredient.name}</div>
+                    </div>
+                  </li>
+                ))}
+              {selectedIngredient && (
+                <>
+                  <button onClick={() => setSelectedIngredient(null)} style={{ marginBottom: '15px', cursor: 'pointer' }}>
+                    ← Back
+                  </button>
+                  {selectedIngredient.items.map((item) => (
+                    <li key={item.id} style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>  
+                    <div className='flex justify-content-between'>
+                      <div>{item.name}</div>
+                      <div className='flex gap-2'>
+                      <div>{item.requiredWeight}</div>
+                      <button onClick={mangingStatus(item)}>Status</button>
+                      </div>
+                      
+</div>
+                    </li>
+                  ))}
+                </>
+              )}
+            </ul>
+
+            {/* <ul className="m-0 p-0 list-none">
               <li className="mb-3">
                 <div className="flex">
                   <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
@@ -60,18 +100,6 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
                   </div>
                 </div>
               </li>
-              <div style={{ textAlign: 'center', marginTop: 20 }}>
-                <h4>Scale Status</h4>
-                <div
-                  style={{
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                    color: portStatus === 'connected' ? 'green' : 'red'
-                  }}
-                >
-                  {portStatus.toUpperCase()}
-                </div>
-              </div>
               <li>
                 <div className="flex">
                   <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
@@ -81,13 +109,13 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
                   </div>
                 </div>
               </li>
-            </ul>
+            </ul> */}
           </div>
         </div>
-        <div className="col-8">
+        <div className="col-7">
           <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
             <div>
-              <div className="p-d-flex p-jc-between p-ai-center p-mt-4" style={{ gap: 20 }}>
+              <div className="p-d-flex p-jc-between p-ai-center p-mt-" style={{ gap: 20 }}>
                 <div style={{ flex: 1, textAlign: 'center' }}>
                   <h4>Live Weight</h4>
                   <div className="p-text-bold" style={{ fontSize: '1.8rem' }}>
@@ -102,6 +130,10 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
                 </div>
               </div>
               <div className="p-d-flex p-jc-center p-mt-4"></div>
+              <div style={{ textAlign: 'center', marginTop: 20 }}>
+                <h7>Scale Status</h7>
+                <div style={{ fontSize: '0.5rem', fontWeight: 'bold', color: portStatus === 'connected' ? 'green' : 'red' }}>{portStatus.toUpperCase()}</div>
+              </div>
             </div>
           </div>
         </div>

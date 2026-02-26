@@ -12,7 +12,8 @@ export default function App() {
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
   const [portStatus, setPortStatus] = useState('disconnected'); 
-  const [items, setItems] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
 
   const loadPorts = async () => {
     try {
@@ -29,6 +30,10 @@ export default function App() {
   useEffect(() => {
     (async () => {
       await loadPorts();
+      const data = await window.api.loadItems();
+      if(!data.error && data?.ingredients){ 
+        setIngredients(data.ingredients);
+      }
     })();
 
     if (window.api?.onLiveWeight) {
@@ -46,14 +51,8 @@ export default function App() {
     if (!selectedPort) return;
     try {
       await window.api.connectPort(selectedPort);
-      
-      const data = await window.api.loadItems();
-      if(!data.error){
-        setItems(data.items);
-      }
-
       setRoute('dashboard');
-    } catch (e) {
+    } catch (e) {  
       console.error('connect error', e);
     }
   };
@@ -85,7 +84,7 @@ export default function App() {
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
-        {route === 'dashboard' && <Dashboard live={live} stable={stable} items={items} onDisconnect={handleDisconnect} portStatus={portStatus} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} ingredients={ingredients} selectedIngredient={selectedIngredient} onDisconnect={handleDisconnect} portStatus={portStatus} />}
       </div>
     </div>
   );

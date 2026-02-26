@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from 'serialport';
+import ingredientsData from '../../resources/ingredients.json';
 
 let mainWindow;
 let port;
@@ -13,6 +14,9 @@ let lastWeights = [];
 
 const STABLE_COUNT = 5;
 const STABLE_RANGE = 0.002;
+
+const fs = require('fs/promises');
+const path = require('path');
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -116,16 +120,26 @@ app.on('before-quit', async (event) => {
   setTimeout(() => app.quit(), 500);
 });
 
-//API JSON 
-ipcMain.handle("load-items", async () => {
-  try {
-    const response = await fetch("http://localhost:5000/items");
-    const data = await response.json();
+//API JSON
+// ipcMain.handle("load-items", async () => {
+//   try {
+//     const response = await fetch("http://localhost:5000/items");
+//     const data = await response.json();
 
-    return data;
+//     return data;
+//   } catch (error) {
+//     console.error("API Error:", error);
+//     return { error: "Failed to fetch items" };
+//   }
+// });
+
+//locally load JSON file
+ipcMain.handle('load-items', async () => {
+  try {
+    return ingredientsData;
   } catch (error) {
-    console.error("API Error:", error);
-    return { error: "Failed to fetch items" };
+    console.error('Local JSON load error:', error);
+    return { error: 'Failed to load local items' };
   }
 });
 
@@ -134,7 +148,7 @@ ipcMain.handle("load-items", async () => {
 ipcMain.handle('disconnect-port', async () => {
   if (port && port.isOpen) {
     await closePort();
-    mainWindow.webContents.send('port-status', 'disconnected'); 
+    mainWindow.webContents.send('port-status', 'disconnected');
   }
 });
 
@@ -164,7 +178,7 @@ ipcMain.handle('connect-port', async (event, portPath) => {
         return reject(err.message);
       }
     });
-  
+
     port.on('open', () => {
       mainWindow.webContents.send('port-status', 'connected');
     });
