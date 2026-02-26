@@ -11,9 +11,10 @@ export default function App() {
   const [location, setLocation] = useState(null);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
-  const [portStatus, setPortStatus] = useState('disconnected'); 
+  const [portStatus, setPortStatus] = useState('disconnected');
   const [ingredients, setIngredients] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const [mangingStatus, setMangingStatus] = useState(null);
 
   const loadPorts = async () => {
     try {
@@ -31,7 +32,7 @@ export default function App() {
     (async () => {
       await loadPorts();
       const data = await window.api.loadItems();
-      if(!data.error && data?.ingredients){ 
+      if (!data.error && data?.ingredients) {
         setIngredients(data.ingredients);
       }
     })();
@@ -45,6 +46,12 @@ export default function App() {
     if (window.api?.onPortStatus) {
       window.api.onPortStatus((status) => setPortStatus(status));
     }
+    if (window.api?.onMangingStatus) {
+      window.api.onMangingStatus((data) => {
+        console.log(data);
+        setMangingStatus(data);
+      });
+    }
   }, []);
 
   const handleConnect = async () => {
@@ -52,7 +59,7 @@ export default function App() {
     try {
       await window.api.connectPort(selectedPort);
       setRoute('dashboard');
-    } catch (e) {  
+    } catch (e) {
       console.error('connect error', e);
     }
   };
@@ -84,7 +91,7 @@ export default function App() {
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
-        {route === 'dashboard' && <Dashboard live={live} stable={stable} ingredients={ingredients} selectedIngredient={selectedIngredient} onDisconnect={handleDisconnect} portStatus={portStatus} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} ingredients={ingredients} selectedIngredient={selectedIngredient} setSelectedIngredient={setSelectedIngredient} onDisconnect={handleDisconnect} portStatus={portStatus} mangingStatus={mangingStatus} />}
       </div>
     </div>
   );

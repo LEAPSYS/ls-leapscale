@@ -8,11 +8,14 @@ Dashboard.propTypes = {
   live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onDisconnect: PropTypes.func.isRequired,
-  portStatus: PropTypes.string.isRequired
+  portStatus: PropTypes.string.isRequired,
+  ingredients: PropTypes.array.isRequired,
+  selectedIngredient: PropTypes.object,
+  setSelectedIngredient: PropTypes.func.isRequired,
+  mangingStatus: PropTypes.object
 };
 
-export default function Dashboard({ live, stable, ingredients, onDisconnect, portStatus }) {
-  const [selectedIngredient, setSelectedIngredient] = useState(null);
+export default function Dashboard({ live, stable, ingredients, selectedIngredient, setSelectedIngredient, onDisconnect, portStatus, mangingStatus }) {
   const startContent = (
     <React.Fragment>
       <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
@@ -27,14 +30,6 @@ export default function Dashboard({ live, stable, ingredients, onDisconnect, por
     </React.Fragment>
   );
 
-  function mangingStatus(item) {
-    if(item.requiredWeight === item.stableWeight) {
-      return 'Completed';
-    } else {
-      return 'Pending';
-    }
-    
-  }
   return (
     <>
       <Toolbar start={startContent} center={centerContent} end={endContent} />
@@ -53,19 +48,16 @@ export default function Dashboard({ live, stable, ingredients, onDisconnect, por
                 ))}
               {selectedIngredient && (
                 <>
-                  <button onClick={() => setSelectedIngredient(null)} style={{ marginBottom: '15px', cursor: 'pointer' }}>
-                    ← Back
-                  </button>
+                  <button onClick={() => setSelectedIngredient(null)} style={{ marginBottom: '15px', cursor: 'pointer' }}>{' '}Back </button>
                   {selectedIngredient.items.map((item) => (
-                    <li key={item.id} style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>  
-                    <div className='flex justify-content-between'>
-                      <div>{item.name}</div>
-                      <div className='flex gap-2'>
-                      <div>{item.requiredWeight}</div>
-                      <button onClick={mangingStatus(item)}>Status</button>
+                    <li key={item.id} style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+                      <div className="flex justify-content-between">
+                        <div>{item.name}</div>
+                        <div className="flex gap-2">
+                          <div>{item.requiredWeight}</div>
+                          <button onClick={() => console.log(mangingStatus)}>Status</button>
+                        </div>
                       </div>
-                      
-</div>
                     </li>
                   ))}
                 </>

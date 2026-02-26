@@ -86,10 +86,12 @@ function checkStableWeight(weight) {
       lastWeights = [];
     }
   }
+  if (weight > 0) {
+    mainWindow.webContents.send('manging-status', {status:'running', weight: weight});
+  }
 }
-
+      
 // APP EVENTS
-
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.ls.leapscale');
   app.on('browser-window-created', (_, window) => {
@@ -119,19 +121,6 @@ app.on('before-quit', async (event) => {
   await closePort();
   setTimeout(() => app.quit(), 500);
 });
-
-//API JSON
-// ipcMain.handle("load-items", async () => {
-//   try {
-//     const response = await fetch("http://localhost:5000/items");
-//     const data = await response.json();
-
-//     return data;
-//   } catch (error) {
-//     console.error("API Error:", error);
-//     return { error: "Failed to fetch items" };
-//   }
-// });
 
 //locally load JSON file
 ipcMain.handle('load-items', async () => {

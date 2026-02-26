@@ -8,7 +8,8 @@ const api = {
   onLiveWeight: (callback) => ipcRenderer.on('live-weight', (e, data) => callback(data)),
   onStableWeight: (callback) => ipcRenderer.on('stable-weight', (e, data) => callback(data)),
   onPortStatus: (callback) => ipcRenderer.on('port-status', (e, status) => callback(status)),
-  loadItems: () => ipcRenderer.invoke("load-items") 
+  loadItems: () => ipcRenderer.invoke("load-items"),
+  onMangingStatus: (callback) => ipcRenderer.on('manging-status', (e, data) => callback(data))
 }; 
 
 if (process.contextIsolated) {
