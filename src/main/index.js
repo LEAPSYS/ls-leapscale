@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from 'serialport';
 import ingredientsData from '../../resources/ingredients.json';
+import {machineId} from 'node-machine-id';
 
 let mainWindow;
 let port;
@@ -65,6 +66,14 @@ async function closePort() {
     });
   });
 }
+
+
+async function getMachineId() {
+    const id = await machineId(true);
+    console.log("getMachineId  " + id)
+    return id;
+}
+
 
 function extractWeight(data) {
   const match = data.match(/([\d.]+)/);
@@ -143,6 +152,7 @@ ipcMain.handle('disconnect-port', async () => {
 
 ipcMain.handle('list-ports', async () => {
   const ports = await SerialPort.list();
+  console.log(getMachineId());
   return ports.map((p) => p.path);
 });
 
