@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 
-const DUMMY_LOCATIONS = ['Location A', 'Location B', 'Location C', 'Location D'];
+const DUMMY_LOCATIONS = ['Workstation WS1', 'Workstation WS2', 'Workstation WS3', 'Workstation WS4'];
 
 Location.propTypes = {
   onSelect: PropTypes.func.isRequired
