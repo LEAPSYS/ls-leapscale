@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from 'serialport';
 import ingredientsData from '../../resources/ingredients.json';
-import {machineId} from 'node-machine-id';
+import { machineId } from 'node-machine-id';
 
 let mainWindow;
 let port;
@@ -67,13 +67,11 @@ async function closePort() {
   });
 }
 
-
 async function getMachineId() {
-    const id = await machineId(true);
-    console.log("getMachineId  " + id)
-    return id;
+  const id = await machineId(true);
+  console.log('getMachineId  ' + id);
+  return id;
 }
-
 
 function extractWeight(data) {
   const match = data.match(/([\d.]+)/);
@@ -96,10 +94,10 @@ function checkStableWeight(weight) {
     }
   }
   if (weight > 0) {
-    mainWindow.webContents.send('manging-status', {status:'running', weight: weight});
+    mainWindow.webContents.send('manging-status', { status: 'running', weight: weight });
   }
 }
-      
+
 // APP EVENTS
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.ls.leapscale');
