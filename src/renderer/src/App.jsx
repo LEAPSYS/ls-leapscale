@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
 import Location from './pages/Location';
+import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
 
 export default function App() {
-  const [route, setRoute] = useState('login'); // 'login' | 'connect' | 'dashboard'
+  const [route, setRoute] = useState('login'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
+  const [workOrder, setWorkOrder] = useState(null);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
   const [portStatus, setPortStatus] = useState('disconnected');
@@ -82,6 +84,16 @@ export default function App() {
       return;
     }
     setLocation(loc);
+    setRoute('workorders');
+  };
+
+  const handleSelectWorkOrder = (wo) => {
+    if (!wo) {
+      setRoute('location');
+      setWorkOrder(null);
+      return;
+    }
+    setWorkOrder(wo);
     setRoute('connect');
   };
 
@@ -90,6 +102,7 @@ export default function App() {
       <div style={{ flex: 1 }}>
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
+        {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} ingredients={ingredients} selectedIngredient={selectedIngredient} setSelectedIngredient={setSelectedIngredient} onDisconnect={handleDisconnect} portStatus={portStatus} mangingStatus={mangingStatus} />}
       </div>
