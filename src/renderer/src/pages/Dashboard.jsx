@@ -18,10 +18,10 @@ Dashboard.propTypes = {
 
 export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
   const [pendingItems] = useState([
-    { id: 1, code: 'WO-001-A', description: 'Ingredient A', uomKg: '2.5', quantity: 5 },
-    { id: 2, code: 'WO-001-B', description: 'Ingredient B', uomKg: '1.2', quantity: 3 },
-    { id: 3, code: 'WO-001-C', description: 'Ingredient C', uomKg: '0.8', quantity: 2 },
-    { id: 4, code: 'WO-001-D', description: 'Ingredient D', uomKg: '3.5', quantity: 1 }
+    { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
+    { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
+    { id: 3, code: '759010', description: 'White Pepper', uomKg: '0.8', quantity: 0.009 },
+    { id: 4, code: '709002', description: 'Rock Salt Powder', uomKg: '3.5', quantity: 1.19 }
   ]);
   const [selectedItem, setSelectedItem] = useState(null);
 
