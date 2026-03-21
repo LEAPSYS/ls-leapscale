@@ -1,7 +1,8 @@
 import { Button } from 'primereact/button';
 import React, { useState } from 'react';
 import { Toolbar } from 'primereact/toolbar';
-import { Skeleton } from 'primereact/skeleton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import PropTypes from 'prop-types';
 
 Dashboard.propTypes = {
@@ -9,13 +10,20 @@ Dashboard.propTypes = {
   stable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onDisconnect: PropTypes.func.isRequired,
   portStatus: PropTypes.string.isRequired,
-  ingredients: PropTypes.array.isRequired,
+  ingredients: PropTypes.array,
   selectedIngredient: PropTypes.object,
-  setSelectedIngredient: PropTypes.func.isRequired,
+  setSelectedIngredient: PropTypes.func,
   mangingStatus: PropTypes.object
 };
 
-export default function Dashboard({ live, stable, ingredients, selectedIngredient, setSelectedIngredient, onDisconnect, portStatus, mangingStatus }) {
+export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
+  const [pendingItems] = useState([
+    { id: 1, code: 'WO-001-A', description: 'Ingredient A', uomKg: '2.5', quantity: 5 },
+    { id: 2, code: 'WO-001-B', description: 'Ingredient B', uomKg: '1.2', quantity: 3 },
+    { id: 3, code: 'WO-001-C', description: 'Ingredient C', uomKg: '0.8', quantity: 2 },
+    { id: 4, code: 'WO-001-D', description: 'Ingredient D', uomKg: '3.5', quantity: 1 }
+  ]);
+
   const startContent = (
     <React.Fragment>
       <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
@@ -33,78 +41,19 @@ export default function Dashboard({ live, stable, ingredients, selectedIngredien
   return (
     <>
       <Toolbar start={startContent} center={centerContent} end={endContent} />
-      <div className="grid">
-        <div className="col-5">
+      <div className="grid" style={{ height: 'calc(100vh - 70px)' }}>
+        <div className="col-6" style={{ overflowY: 'auto' }}>
           <div className="border-round surface-border p-4">
-            <ul className="m-0 p-0 list-none">
-              {!selectedIngredient &&
-                ingredients.map((ingredient) => (
-                  <li key={ingredient.id} className="mb-3">
-                    <div className="flex align-items-center" style={{ cursor: 'pointer' }} onClick={() => setSelectedIngredient(ingredient)}>
-                      <img src={ingredient.thumbnail} alt={ingredient.name} style={{ width: '4rem', height: '4rem', borderRadius: '50%', objectFit: 'cover', marginRight: '10px' }} />
-                      <div style={{ fontWeight: 'bold' }}>{ingredient.name}</div>
-                    </div>
-                  </li>
-                ))}
-              {selectedIngredient && (
-                <>
-                  <button onClick={() => setSelectedIngredient(null)} style={{ marginBottom: '15px', cursor: 'pointer' }}>{' '}Back </button>
-                  {selectedIngredient.items.map((item) => (
-                    <li key={item.id} style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                      <div className="flex justify-content-between">
-                        <div>{item.name}</div>
-                        <div className="flex gap-2">
-                          <div>{item.requiredWeight}</div>
-                          <button onClick={() => console.log(mangingStatus)}>Status</button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </>
-              )}
-            </ul>
-
-            {/* <ul className="m-0 p-0 list-none">
-              <li className="mb-3">
-                <div className="flex">
-                  <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
-                  <div style={{ flex: '1' }}>
-                    <Skeleton width="100%" className="mb-2"></Skeleton>
-                    <Skeleton width="75%"></Skeleton>
-                  </div>
-                </div>
-              </li>
-              <li className="mb-3">
-                <div className="flex">
-                  <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
-                  <div style={{ flex: '1' }}>
-                    <Skeleton width="100%" className="mb-2"></Skeleton>
-                    <Skeleton width="75%"></Skeleton>
-                  </div>
-                </div>
-              </li>
-              <li className="mb-3">
-                <div className="flex">
-                  <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
-                  <div style={{ flex: '1' }}>
-                    <Skeleton width="100%" className="mb-2"></Skeleton>
-                    <Skeleton width="75%"></Skeleton>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="flex">
-                  <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
-                  <div style={{ flex: '1' }}>
-                    <Skeleton width="100%" className="mb-2"></Skeleton>
-                    <Skeleton width="75%"></Skeleton>
-                  </div>
-                </div>
-              </li>
-            </ul> */}
+            <h4 className="m-0 mb-3">Pending Items to Weigh</h4>
+            <DataTable value={pendingItems} size="small" scrollable scrollHeight="flex">
+              <Column field="code" header="Code" style={{ width: '30%' }}></Column>
+              <Column field="description" header="Description" style={{ width: '30%' }}></Column>
+              <Column field="uomKg" header="UOM (Kg)" style={{ width: '20%' }}></Column>
+              <Column field="quantity" header="Quantity" style={{ width: '20%' }}></Column>
+            </DataTable>
           </div>
         </div>
-        <div className="col-7">
+        <div className="col-6">
           <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
             <div>
               <div className="p-d-flex p-jc-between p-ai-center p-mt-" style={{ gap: 20 }}>

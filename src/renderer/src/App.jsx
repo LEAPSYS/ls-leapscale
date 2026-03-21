@@ -104,7 +104,7 @@ export default function App() {
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
-        {route === 'dashboard' && <Dashboard live={live} stable={stable} ingredients={ingredients} selectedIngredient={selectedIngredient} setSelectedIngredient={setSelectedIngredient} onDisconnect={handleDisconnect} portStatus={portStatus} mangingStatus={mangingStatus} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} />}
       </div>
     </div>
   );
