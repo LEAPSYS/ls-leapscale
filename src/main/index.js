@@ -27,7 +27,7 @@ function createWindow() {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/preload.js'),
       sandbox: false,
       contextIsolation: true
     }
@@ -145,6 +145,29 @@ ipcMain.handle('disconnect-port', async () => {
   if (port && port.isOpen) {
     await closePort();
     mainWindow.webContents.send('port-status', 'disconnected');
+  }
+});
+
+ipcMain.handle('save-file', async (event, fileName, content) => {
+  const dir = app.getPath('userData');
+  const fullPath = path.join(dir, fileName);
+  try {
+    await fs.writeFile(fullPath, content, 'utf-8');
+    console.log(fullPath);
+    return { success: true, path: fullPath };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('read-file', async (event, fileName) => {
+  const dir = app.getPath('userData');
+  const fullPath = path.join(dir, fileName);
+  try {
+    const content = await fs.readFile(fullPath, 'utf-8');
+    return { success: true, data: content };
+  } catch (err) {
+    return { success: false, error: err.message };
   }
 });
 

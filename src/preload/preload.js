@@ -9,7 +9,9 @@ const api = {
   onStableWeight: (callback) => ipcRenderer.on('stable-weight', (e, data) => callback(data)),
   onPortStatus: (callback) => ipcRenderer.on('port-status', (e, status) => callback(status)),
   loadItems: () => ipcRenderer.invoke('load-items'),
-  onMangingStatus: (callback) => ipcRenderer.on('manging-status', (e, data) => callback(data))
+  onMangingStatus: (callback) => ipcRenderer.on('manging-status', (e, data) => callback(data)),
+  saveFile: (fileName, content) => ipcRenderer.invoke('save-file', fileName, content),
+  readFile: (fileName) => ipcRenderer.invoke('read-file', fileName)
 };
 
 if (process.contextIsolated) {

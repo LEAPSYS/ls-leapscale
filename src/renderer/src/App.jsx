@@ -18,8 +18,14 @@ export default function App() {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [mangingStatus, setMangingStatus] = useState(null);
 
+  const saveData = async () => {
+    const result = await window.api.saveFile('leapscale.txt', 'Hello from Electron 🚀');
+    console.log(result);
+  };
+
   const loadPorts = async () => {
     try {
+      await saveData();
       if (window.api?.listPorts) {
         const list = await window.api.listPorts();
         setPorts(list || []);
