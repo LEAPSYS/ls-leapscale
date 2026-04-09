@@ -5,7 +5,7 @@ import qrImage from '../assets/qr-auth-leapsys-in.svg';
 import { Toolbar } from 'primereact/toolbar';
 
 import { useApi } from '../hooks/useApi';
-import authService from '../services/authService';
+import apiService from '../services/apiService';
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired
@@ -14,7 +14,7 @@ Login.propTypes = {
 export default function Login({ onProceed }) {
   const startContent = (
     <React.Fragment>
-      <Button label="Back" disabled={true} className="p-button-plain" />
+      <Button label="Back" visible={false} disabled={true} className="p-button-plain" />
     </React.Fragment>
   );
 
@@ -28,14 +28,14 @@ export default function Login({ onProceed }) {
 
   const [loginResult, setLoginResult] = useState(null);
   const [loginError, setLoginError] = useState(null);
-  const { request, loading } = useApi(authService.login);
+  const { request, loading } = useApi(apiService.login);
 
   const handleLogin = async () => {
     await request('pkishor@leapsys.net', 'moNu288*')
       .then((result) => {
         console.log(result);
         setLoginResult(result?.data?.data);
-        authService.storeToken(result.data.data.access_token);
+        apiService.storeToken(result.data.data.access_token);
       })
       .catch((err) => {
         setLoginError(err);

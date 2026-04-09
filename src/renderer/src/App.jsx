@@ -4,9 +4,10 @@ import Location from './pages/Location';
 import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
+import Activation from './pages/Activation';
 
 export default function App() {
-  const [route, setRoute] = useState('login'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
+  const [route, setRoute] = useState('activate'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
@@ -83,6 +84,8 @@ export default function App() {
 
   const onProceedFromLogin = () => setRoute('location');
 
+  const onProceedFromActivate = () => setRoute('login');
+
   const handleSelectLocation = (loc) => {
     if (!loc) {
       setRoute('login');
@@ -106,6 +109,7 @@ export default function App() {
   return (
     <div>
       <div style={{ flex: 1 }}>
+        {route === 'activate' && <Activation onProceed={onProceedFromActivate} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
