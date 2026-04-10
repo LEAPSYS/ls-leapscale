@@ -85,13 +85,24 @@ fi
 # 7. Copy dist with version
 # -----------------------------
 if [ -d "dist" ]; then
-    echo "Preparing dist export..."
+    echo "Searching for AppImage..."
+
+    APPIMAGE_FILE=$(find dist -type f -name "*.AppImage" | head -n 1)
+
+    if [ -z "$APPIMAGE_FILE" ]; then
+        echo "No AppImage found in dist!"
+        exit 1
+    fi
 
     VERSION=$(node -p "require('./package.json').version")
-    DEST_DIR="../${PROJECT_DIR}-v${VERSION}"
+    BASENAME=$(basename "$APPIMAGE_FILE" .AppImage)
 
-    echo "Copying dist to $DEST_DIR"
-    cp -r dist "$DEST_DIR"
+    DEST_FILE="../${BASENAME}-v${VERSION}.AppImage"
+
+    echo "Copying AppImage to $DEST_FILE"
+    cp "$APPIMAGE_FILE" "$DEST_FILE"
+    chmod +x "$DEST_FILE"
+
 else
     echo "dist folder not found!"
     exit 1
