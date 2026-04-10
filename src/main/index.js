@@ -21,6 +21,10 @@ const path = require('path');
 
 function createWindow() {
   mainWindow = new BrowserWindow({
+    fullscreen: true,
+    kiosk: true, // important
+    frame: false,
+    alwaysOnTop: true,
     width: 800,
     height: 600,
     show: false,
