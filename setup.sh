@@ -101,7 +101,7 @@ DEST_FILE="${DEST_DIR}/${APP_NAME}-v${VERSION}.AppImage"
 # -----------------------------
 # 8. Move to /opt
 # -----------------------------
-echo "📦 Installing to $DEST_DIR"
+echo "Installing to $DEST_DIR"
 sudo mkdir -p "$DEST_DIR"
 sudo cp "$APPIMAGE_FILE" "$DEST_FILE"
 sudo chmod +x "$DEST_FILE"
