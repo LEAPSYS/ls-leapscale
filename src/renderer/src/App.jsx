@@ -20,11 +20,6 @@ export default function App() {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [mangingStatus, setMangingStatus] = useState(null);
 
-  const saveData = async () => {
-    const result = await window.api.saveFile('leapscale.txt', 'Hello from Electron');
-    console.log(result);
-  };
-
   const loadPorts = async () => {
     try {
       if (window.api?.listPorts) {
@@ -44,6 +39,11 @@ export default function App() {
     } catch (e) {
       console.error('machine id error', e);
     }
+  };
+
+  const readSavedActivationKey = async () => {
+    const result = await window.api.readFile('leapscale.bin');
+    console.log(result);
   };
 
   useEffect(() => {

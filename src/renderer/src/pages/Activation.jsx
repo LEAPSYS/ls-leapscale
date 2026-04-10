@@ -9,6 +9,7 @@ import { useApi } from '../hooks/useApi';
 import lslogo from '../assets/leapsys-inkspace-on-transparent.png';
 import { Panel } from 'primereact/panel';
 import apiService from '../services/apiService';
+import StatusBar from '../components/StatusBar';
 
 Activation.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -18,17 +19,27 @@ Activation.propTypes = {
 
 export default function Activation({ onProceed, onBack, machineId }) {
   const [activationResult, setActivationResult] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+
+  const saveActivationKey = async (activationKey) => {
+    const result = await window.api.saveFile('leapscale.bin', activationKey);
+    console.log(result);
+  };
 
   const handleActivate = async () => {
+    setSyncing(true);
     await apiService
       .activateHmi(machineId, null)
       .then((result) => {
         console.log(result);
-        setActivationResult(result?.data?.data);
+        saveActivationKey(result.data?.activationKey);
+        //setActivationResult(result?.data?.data);
+        setSyncing(false);
       })
       .catch((err) => {
-        setActivationResult(err);
+        //setActivationResult(err);
         console.log(err);
+        setSyncing(false);
       });
     console.log('activation clicked');
   };
@@ -61,22 +72,7 @@ export default function Activation({ onProceed, onBack, machineId }) {
           </div>
         </main>
 
-        <footer className="p-0 bg-blue-600 text-white p-1">
-          <div className="flex align-items-center justify-content-between">
-            <div>
-              <small>© 2026 LEAPSYS</small>
-            </div>
-            <div className="flex align-items-center gap-3">
-              <i className="pi pi-wifi"></i>
-              <i className="pi pi-cog"></i>
-              <i className="pi pi-globe"></i>
-              <span className="flex align-items-center gap-2 pr-3">
-                <i className="pi pi-circle-fill text-red-400" style={{ fontSize: '0.6rem' }}></i>
-                <small>Offline</small>
-              </span>
-            </div>
-          </div>
-        </footer>
+        <StatusBar activationStatus={1} syncing={syncing}></StatusBar>
       </div>
     </>
   );
