@@ -22,7 +22,6 @@ const path = require('path');
 function createWindow() {
   mainWindow = new BrowserWindow({
     fullscreen: true,
-    //kiosk: true, // important
     frame: false,
     alwaysOnTop: true,
     width: 800,
@@ -69,12 +68,6 @@ async function closePort() {
       resolve();
     });
   });
-}
-
-async function getMachineId() {
-  const id = await machineId(true);
-  console.log('getMachineId  ' + id);
-  return id;
 }
 
 function extractWeight(data) {
@@ -177,14 +170,19 @@ ipcMain.handle('read-file', async (event, fileName) => {
 
 ipcMain.handle('list-ports', async () => {
   const ports = await SerialPort.list();
-  console.log(getMachineId());
   return ports.map((p) => p.path);
+});
+
+ipcMain.handle('get-machine-id', async () => {
+  const id = await machineId(true);
+  return id;
 });
 
 ipcMain.handle('connect-port', async (event, portPath) => {
   if (port && port.isOpen) {
     await closePort();
   }
+
   port = new SerialPort({
     path: portPath,
     baudRate: 9600,
@@ -194,6 +192,7 @@ ipcMain.handle('connect-port', async (event, portPath) => {
     autoOpen: false,
     lock: false
   });
+
   await new Promise((r) => setTimeout(r, 800));
   return new Promise((resolve, reject) => {
     port.open((err) => {

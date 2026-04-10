@@ -30,11 +30,12 @@ const logout = () => {
   localStorage.removeItem('access_token');
 };
 
-const activateHmi = async () => {
-  return await apiClient.orionApiClient.post('')
-
-
-}
+const activateHmi = async (hwId, activationKey) => {
+  return await apiClient.orionApiClient.post('/api/v1/activate-leapscale', {
+    hwId: hwId,
+    activationKey: activationKey
+  });
+};
 
 export default {
   getUsers,

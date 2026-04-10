@@ -9,6 +9,7 @@ import Activation from './pages/Activation';
 export default function App() {
   const [route, setRoute] = useState('activate'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
+  const [hwId, setHwId] = useState('');
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
   const [workOrder, setWorkOrder] = useState(null);
@@ -20,13 +21,12 @@ export default function App() {
   const [mangingStatus, setMangingStatus] = useState(null);
 
   const saveData = async () => {
-    const result = await window.api.saveFile('leapscale.txt', 'Hello from Electron 🚀');
+    const result = await window.api.saveFile('leapscale.txt', 'Hello from Electron');
     console.log(result);
   };
 
   const loadPorts = async () => {
     try {
-      await saveData();
       if (window.api?.listPorts) {
         const list = await window.api.listPorts();
         setPorts(list || []);
@@ -37,9 +37,19 @@ export default function App() {
     }
   };
 
+  const loadMachineId = async () => {
+    try {
+      const machineId = await window.api.getMachineId();
+      setHwId(machineId);
+    } catch (e) {
+      console.error('machine id error', e);
+    }
+  };
+
   useEffect(() => {
     (async () => {
       await loadPorts();
+      await loadMachineId();
       const data = await window.api.loadItems();
       if (!data.error && data?.ingredients) {
         setIngredients(data.ingredients);
@@ -63,6 +73,10 @@ export default function App() {
     }
   }, []);
 
+  const onProceedFromLogin = () => setRoute('location');
+
+  const onProceedFromActivate = () => setRoute('login');
+
   const handleConnect = async () => {
     if (!selectedPort) return;
     try {
@@ -81,10 +95,6 @@ export default function App() {
     }
     setRoute('connect');
   };
-
-  const onProceedFromLogin = () => setRoute('location');
-
-  const onProceedFromActivate = () => setRoute('login');
 
   const handleSelectLocation = (loc) => {
     if (!loc) {
@@ -109,7 +119,7 @@ export default function App() {
   return (
     <div>
       <div style={{ flex: 1 }}>
-        {route === 'activate' && <Activation onProceed={onProceedFromActivate} />}
+        {route === 'activate' && <Activation onProceed={onProceedFromActivate} machineId={hwId} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}

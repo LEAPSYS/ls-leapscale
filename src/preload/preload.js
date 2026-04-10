@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload';
 
 const api = {
   listPorts: () => ipcRenderer.invoke('list-ports'),
+  getMachineId: () => ipcRenderer.invoke('get-machine-id'),
   connectPort: (port) => ipcRenderer.invoke('connect-port', port),
   disconnectPort: () => ipcRenderer.invoke('disconnect-port'),
   onLiveWeight: (callback) => ipcRenderer.on('live-weight', (e, data) => callback(data)),
