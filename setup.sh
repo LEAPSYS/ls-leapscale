@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# -----------------------------
+# Versions:
+# 1.0 - Initial Creation
+# -----------------------------
+
 set -e  # Exit on error
 
 echo "Starting setup..."
@@ -11,7 +16,7 @@ if ! command -v git &> /dev/null
 then
     echo "Installing Git..."
     sudo apt update
-    sudo apt install -y git
+    sudo apt install -y git curl
 else
     echo "Git already installed"
 fi
@@ -45,7 +50,7 @@ PROJECT_DIR="ls-leapscale"
 
 if [ ! -d "$PROJECT_DIR" ]; then
     echo "Cloning repository..."
-    git clone "$REPO_URL"
+git clone "$REPO_URL"
 else
     echo "App already exists, pulling latest..."
     cd "$PROJECT_DIR"
@@ -69,10 +74,35 @@ fi
 # 6. Run build
 # -----------------------------
 if npm run | grep -q "build"; then
-    echo "🏗️ Running build..."
+    echo "Running build..."
     npm run build:linux
 else
     echo "No build script found in package.json"
+    exit 1
 fi
 
-echo "Setup complete!"
+# -----------------------------
+# 7. Copy dist with version
+# -----------------------------
+if [ -d "dist" ]; then
+    echo "Preparing dist export..."
+
+    VERSION=$(node -p "require('./package.json').version")
+    DEST_DIR="../${PROJECT_DIR}-v${VERSION}"
+
+    echo "Copying dist to $DEST_DIR"
+    cp -r dist "$DEST_DIR"
+else
+    echo "dist folder not found!"
+    exit 1
+fi
+
+cd ..
+
+# -----------------------------
+# 8. Delete project directory
+# -----------------------------
+echo "Cleaning up project directory..."
+rm -rf "$PROJECT_DIR"
+
+echo "Done! Output available at: $DEST_DIR"
