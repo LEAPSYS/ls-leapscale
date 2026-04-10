@@ -3,6 +3,7 @@
 # -----------------------------
 # Versions:
 # 1.0 - Initial Creation
+# 1.1 - Desktop File
 # -----------------------------
 
 set -e  # Exit on error
@@ -82,38 +83,62 @@ else
 fi
 
 # -----------------------------
-# 7. Copy dist with version
+# 7. Find AppImage
 # -----------------------------
-if [ -d "dist" ]; then
-    echo "Searching for AppImage..."
+APPIMAGE_FILE=$(find dist -type f -name "*.AppImage" | head -n 1)
 
-    APPIMAGE_FILE=$(find dist -type f -name "*.AppImage" | head -n 1)
-
-    if [ -z "$APPIMAGE_FILE" ]; then
-        echo "No AppImage found in dist!"
-        exit 1
-    fi
-
-    VERSION=$(node -p "require('./package.json').version")
-    BASENAME=$(basename "$APPIMAGE_FILE" .AppImage)
-
-    DEST_FILE="../${BASENAME}-v${VERSION}.AppImage"
-
-    echo "Copying AppImage to $DEST_FILE"
-    cp "$APPIMAGE_FILE" "$DEST_FILE"
-    chmod +x "$DEST_FILE"
-
-else
-    echo "dist folder not found!"
+if [ -z "$APPIMAGE_FILE" ]; then
+    echo "No AppImage found!"
     exit 1
 fi
 
-cd ..
+VERSION=$(node -p "require('./package.json').version")
+APP_NAME=$(node -p "require('./package.json').name")
+
+DEST_DIR="/opt/${APP_NAME}"
+DEST_FILE="${DEST_DIR}/${APP_NAME}-v${VERSION}.AppImage"
 
 # -----------------------------
-# 8. Delete project directory
+# 8. Move to /opt
 # -----------------------------
-echo "Cleaning up project directory..."
+echo "📦 Installing to $DEST_DIR"
+sudo mkdir -p "$DEST_DIR"
+sudo cp "$APPIMAGE_FILE" "$DEST_FILE"
+sudo chmod +x "$DEST_FILE"
+
+# -----------------------------
+# 9. Create Desktop Entry
+# -----------------------------
+DESKTOP_FILE="/usr/share/applications/${APP_NAME}.desktop"
+
+echo "Creating desktop entry..."
+
+sudo bash -c "cat > $DESKTOP_FILE" <<EOL
+[Desktop Entry]
+Name=${APP_NAME}
+Exec=${DEST_FILE}
+Icon=${DEST_DIR}/icon.png
+Type=Application
+Categories=Utility;
+Terminal=false
+EOL
+
+# -----------------------------
+# 10. Optional: Add icon (if exists)
+# -----------------------------
+ICON_FILE=$(find . -type f -name "*.png" | head -n 1)
+
+if [ -n "$ICON_FILE" ]; then
+    echo "Installing icon..."
+    sudo cp "$ICON_FILE" "${DEST_DIR}/icon.png"
+fi
+
+# -----------------------------
+# 11. Cleanup
+# -----------------------------
+cd ..
 rm -rf "$PROJECT_DIR"
 
-echo "Done! Output available at: $DEST_DIR"
+echo "Installation complete!"
+echo "App available in menu as: $APP_NAME"
+echo "Installed at: $DEST_FILE"
