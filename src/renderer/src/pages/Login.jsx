@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import qrImage from '../assets/qr-auth-leapsys-in.svg';
 import { Toolbar } from 'primereact/toolbar';
-
-import { useApi } from '../hooks/useApi';
 import apiService from '../services/apiService';
 
 Login.propTypes = {
@@ -28,10 +26,10 @@ export default function Login({ onProceed }) {
 
   const [loginResult, setLoginResult] = useState(null);
   const [loginError, setLoginError] = useState(null);
-  const { request, loading } = useApi(apiService.login);
 
   const handleLogin = async () => {
-    await request('pkishor@leapsys.net', 'moNu288*')
+    await apiService
+      .login('pkishor@leapsys.net', 'moNu288*')
       .then((result) => {
         console.log(result);
         setLoginResult(result?.data?.data);
@@ -52,7 +50,7 @@ export default function Login({ onProceed }) {
       </div>
       <div>
         <Button label="Test Login" onClick={() => handleLogin()} className="p-button-primary" />
-        {loading && <p>Loading...</p>}
+        {<p>Loading...</p>}
         {loginError && <p>Error: {JSON.stringify(loginError)}</p>}
         {loginResult && <p>{loginResult.access_token}</p>}
         <p>{true}</p>
