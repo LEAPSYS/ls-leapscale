@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 
 StatusBar.propTypes = {
   activationStatus: PropTypes.number.isRequired,
+  networkConnected: PropTypes.number.isRequired,
   syncing: PropTypes.bool
 };
 
-export default function StatusBar({ activationStatus, syncing }) {
+export default function StatusBar({ activationStatus, syncing, networkConnected }) {
   return (
     <>
       <footer className="bg-blue-600 text-white p-1">
@@ -15,7 +16,7 @@ export default function StatusBar({ activationStatus, syncing }) {
             <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
           </div>
           <div className="flex align-items-center gap-3">
-            <i className="pi pi-wifi text-green-300"></i>
+            <i className={`pi pi-wifi ${networkConnected ? 'text-green-300' : 'text-red-600'}`}></i>
             <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>
             {/* <i className="pi pi-globe"></i> */}
             <span className="flex align-items-center gap-1 pr-3">

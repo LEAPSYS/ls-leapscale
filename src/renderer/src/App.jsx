@@ -24,6 +24,17 @@ export default function App() {
   const [mangingStatus, setMangingStatus] = useState(null);
   const [syncing, setSyncing] = useState(false);
   const [activationStatus, setActivationStatus] = useState(0);
+  const [networkConnected, setNetworkConnected] = useState(false);
+
+  window.addEventListener('online', () => {
+    console.log('Connected!');
+    setNetworkConnected(true);
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('Disconnected!');
+    setNetworkConnected(false);
+  });
 
   const loadPorts = async () => {
     try {
@@ -59,6 +70,7 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
+      setNetworkConnected(navigator.onLine);
       await loadPorts();
       await loadMachineId();
       await readSavedActivationKey();
@@ -154,7 +166,7 @@ export default function App() {
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} />}
-        <StatusBar activationStatus={activationStatus} syncing={syncing}></StatusBar>
+        <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} syncing={syncing}></StatusBar>
       </div>
     </>
   );
