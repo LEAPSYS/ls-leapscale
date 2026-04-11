@@ -9,14 +9,14 @@ StatusBar.propTypes = {
 export default function StatusBar({ activationStatus, syncing }) {
   return (
     <>
-      <footer className="p-0 bg-blue-600 text-white p-1">
+      <footer className="bg-blue-600 text-white p-1">
         <div className="flex align-items-center justify-content-between">
           <div>
             <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
           </div>
-          <div className="flex align-items-center gap-2">
+          <div className="flex align-items-center gap-3">
             <i className="pi pi-wifi text-green-300"></i>
-            <i className={`pi ${syncing ? 'pi-spin' : ''} pi-sync`}></i>
+            <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>
             {/* <i className="pi pi-globe"></i> */}
             <span className="flex align-items-center gap-1 pr-3">
               {activationStatus === 1 && (

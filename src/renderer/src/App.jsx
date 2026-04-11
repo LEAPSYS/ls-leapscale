@@ -5,11 +5,14 @@ import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
 import Activation from './pages/Activation';
+import StatusBar from './components/StatusBar';
+import apiService from './services/apiService';
 
 export default function App() {
   const [route, setRoute] = useState('activate'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [hwId, setHwId] = useState('');
+  const [activationKey, setActivationKey] = useState('');
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
   const [workOrder, setWorkOrder] = useState(null);
@@ -19,6 +22,8 @@ export default function App() {
   const [ingredients, setIngredients] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [mangingStatus, setMangingStatus] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [activationStatus, setActivationStatus] = useState(0);
 
   const loadPorts = async () => {
     try {
@@ -41,15 +46,22 @@ export default function App() {
     }
   };
 
+  const saveActivationKey = async (activationKey) => {
+    const result = await window.api.saveFile('leapscale.bin', activationKey);
+    console.log(result);
+  };
+
   const readSavedActivationKey = async () => {
     const result = await window.api.readFile('leapscale.bin');
-    console.log(result);
+    setActivationKey(result.data);
+    console.log(result.data);
   };
 
   useEffect(() => {
     (async () => {
       await loadPorts();
       await loadMachineId();
+      await readSavedActivationKey();
       const data = await window.api.loadItems();
       if (!data.error && data?.ingredients) {
         setIngredients(data.ingredients);
@@ -116,16 +128,34 @@ export default function App() {
     setRoute('connect');
   };
 
+  const handleActivate = async () => {
+    setSyncing(true);
+    await apiService
+      .activateHmi(hwId, activationKey)
+      .then((result) => {
+        console.log(result.data);
+        saveActivationKey(result.data?.activationKey);
+        setActivationStatus(result.data?.activationStatus);
+        setTimeout(() => setSyncing(false), 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimeout(() => setSyncing(false), 2000);
+      });
+    console.log('activation clicked');
+  };
+
   return (
-    <div>
-      <div style={{ flex: 1 }}>
-        {route === 'activate' && <Activation onProceed={onProceedFromActivate} machineId={hwId} />}
+    <>
+      <div className="flex flex-column min-h-screen">
+        {route === 'activate' && <Activation onProceed={onProceedFromActivate} onActivate={handleActivate} machineId={hwId} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} />}
+        <StatusBar activationStatus={activationStatus} syncing={syncing}></StatusBar>
       </div>
-    </div>
+    </>
   );
 }

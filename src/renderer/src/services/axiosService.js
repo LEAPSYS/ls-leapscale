@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const backendApiClient = axios.create({
   baseURL: 'https://backend.leapsys.in',
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -36,7 +36,7 @@ backendApiClient.interceptors.request.use(
 const orionApiClient = axios.create({
   //baseURL: 'https://service.leapsys.in/orion',
   baseURL: 'http://localhost:8989/orion-local',
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
