@@ -2,8 +2,8 @@
 
 # -----------------------------
 # Versions:
-# 1.0 - Initial Creation
-# 1.1 - Desktop File
+# 1.0 - [PK] Initial Creation
+# 1.1 - [PK] Desktop File
 # -----------------------------
 
 set -e  # Exit on error

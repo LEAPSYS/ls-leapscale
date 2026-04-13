@@ -15,7 +15,7 @@ export default function Activation({ onProceed, onBack, onActivate }) {
 
   const endContent = (
     <React.Fragment>
-      <Button label="Back" onClick={() => onBack()} visible={false} className="p-button-plain p-button-danger m-0 p-2 mr-1" />
+      <Button label="Back" onClick={() => onBack()} visible={false} className="p-button-danger m-0 p-2 mr-1" />
       <Button label="Demo" onClick={() => onProceed()} visible={true} className="p-button-secondary p-2 mr-1" />
       <Button label="Activate" onClick={() => onActivate()} className="p-button-success p-2" />
     </React.Fragment>

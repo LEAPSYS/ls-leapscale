@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
+import Brand from '../components/Brand';
 
 const DUMMY_LOCATIONS = ['Workstation WS1', 'Workstation WS2', 'Workstation WS3', 'Workstation WS4'];
 
@@ -12,17 +13,12 @@ Location.propTypes = {
 export default function Location({ onSelect }) {
   const [selected, setSelected] = useState(null);
 
-  const startContent = (
-    <React.Fragment>
-      <Button label="Back" onClick={() => onSelect(null)} className="p-button-plain" />
-    </React.Fragment>
-  );
-
-  const centerContent = <span style={{ textAlign: 'center', marginTop: 0 }}>Choose Location</span>;
+  const startContent = <Brand></Brand>;
 
   const endContent = (
     <React.Fragment>
-      <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-primary" />
+      <Button label="Back" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
+      <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
     </React.Fragment>
   );
 
@@ -35,19 +31,25 @@ export default function Location({ onSelect }) {
   };
 
   return (
-    <div className="p-d-flex p-jc-center p-ai-center" style={{ height: '100%' }}>
-      <Toolbar start={startContent} center={centerContent} end={endContent} />
-      <div>
-        <div className="grid p-4">
-          {DUMMY_LOCATIONS.map((loc) => (
-            <div className="col-4" key={loc}>
-              <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
-                {loc}
+    <>
+      <header className="p-0">
+        <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
+      </header>
+      <main className="flex-1 p-0">
+        <div className="surface-card p-6 h-full">
+          <h3>Activation Pending</h3>
+          <p>Once you click it may take couple of minutes to activate.</p>
+          <div className="grid p-4">
+            {DUMMY_LOCATIONS.map((loc) => (
+              <div className="col-4" key={loc}>
+                <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
+                  {loc}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
