@@ -10,7 +10,7 @@ StatusBar.propTypes = {
 export default function StatusBar({ activationStatus, syncing, networkConnected }) {
   return (
     <>
-      <footer className="bg-blue-600 text-white p-1">
+      <footer className="bg-blue-600 text-white p-1 ">
         <div className="flex align-items-center justify-content-between">
           <div>
             <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>

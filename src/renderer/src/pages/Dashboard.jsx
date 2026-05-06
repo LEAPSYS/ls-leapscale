@@ -4,6 +4,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import PropTypes from 'prop-types';
+import Brand from '../components/Brand';
 
 Dashboard.propTypes = {
   live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -13,10 +14,11 @@ Dashboard.propTypes = {
   ingredients: PropTypes.array,
   selectedIngredient: PropTypes.object,
   setSelectedIngredient: PropTypes.func,
-  mangingStatus: PropTypes.object
+  mangingStatus: PropTypes.object,
+  onBack: PropTypes.func.isRequired
 };
 
-export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
+export default function Dashboard({ live, stable, onDisconnect, portStatus,onBack }) {
   const [pendingItems] = useState([
     { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
     { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
@@ -25,23 +27,29 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
   ]);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const startContent = (
-    <React.Fragment>
-      <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
-    </React.Fragment>
-  );
+  const startContent = <Brand></Brand>
 
-  const centerContent = <span style={{ textAlign: 'center', marginTop: 0 }}>Weighing Dashboard</span>;
+    // <React.Fragment>
+    //   <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
+    // </React.Fragment>
+  
+
+  // const centerContent = <span style={{ textAlign: 'center', marginTop: 0 }}>Weighing Dashboard</span>;
 
   const endContent = (
     <React.Fragment>
+      <Button label="Back" onClick={onBack} className="p-button-danger p-2 mr-1"  />
       <Button label="Submit" onClick={() => alert('Saved succesfully')} className="p-button-success" />
     </React.Fragment>
   );
 
   return (
     <>
-      <Toolbar start={startContent} center={centerContent} end={endContent} />
+    <header className="p-0">
+      <Toolbar start={startContent}  end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }}/>
+    </header>
+    <main className="flex-1 p-0">
+      <div className="surface-card p-6 h-full">
       <div className="grid" style={{ height: 'calc(100vh - 70px)' }}>
         <div className="col-6" style={{ overflowY: 'auto' }}>
           <div className="border-round surface-border p-4">
@@ -124,6 +132,8 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus }) {
           </div>
         </div>
       </div>
+      </div>
+      </main>
     </>
   );
 }

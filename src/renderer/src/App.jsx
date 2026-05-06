@@ -97,9 +97,28 @@ export default function App() {
     }
   }, []);
 
-  const onProceedFromLogin = () => setRoute('location');
+  const onProceedFromLogin = () => 
+    {
+      
+      setRoute('location');
+    };
+
+    const onBackFromLogin = () => {
+  setRoute('activate');
+};
+
+const onBackFromConnect=()=>{
+  setRoute('workorders');
+  
+}
 
   const onProceedFromActivate = () => setRoute('login');
+  const onBackFromDashboard = () => 
+  {
+    console.log('back from dashboard');
+    setRoute('connect');
+
+  }
 
   const handleConnect = async () => {
     if (!selectedPort) return;
@@ -161,11 +180,11 @@ export default function App() {
     <>
       <div className="flex flex-column min-h-screen">
         {route === 'activate' && <Activation onProceed={onProceedFromActivate} onActivate={handleActivate} machineId={hwId} />}
-        {route === 'login' && <Login onProceed={onProceedFromLogin} />}
+        {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
-        {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} />}
-        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} />}
+        {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}
+        {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
         <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} syncing={syncing}></StatusBar>
       </div>
     </>
