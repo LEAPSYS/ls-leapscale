@@ -4,23 +4,29 @@ import PropTypes from 'prop-types';
 StatusBar.propTypes = {
   activationStatus: PropTypes.number.isRequired,
   networkConnected: PropTypes.number.isRequired,
-  syncing: PropTypes.bool
+  syncing: PropTypes.bool,
+  hwCode: PropTypes.string
 };
 
-export default function StatusBar({ activationStatus, syncing, networkConnected }) {
+export default function StatusBar({ activationStatus, syncing, networkConnected, hwCode }) {
   return (
     <>
       <footer className="bg-blue-600 text-white p-1 ">
         <div className="flex align-items-center justify-content-between">
           <div>
             <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
+            {!syncing && hwCode && (
+              <span className="ml-2">
+                <small>{hwCode}</small>
+              </span>
+            )}
           </div>
           <div className="flex align-items-center gap-3">
             <i className={`pi pi-wifi ${networkConnected ? 'text-green-300' : 'text-red-600'}`}></i>
             <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>
             {/* <i className="pi pi-globe"></i> */}
             <span className="flex align-items-center gap-1 pr-3">
-              {activationStatus === 1 && (
+              { activationStatus === 1 && (
                 <>
                   <React.Fragment>
                     <i className="pi pi-circle-fill text-green-300" style={{ fontSize: '0.6rem' }}></i>

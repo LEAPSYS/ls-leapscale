@@ -36,7 +36,7 @@ export default function Location({ onSelect }) {
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
       <main className="flex-1 p-0">
-        <div className="surface-card px-6 py-4 h-full">
+        <div className="surface-card p-6  h-full">
           <h3>Activation Pending</h3>
           <p>Once you click it may take couple of minutes to activate.</p>
           <div className="grid p-4">

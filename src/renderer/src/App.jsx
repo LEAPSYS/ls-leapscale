@@ -12,6 +12,7 @@ export default function App() {
   const [route, setRoute] = useState('activate'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [hwId, setHwId] = useState('');
+  const [hwCode, setHwCode] = useState(null);
   const [activationKey, setActivationKey] = useState('');
   const [selectedPort, setSelectedPort] = useState('');
   const [location, setLocation] = useState(null);
@@ -24,6 +25,7 @@ export default function App() {
   const [mangingStatus, setMangingStatus] = useState(null);
   const [syncing, setSyncing] = useState(false);
   const [activationStatus, setActivationStatus] = useState(0);
+  const [activated, setActivated] = useState(false);
   const [networkConnected, setNetworkConnected] = useState(false);
 
   window.addEventListener('online', () => {
@@ -97,28 +99,28 @@ export default function App() {
     }
   }, []);
 
-  const onProceedFromLogin = () => 
-    {
-      
-      setRoute('location');
-    };
+  useEffect(() => {
+    if (route === 'activate' && hwId && activationKey) {
+      handleActivate();
+    }
+  }, [route, hwId, activationKey]);
 
-    const onBackFromLogin = () => {
-  setRoute('activate');
-};
+  const onProceedFromLogin = () => {
+    setRoute('location');
+  };
 
-const onBackFromConnect=()=>{
-  setRoute('workorders');
-  
-}
+  const onBackFromLogin = () => {
+    setRoute('activate');
+  };
+
+  const onBackFromConnect = () => {
+    setRoute('workorders');
+  };
 
   const onProceedFromActivate = () => setRoute('login');
-  const onBackFromDashboard = () => 
-  {
-    console.log('back from dashboard');
+  const onBackFromDashboard = () => {
     setRoute('connect');
-
-  }
+  };
 
   const handleConnect = async () => {
     if (!selectedPort) return;
@@ -165,8 +167,13 @@ const onBackFromConnect=()=>{
       .activateHmi(hwId, activationKey)
       .then((result) => {
         console.log(result.data);
+        setHwCode(result.data?.hwCode);
         saveActivationKey(result.data?.activationKey);
         setActivationStatus(result.data?.activationStatus);
+
+        if (result.data?.activationStatus === 1) {
+          setActivated(true);
+        }
         setTimeout(() => setSyncing(false), 2000);
       })
       .catch((err) => {
@@ -179,13 +186,13 @@ const onBackFromConnect=()=>{
   return (
     <>
       <div className="flex flex-column min-h-screen">
-        {route === 'activate' && <Activation onProceed={onProceedFromActivate} onActivate={handleActivate} machineId={hwId} />}
+        {route === 'activate' && <Activation onProceed={onProceedFromActivate} machineId={hwId} isActive={activated} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
-        <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} syncing={syncing}></StatusBar>
+        <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} hwCode={hwCode} syncing={syncing}></StatusBar>
       </div>
     </>
   );
