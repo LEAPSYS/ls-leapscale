@@ -25,7 +25,8 @@ export default [
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
-      'no-unused-vars': 'off'
+      'no-unused-vars': 'off',
+      'react-hooks/exhaustive-deps': 'warn'
     }
   },
   eslintConfigPrettier
