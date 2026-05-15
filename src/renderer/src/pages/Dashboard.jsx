@@ -5,6 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import PropTypes from 'prop-types';
 import Brand from '../components/Brand';
+import { ScrollPanel } from 'primereact/scrollpanel';
 
 Dashboard.propTypes = {
   live: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -49,7 +50,9 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus,onBac
       <Toolbar start={startContent}  end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }}/>
     </header>
     <main className="flex-1 p-0">
-      <div className="surface-card p-6 h-full">
+      
+      <ScrollPanel style={{ width: '100%', height: '435px' }}>
+      <div className="surface-card p-6 ">
       <div className="grid" style={{ height: 'calc(100vh - 70px)' }}>
         <div className="col-6" style={{ overflowY: 'auto' }}>
           <div className="border-round surface-border p-4">
@@ -133,6 +136,7 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus,onBac
         </div>
       </div>
       </div>
+      </ScrollPanel>
       </main>
     </>
   );

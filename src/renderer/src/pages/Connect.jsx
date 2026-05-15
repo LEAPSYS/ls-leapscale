@@ -58,7 +58,7 @@ export default function Connect({ ports, selectedPort, onSelectPort, onConnect, 
         
       </header>
       <main className="flex-1 p-0">
-        <div className="surface-card p-6 h-full">
+        <div className="surface-card p-6 ">
           <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
         <div x>
           <div className="p-field p-mb-3">

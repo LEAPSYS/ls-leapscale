@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
+import { ScrollPanel } from 'primereact/scrollpanel';
 
 Activation.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -28,8 +29,10 @@ export default function Activation({ onProceed, onBack, isActive }) {
       <header className="p-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
+     
       <main className="flex-1 p-0">
-        <div className="surface-card p-6 h-full">
+         <ScrollPanel style={{ width: '100%', height: '435px' }}>
+        <div className="surface-card p-6 ">
           {isActive ? (
             <>
               <h3> Activated</h3>
@@ -45,7 +48,9 @@ export default function Activation({ onProceed, onBack, isActive }) {
           
          
         </div>
+      </ScrollPanel>
       </main>
+        
     </>
   );
 }

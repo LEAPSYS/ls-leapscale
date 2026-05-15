@@ -5,6 +5,7 @@ import qrImage from '../assets/qr-auth-leapsys-in.svg';
 import { Toolbar } from 'primereact/toolbar';
 import apiService from '../services/apiService';
 import Brand from '../components/Brand';
+import { ScrollPanel } from 'primereact/scrollpanel';
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -44,10 +45,11 @@ export default function Login({ onProceed, onBack }) {
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
       <main className="flex-1 p-0">
-        <div className="surface-card p-6 h-full">
+       <ScrollPanel style={{ width: '100%', height: '435px' }}>
+        <div className="surface-card p-6 ">
           <h3>Activation Pending</h3>
           <p >Once you click it may take couple of minutes to activate.</p>
-          <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
+          <div className="flex flex-wrap align-items-center justify-content-center" >
             <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
             <img src={qrImage} alt="QR code" style={{ width: 200, height: 200 }} />
           </div>
@@ -59,6 +61,7 @@ export default function Login({ onProceed, onBack }) {
             <p>{true}</p>
           </div>
         </div>
+       </ScrollPanel>
       </main>
     </>
   );
