@@ -32,16 +32,16 @@ export default function Activation({ onProceed, onBack, isActive }) {
      
       <main className="flex-1 p-0">
          <ScrollPanel style={{ width: '100%', height: '435px' }}>
-        <div className="surface-card p-6 ">
+        <div className="surface-card py-2 px-3">
           {isActive ? (
             <>
-              <h3> Activated</h3>
+              <h3 className="my-1"> Activated</h3>
               <p>Your machine is already activated. You can proceed to use the application.</p>
               <Button label="Good To Go" className="p-button-success p-2 mt-3" />
             </>
           ):(
             <>
-            <h3>Activation Pending</h3>
+            <h3 className="my-1">Activation Pending</h3>
           <p>Once you click it may take couple of minutes to activate.</p>
             </>
           )}

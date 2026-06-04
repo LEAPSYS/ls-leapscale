@@ -46,12 +46,12 @@ export default function Login({ onProceed, onBack }) {
       </header>
       <main className="flex-1 p-0">
        <ScrollPanel style={{ width: '100%', height: '435px' }}>
-        <div className="surface-card p-6 ">
-          <h3>Activation Pending</h3>
+        <div className="surface-card py-2 px-3 ">
+          <h3 className="my-1">Activation Pending</h3>
           <p >Once you click it may take couple of minutes to activate.</p>
           <div className="flex flex-wrap align-items-center justify-content-center" >
             <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
-            <img src={qrImage} alt="QR code" style={{ width: 200, height: 200 }} />
+            <img src={qrImage} alt="QR code" style={{ width: 200, height: 250 }} />
           </div>
           <div>
             <Button label="Test Login" onClick={() => handleLogin()} className="p-button-primary" />

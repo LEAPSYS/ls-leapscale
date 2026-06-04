@@ -15,12 +15,15 @@ export default function StatusBar({ activationStatus, syncing, networkConnected,
         <div className="flex align-items-center justify-content-between">
           <div>
             <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
-            {!syncing && hwCode && (
-              <span className="ml-2">
-                <small>{hwCode}</small>
-              </span>
-            )}
+            
           </div>
+          <div className="flex align-items-center ">
+               {!syncing && hwCode && (
+              
+                <small>{hwCode}</small>
+              
+            )}
+            </div>
           <div className="flex align-items-center gap-3">
             <i className={`pi pi-wifi ${networkConnected ? 'text-green-300' : 'text-red-600'}`}></i>
             <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>

@@ -59,8 +59,8 @@ export default function WorkOrders({ onSelect }) {
     </header>
     <main className="flex-1 p-0">
       <ScrollPanel style={{ width: '100%', height: '435px' }}>
-      <div className="surface-card p-6">
-        <div className="grid p-4">
+      <div className="surface-card py-2 px-3">
+        <div className="grid p-2">
           {DUMMY_WORK_ORDERS.map((wo) => (
             <div className="col-4" key={wo}>
               <div style={getStyle(wo)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(wo)} role="button" tabIndex={0}>

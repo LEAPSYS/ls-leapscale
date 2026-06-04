@@ -19,7 +19,7 @@ Dashboard.propTypes = {
   onBack: PropTypes.func.isRequired
 };
 
-export default function Dashboard({ live, stable, onDisconnect, portStatus,onBack }) {
+export default function Dashboard({ live, stable, onDisconnect, portStatus, onBack }) {
   const [pendingItems] = useState([
     { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
     { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
@@ -28,74 +28,107 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus,onBac
   ]);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const startContent = <Brand></Brand>
+  const startContent = <Brand></Brand>;
 
-    // <React.Fragment>
-    //   <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
-    // </React.Fragment>
-  
+  // <React.Fragment>
+  //   <Button label="Disconnect" onClick={onDisconnect} className="p-button-danger" />
+  // </React.Fragment>
 
   // const centerContent = <span style={{ textAlign: 'center', marginTop: 0 }}>Weighing Dashboard</span>;
 
   const endContent = (
     <React.Fragment>
-      <Button label="Back" onClick={onBack} className="p-button-danger p-2 mr-1"  />
+      <Button label="Back" onClick={onBack} className="p-button-danger p-2 mr-1" />
       <Button label="Submit" onClick={() => alert('Saved succesfully')} className="p-button-success" />
     </React.Fragment>
   );
 
   return (
     <>
-    <header className="p-0">
-      <Toolbar start={startContent}  end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }}/>
-    </header>
-    <main className="flex-1 p-0">
-      
-      <ScrollPanel style={{ width: '100%', height: '435px' }}>
-      <div className="surface-card p-6 ">
-      <div className="grid" style={{ height: 'calc(100vh - 70px)' }}>
-        <div className="col-6" style={{ overflowY: 'auto' }}>
-          <div className="border-round surface-border p-4">
-            <h4 className="m-0 mb-3">Pending Items to Weigh</h4>
-            <DataTable value={pendingItems} size="small" scrollable scrollHeight="flex" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
-              <Column field="code" header="Code" style={{ width: '30%' }}></Column>
-              <Column field="description" header="Description" style={{ width: '30%' }}></Column>
-              <Column field="uomKg" header="UOM (Kg)" style={{ width: '20%' }}></Column>
-              <Column field="quantity" header="Quantity" style={{ width: '20%' }}></Column>
-            </DataTable>
-          </div>
-        </div>
-        <div className="col-6">
-          <div className="border-round surface-border p-4" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            {!selectedItem ? (
-              <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
-                <div style={{ textAlign: 'center', color: 'var(--text-color-secondary)' }}>
-                  <h5>Select an item from the list to begin weighing</h5>
-                </div>
-              </div>
-            ) : (
-              <>
-              <div style={{ flex: 1 }}></div>
-                <div className="p-d-flex p-jc-between p-ai-center" style={{ gap: 20, borderTop: '1px solid var(--surface-border)', paddingTop: 20 }}>
-                  <div style={{ flex: 1, textAlign: 'center' }}>
-                    <h5>Live Weight</h5>
-                    <div className="p-text-bold" style={{ fontSize: '2rem', color: 'var(--primary-color)' }}>
+      <header className="p-0">
+        <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
+      </header>
+      <main className="flex-1 p-0">
+        <ScrollPanel style={{ width: '100%', height: '435px' }}>
+          <div className="surface-card py-3 px-3 ">
+            <div className="flex ">
+              <DataTable value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
+                <Column field="code" header="Code"></Column>
+                <Column field="description" header="Name"></Column>
+                <Column field="uomKg" header="UOM (Kg)"></Column>
+                <Column field="quantity" header="Quantity"></Column>
+              </DataTable>
+              <div class="w-4">
+                {!selectedItem ? (
+                  <div className="flex flex-wrap align-items-center justify-content-center px-3">
+                    <h5 className="m-0">Select an item from the list to begin weighing</h5>
+                  </div>
+                ) : (
+                  <div className="px-3 flex flex-column align-items-center justify-content-center gap-3">
+                    <h5 className="m-0">Live Weight</h5>
+
+                    <div className="p-text-bold" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}>
                       {live}
                     </div>
-                  </div>
-                  <div style={{ flex: 1, textAlign: 'center' }}>
-                    <h5>Stable Weight</h5>
-                    <div className="p-text-bold" style={{ fontSize: '2rem', color: 'var(--primary-color)' }}>
+
+                    <h5 className="m-0">Stable Weight</h5>
+                    <div className="p-text-bold" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}>
                       {stable}
                     </div>
+                    <label style={{ color: 'var(--text-color-secondary)', fontSize: '0.875rem' }}>Scale Status</label>
+                    <div style={{ fontSize: '1rem', fontWeight: 'bold', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}>{portStatus.toUpperCase()}</div>
+                    <Button label="Clear Selection" onClick={() => setSelectedItem(null)}></Button>
                   </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Main content goes here */}
+          {/* <div className="surface-card py-2 px-3 ">
+            <div className="grid" style={{ height: 'calc(100vh - 70px)' }}>
+              <div className="col-8" style={{ height: '100%' }}>
+                <div className="border-round surface-border p-4">
+                  <h4 className="m-0 mb-3">Pending Items to Weigh</h4>
+                  <DataTable value={pendingItems} size="small" scrollable scrollHeight="flex" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
+                    <Column field="code" header="Code" style={{ width: '30%' }}></Column>
+                    <Column field="description" header="Description" style={{ width: '30%' }}></Column>
+                    <Column field="uomKg" header="UOM (Kg)" style={{ width: '20%' }}></Column>
+                    <Column field="quantity" header="Quantity" style={{ width: '20%' }}></Column>
+                  </DataTable>
                 </div>
-                <div style={{ textAlign: 'center', marginTop: 20, borderTop: '1px solid var(--surface-border)', paddingTop: 20 }}>
-                  <label style={{ color: 'var(--text-color-secondary)', fontSize: '0.875rem' }}>Scale Status</label>
-                  <div style={{ fontSize: '1rem', fontWeight: 'bold', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}>{portStatus.toUpperCase()}</div>
-                </div>
-                <Button label="Clear Selection" onClick={() => setSelectedItem(null)} className="p-button-outlined mb-3" />
-                {/* <div className="mb-4">
+              </div>
+              <div className="col-4">
+                <div className="border-round surface-border p-4" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  {!selectedItem ? (
+                    <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
+                      <div style={{ textAlign: 'center', color: 'var(--text-color-secondary)' }}>
+                        <h5>Select an item from the list to begin weighing</h5>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ flex: 1 }}></div>
+                      <div className="p-d-flex p-jc-between p-ai-center" style={{ gap: 20, borderTop: '1px solid var(--surface-border)', paddingTop: 20 }}>
+                        <div style={{ flex: 1, textAlign: 'center' }}>
+                          <h5>Live Weight</h5>
+                          <div className="p-text-bold" style={{ fontSize: '2rem', color: 'var(--primary-color)' }}>
+                            {live}
+                          </div>
+                        </div>
+                        <div style={{ flex: 1, textAlign: 'center' }}>
+                          <h5>Stable Weight</h5>
+                          <div className="p-text-bold" style={{ fontSize: '2rem', color: 'var(--primary-color)' }}>
+                            {stable}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'center', marginTop: 20, borderTop: '1px solid var(--surface-border)', paddingTop: 20 }}>
+                        <label style={{ color: 'var(--text-color-secondary)', fontSize: '0.875rem' }}>Scale Status</label>
+                        <div style={{ fontSize: '1rem', fontWeight: 'bold', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}>{portStatus.toUpperCase()}</div>
+                      </div>
+                      <Button label="Clear Selection" onClick={() => setSelectedItem(null)} className="p-button-outlined mb-3" /> */}
+          {/*Trying out the codes */}
+          {/* <div className="mb-4">
                   <div className="mb-3">
                     <label className="font-bold" style={{ color: 'var(--text-color-secondary)' }}>
                       Code:
@@ -129,14 +162,13 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus,onBac
                     </div>
                   </div>
                 </div> */}
-                
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-      </div>
-      </ScrollPanel>
+          {/* </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div> */}
+        </ScrollPanel>
       </main>
     </>
   );
