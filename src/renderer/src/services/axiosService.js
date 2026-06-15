@@ -33,16 +33,16 @@ backendApiClient.interceptors.request.use(
 //   }
 // );
 
-const orionApiClient = axios.create({
-  baseURL: 'https://service.leapsys.in/orion',
-  // baseURL: 'http://localhost:8989/orion-local',
+const jupiterApiClient = axios.create({
+  // baseURL: 'https://service.leapsys.in/jupiter-prd',
+  baseURL: 'http://localhost:8888/jupiter-local',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-orionApiClient.interceptors.request.use(
+jupiterApiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
     if (!config.url.includes('/auth/login')) {
@@ -55,7 +55,7 @@ orionApiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// orionApiClient.interceptors.response.use(
+// jupiterApiClient.interceptors.response.use(
 //   (response) => response,
 //   (error) => {
 //     if (error.response?.status === 401) {
@@ -67,4 +67,4 @@ orionApiClient.interceptors.request.use(
 //   }
 // );
 
-export default { backendApiClient, orionApiClient };
+export default { backendApiClient, jupiterApiClient };

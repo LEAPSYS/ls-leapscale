@@ -31,7 +31,7 @@ const logout = () => {
 };
 
 const activateHmi = async (hwId, activationKey) => {
-  return await apiClient.orionApiClient.post('/api/v1/activate-leapscale', {
+  return await apiClient.jupiterApiClient.post('/api/scale/v1/activate-leapscale', {
     hwId: hwId,
     activationKey: activationKey
   });
