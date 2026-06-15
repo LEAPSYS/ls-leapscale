@@ -195,7 +195,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-column min-h-screen">
+      <div className="flex flex-column h-screen">
         {route === 'activate' && <Activation onDemo={onProceedFromActivate} machineId={hwId} isActive={activated} onActivate={handleActivate} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}

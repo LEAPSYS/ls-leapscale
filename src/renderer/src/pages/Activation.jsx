@@ -23,37 +23,29 @@ export default function Activation({ onDemo, isActive, onActivate, machineId }) 
   );
 
   return (
-    <>
-      <header className="p-0">
+    <React.Fragment>
+      <header className="p-0 flex-shrink-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-      <main className="flex-1 p-0">
-        <ScrollPanel style={{ width: '100%' }}>
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3">
             {isActive ? (
-              <>
+              <React.Fragment>
                 <h4 className="my-1"> Activated</h4>
                 <p>Your machine is already activated. You can proceed to use the application.</p>
                 <Button label="Good To Go" className="p-button-success p-2 mt-3" />
-              </>
+              </React.Fragment>
             ) : (
-              <>
+              <React.Fragment>
                 <h4 className="my-1">Activation</h4>
                 <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
                 <p>Once you click it may take couple of minutes to activate.</p>
-
-                 <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
-
-                 <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
-              </>
+              </React.Fragment>
             )}
           </div>
         </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }

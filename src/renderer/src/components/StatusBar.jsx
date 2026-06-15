@@ -10,45 +10,32 @@ StatusBar.propTypes = {
 
 export default function StatusBar({ activationStatus, syncing, networkConnected, hwCode }) {
   return (
-    <>
-      <footer className="bg-blue-600 text-white p-1 ">
-        <div className="flex align-items-center justify-content-between">
-          <div>
-            <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
-            
-          </div>
-          <div className="flex align-items-center ">
-               {!syncing && hwCode && (
-              
-                <small>{hwCode}</small>
-              
-            )}
-            </div>
-          <div className="flex align-items-center gap-3">
-            <i className={`pi pi-wifi ${networkConnected ? 'text-green-300' : 'text-red-600'}`}></i>
-            <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>
-            {/* <i className="pi pi-globe"></i> */}
-            <span className="flex align-items-center gap-1 pr-3">
-              { activationStatus === 1 && (
-                <>
-                  <React.Fragment>
-                    <i className="pi pi-circle-fill text-green-300" style={{ fontSize: '0.6rem' }}></i>
-                    <small>Active</small>
-                  </React.Fragment>
-                </>
-              )}
-              {activationStatus !== 1 && (
-                <>
-                  <React.Fragment>
-                    <i className="pi pi-circle-fill text-red-600" style={{ fontSize: '0.6rem' }}></i>
-                    <small>Inactive</small>
-                  </React.Fragment>
-                </>
-              )}
-            </span>
-          </div>
+    <footer className="flex-shrink-0 bg-blue-600 text-white p-0 px-1">
+      <div className="flex align-items-center justify-content-between">
+        <div>
+          <small>&copy; {new Date().getFullYear()} LEAPSYS SCPL</small>
         </div>
-      </footer>
-    </>
+        <div className="flex align-items-center ">{!syncing && hwCode && <small>{hwCode}</small>}</div>
+        <div className="flex align-items-center gap-3">
+          <i className={`pi pi-wifi ${networkConnected ? 'text-green-300' : 'text-red-600'}`}></i>
+          <i className={`pi ${syncing ? 'pi-spin text-yellow-400' : ''} pi-sync`}></i>
+          {/* <i className="pi pi-globe"></i> */}
+          <span className="flex align-items-center gap-2 pr-2">
+            {activationStatus === 1 && (
+              <React.Fragment>
+                <i className="pi pi-circle-fill text-green-300" style={{ fontSize: '0.6rem' }}></i>
+                <small>Active</small>
+              </React.Fragment>
+            )}
+            {activationStatus !== 1 && (
+              <React.Fragment>
+                <i className="pi pi-circle-fill text-red-600" style={{ fontSize: '0.6rem' }}></i>
+                <small>Inactive</small>
+              </React.Fragment>
+            )}
+          </span>
+        </div>
+      </div>
+    </footer>
   );
 }
