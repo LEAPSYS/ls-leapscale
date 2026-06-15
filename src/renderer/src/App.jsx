@@ -27,6 +27,9 @@ export default function App() {
   const [activationStatus, setActivationStatus] = useState(0);
   const [activated, setActivated] = useState(false);
   const [networkConnected, setNetworkConnected] = useState(false);
+  // state for work station details and work orders
+  const [workStationDetails, setWorkStationDetails] = useState(null);
+  const [workOrders, setWorkOrders] = useState(null);
 
   window.addEventListener('online', () => {
     console.log('Connected!');
@@ -80,6 +83,14 @@ export default function App() {
       if (!data.error && data?.ingredients) {
         setIngredients(data.ingredients);
       }
+
+      //await getIngredients();
+      // const getIngredients= await apiService.getIngredients();
+      // console.log(getIngredients);
+      // if(!getIngredients.error && getIngredients)
+      //{
+      //  setIngredients(getIngredients);
+      //}
     })();
 
     if (window.api?.onLiveWeight) {
@@ -105,16 +116,40 @@ export default function App() {
     }
   }, [route, hwId, activationKey]);
 
-  const onProceedFromLogin = () => {
+  const onProceedFromLogin = async () => {
     setRoute('location');
+
+    // we will get the work station details here
+    // try {
+    // const response = await apiService.getWorkStationDetails();
+    // console.log(response);
+    // if (response) {
+    //   setWorkStationDetails(response);
+    // }
+    // catch(e)
+    //  {
+    //     console.error('get work station details error', e);
+    //  }
   };
 
   const onBackFromLogin = () => {
     setRoute('activate');
   };
 
-  const onBackFromConnect = () => {
+  const onBackFromConnect = async () => {
     setRoute('workorders');
+
+    // what we had selected as work station  here then we move to work order
+    // try{
+    // const response =await apiService.getWorkOrders(location);
+    // console.log(response);
+    //if (response){
+    // setWorkOrders(response);
+    //}
+
+    // catch(e){
+    //   console.error('get work orders error',e);
+    // }
   };
 
   const onProceedFromActivate = () => setRoute('login');
@@ -141,7 +176,7 @@ export default function App() {
     setRoute('connect');
   };
 
-  const handleSelectLocation = (loc) => {
+  const handleSelectLocation = async (loc) => {
     if (!loc) {
       setRoute('login');
       setLocation(null);
@@ -149,9 +184,21 @@ export default function App() {
     }
     setLocation(loc);
     setRoute('workorders');
+
+    // what we had selected as work station  here then we move to work order
+    // try{
+    // const response =await apiService.getWorkOrders(loc);
+    // console.log(response);
+    //if (response){
+    // setWorkOrders(response);
+    //}
+
+    // catch(e){
+    //   console.error('get work orders error',e);
+    // }
   };
 
-  const handleSelectWorkOrder = (wo) => {
+  const handleSelectWorkOrder = async (wo) => {
     if (!wo) {
       setRoute('location');
       setWorkOrder(null);
@@ -159,6 +206,18 @@ export default function App() {
     }
     setWorkOrder(wo);
     setRoute('connect');
+
+    // we already have work station details now we will get the data based on that work order
+    // try{
+    // const response =await apiService.getIngredients(wo);
+    // console.log(response);
+    //if (response){
+    // setIngredients(response);
+    //}
+
+    // catch(e){
+    //   console.error('get work orders error',e);
+    // }
   };
 
   const handleActivate = async () => {
@@ -182,6 +241,21 @@ export default function App() {
       });
     console.log('activation clicked');
   };
+
+  //It is used to get ingredient from api based on work order id and work station
+
+  //const getIngredients = async () => {
+  //     try {
+  //       const response = await apiService.getIngredients();
+  //       console.log(response);
+  //       if (response) {
+  //         setIngredients(response);
+  //       }
+  //     }
+  //     catch (e) {
+  //       console.error('get ingredients error', e);
+  //     }
+  //   }
 
   return (
     <>

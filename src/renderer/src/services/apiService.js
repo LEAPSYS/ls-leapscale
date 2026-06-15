@@ -37,6 +37,30 @@ const activateHmi = async (hwId, activationKey) => {
   });
 };
 
+
+
+//getting work station details by hwId
+const getWorkStationDetails = async (hwId) => {
+  const response = await apiClient.orionApiClient.get(`/api/v1/workstation-details`);
+  return response.data;
+};
+
+
+//getting work orders from specific workstation
+const getWorkOrders=async (workStationId)=>{
+  const response = await apiClient.orionApiClient.get(`/api/v1/work-orders/${workStationId}`);
+  return response.data;
+}
+
+//getting Ingrediants of weighing
+const getIngredients=async (workOrderId) => {
+  
+     const response = await apiClient.orionApiClient.get(`/api/v1/ingredients/${workOrderId}`);
+  return response.data;
+ 
+  
+}
+
 export default {
   getUsers,
   getUserById,
@@ -44,5 +68,6 @@ export default {
   login,
   logout,
   storeToken,
-  activateHmi
+  activateHmi,
+  getIngredients,
 };

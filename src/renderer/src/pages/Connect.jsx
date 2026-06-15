@@ -60,7 +60,7 @@ export default function Connect({ ports, selectedPort, onSelectPort, onConnect, 
       <main className="flex-1 p-0">
         <div className="surface-card py-2 px-3 ">
           <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
-        <div x>
+        <div >
           <div className="p-field p-mb-3">
             <label htmlFor="ports">Available Ports</label>
             <select id="ports" value={selectedPort} onChange={(e) => onSelectPort(e.target.value)} className="p-inputtext p-mt-2" style={{ width: '100%', padding: '10px', borderRadius: 6 }}>
