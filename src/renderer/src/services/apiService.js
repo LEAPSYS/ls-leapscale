@@ -31,35 +31,26 @@ const logout = () => {
 };
 
 const activateHmi = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post('/api/scale/v1/activate-leapscale', {
+  return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
     hwId: hwId,
     activationKey: activationKey
   });
 };
 
-
-
-//getting work station details by hwId
 const getWorkStationDetails = async (hwId) => {
-  const response = await apiClient.orionApiClient.get(`/api/v1/workstation-details`);
+  const response = await apiClient.jupiterApiClient.get(`/api/v1/workstation-details`);
   return response.data;
 };
 
-
-//getting work orders from specific workstation
-const getWorkOrders=async (workStationId)=>{
-  const response = await apiClient.orionApiClient.get(`/api/v1/work-orders/${workStationId}`);
+const getWorkOrders = async (workStationId) => {
+  const response = await apiClient.jupiterApiClient.get(`/api/v1/work-orders/${workStationId}`);
   return response.data;
-}
+};
 
-//getting Ingrediants of weighing
 const getIngredients=async (workOrderId) => {
-  
-     const response = await apiClient.orionApiClient.get(`/api/v1/ingredients/${workOrderId}`);
+  const response = await apiClient.jupiterApiClient.get(`/api/v1/ingredients/${workOrderId}`);
   return response.data;
- 
-  
-}
+};
 
 export default {
   getUsers,
@@ -69,5 +60,5 @@ export default {
   logout,
   storeToken,
   activateHmi,
-  getIngredients,
+  getIngredients
 };

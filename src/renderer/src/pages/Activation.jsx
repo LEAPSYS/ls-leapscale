@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
 import { ScrollPanel } from 'primereact/scrollpanel';
 
 Activation.propTypes = {
-  onProceed: PropTypes.func.isRequired,
-  onBack: PropTypes.func.isRequired,
-
-  isActive: PropTypes.bool.isRequired
+  onDemo: PropTypes.func.isRequired,
+  onActivate: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  machineId: PropTypes.string.isRequired
 };
 
-export default function Activation({ onProceed, onBack, isActive }) {
+export default function Activation({ onDemo, isActive, onActivate, machineId }) {
   const startContent = <Brand></Brand>;
 
   const endContent = (
     <React.Fragment>
-      <Button label="Back" onClick={() => onBack()} visible={false} className="p-button-danger m-0 p-2 mr-1" />
-      <Button label="Demo" onClick={() => onProceed()} visible={true} className="p-button-secondary p-2 mr-1" />
-
-      {/* <Button label="Go" onClick={() => onActivate()}  className="p-button-success p-2" /> */}
+      <Button label="Demo" onClick={() => onDemo()} visible={true} className="p-button-secondary p-2 mr-1" />
+      <Button label="Activate" onClick={() => onActivate()} className="p-button-success p-2" />
     </React.Fragment>
   );
 
@@ -29,28 +27,33 @@ export default function Activation({ onProceed, onBack, isActive }) {
       <header className="p-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-     
       <main className="flex-1 p-0">
-         <ScrollPanel style={{ width: '100%', height: '435px' }}>
-        <div className="surface-card py-2 px-3">
-          {isActive ? (
-            <>
-              <h3 className="my-1"> Activated</h3>
-              <p>Your machine is already activated. You can proceed to use the application.</p>
-              <Button label="Good To Go" className="p-button-success p-2 mt-3" />
-            </>
-          ):(
-            <>
-            <h3 className="my-1">Activation Pending</h3>
-          <p>Once you click it may take couple of minutes to activate.</p>
-            </>
-          )}
-          
-         
-        </div>
-      </ScrollPanel>
+        <ScrollPanel style={{ width: '100%' }}>
+          <div className="surface-card py-2 px-3">
+            {isActive ? (
+              <>
+                <h4 className="my-1"> Activated</h4>
+                <p>Your machine is already activated. You can proceed to use the application.</p>
+                <Button label="Good To Go" className="p-button-success p-2 mt-3" />
+              </>
+            ) : (
+              <>
+                <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+
+                 <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+
+                 <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+              </>
+            )}
+          </div>
+        </ScrollPanel>
       </main>
-        
     </>
   );
 }

@@ -40,7 +40,7 @@ export default function Location({ onSelect }) {
         
          <ScrollPanel style={{ width: '100%', height: '435px' }}>
         <div className="surface-card py-2 px-3 ">
-          <h3 className="my-1">Activation Pending</h3>
+          <h3 className="my-1">Location Page</h3>
           <p>Once you click it may take couple of minutes to activate.</p>
           <div className="grid p-4">
             {DUMMY_LOCATIONS.map((loc) => (

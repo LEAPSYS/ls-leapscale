@@ -27,7 +27,6 @@ export default function App() {
   const [activationStatus, setActivationStatus] = useState(0);
   const [activated, setActivated] = useState(false);
   const [networkConnected, setNetworkConnected] = useState(false);
-  // state for work station details and work orders
   const [workStationDetails, setWorkStationDetails] = useState(null);
   const [workOrders, setWorkOrders] = useState(null);
 
@@ -46,7 +45,9 @@ export default function App() {
       if (window.api?.listPorts) {
         const list = await window.api.listPorts();
         setPorts(list || []);
-        if (list && list.length && !selectedPort) setSelectedPort(list[0]);
+        if (list && list.length && !selectedPort) {
+          setSelectedPort(list[0]);
+        }
       }
     } catch (e) {
       console.error('list ports error', e);
@@ -73,63 +74,30 @@ export default function App() {
     console.log(result.data);
   };
 
-  useEffect(() => {
-    (async () => {
-      setNetworkConnected(navigator.onLine);
-      await loadPorts();
-      await loadMachineId();
-      await readSavedActivationKey();
-      const data = await window.api.loadItems();
-      if (!data.error && data?.ingredients) {
-        setIngredients(data.ingredients);
-      }
+  const handleActivate = async () => {
+    setSyncing(true);
+    await apiService
+      .activateHmi(hwId, activationKey)
+      .then((result) => {
+        console.log(result.data);
+        setHwCode(result.data?.hwCode);
+        saveActivationKey(result.data?.activationKey);
+        setActivationStatus(result.data?.activationStatus);
 
-      //await getIngredients();
-      // const getIngredients= await apiService.getIngredients();
-      // console.log(getIngredients);
-      // if(!getIngredients.error && getIngredients)
-      //{
-      //  setIngredients(getIngredients);
-      //}
-    })();
-
-    if (window.api?.onLiveWeight) {
-      window.api.onLiveWeight((w) => setLive(Number(w).toFixed(3)));
-    }
-    if (window.api?.onStableWeight) {
-      window.api.onStableWeight((w) => setStable(Number(w).toFixed(3)));
-    }
-    if (window.api?.onPortStatus) {
-      window.api.onPortStatus((status) => setPortStatus(status));
-    }
-    if (window.api?.onMangingStatus) {
-      window.api.onMangingStatus((data) => {
-        console.log(data);
-        setMangingStatus(data);
+        if (result.data?.activationStatus === 1) {
+          setActivated(true);
+        }
+        setTimeout(() => setSyncing(false), 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimeout(() => setSyncing(false), 2000);
       });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (route === 'activate' && hwId && activationKey) {
-      handleActivate();
-    }
-  }, [route, hwId, activationKey]);
+    console.log('activation clicked');
+  };
 
   const onProceedFromLogin = async () => {
     setRoute('location');
-
-    // we will get the work station details here
-    // try {
-    // const response = await apiService.getWorkStationDetails();
-    // console.log(response);
-    // if (response) {
-    //   setWorkStationDetails(response);
-    // }
-    // catch(e)
-    //  {
-    //     console.error('get work station details error', e);
-    //  }
   };
 
   const onBackFromLogin = () => {
@@ -138,21 +106,12 @@ export default function App() {
 
   const onBackFromConnect = async () => {
     setRoute('workorders');
-
-    // what we had selected as work station  here then we move to work order
-    // try{
-    // const response =await apiService.getWorkOrders(location);
-    // console.log(response);
-    //if (response){
-    // setWorkOrders(response);
-    //}
-
-    // catch(e){
-    //   console.error('get work orders error',e);
-    // }
   };
 
-  const onProceedFromActivate = () => setRoute('login');
+  const onProceedFromActivate = () => {
+    setRoute('login');
+  }
+
   const onBackFromDashboard = () => {
     setRoute('connect');
   };
@@ -184,18 +143,6 @@ export default function App() {
     }
     setLocation(loc);
     setRoute('workorders');
-
-    // what we had selected as work station  here then we move to work order
-    // try{
-    // const response =await apiService.getWorkOrders(loc);
-    // console.log(response);
-    //if (response){
-    // setWorkOrders(response);
-    //}
-
-    // catch(e){
-    //   console.error('get work orders error',e);
-    // }
   };
 
   const handleSelectWorkOrder = async (wo) => {
@@ -206,61 +153,50 @@ export default function App() {
     }
     setWorkOrder(wo);
     setRoute('connect');
-
-    // we already have work station details now we will get the data based on that work order
-    // try{
-    // const response =await apiService.getIngredients(wo);
-    // console.log(response);
-    //if (response){
-    // setIngredients(response);
-    //}
-
-    // catch(e){
-    //   console.error('get work orders error',e);
-    // }
   };
 
-  const handleActivate = async () => {
-    setSyncing(true);
-    await apiService
-      .activateHmi(hwId, activationKey)
-      .then((result) => {
-        console.log(result.data);
-        setHwCode(result.data?.hwCode);
-        saveActivationKey(result.data?.activationKey);
-        setActivationStatus(result.data?.activationStatus);
+  useEffect(() => {
+    (async () => {
+      setNetworkConnected(navigator.onLine);
+      await loadPorts();
+      await loadMachineId();
+      await readSavedActivationKey();
+      const data = await window.api.loadItems();
+      if (!data.error && data?.ingredients) {
+        setIngredients(data.ingredients);
+      }
+    })();
 
-        if (result.data?.activationStatus === 1) {
-          setActivated(true);
-        }
-        setTimeout(() => setSyncing(false), 2000);
-      })
-      .catch((err) => {
-        console.log(err);
-        setTimeout(() => setSyncing(false), 2000);
+    if (window.api?.onLiveWeight) {
+      window.api.onLiveWeight((w) => setLive(Number(w).toFixed(3)));
+    }
+
+    if (window.api?.onStableWeight) {
+      window.api.onStableWeight((w) => setStable(Number(w).toFixed(3)));
+    }
+
+    if (window.api?.onPortStatus) {
+      window.api.onPortStatus((status) => setPortStatus(status));
+    }
+
+    if (window.api?.onMangingStatus) {
+      window.api.onMangingStatus((data) => {
+        console.log(data);
+        setMangingStatus(data);
       });
-    console.log('activation clicked');
-  };
+    }
+  }, []);
 
-  //It is used to get ingredient from api based on work order id and work station
-
-  //const getIngredients = async () => {
-  //     try {
-  //       const response = await apiService.getIngredients();
-  //       console.log(response);
-  //       if (response) {
-  //         setIngredients(response);
-  //       }
-  //     }
-  //     catch (e) {
-  //       console.error('get ingredients error', e);
-  //     }
-  //   }
+  useEffect(() => {
+    if (route === 'activate' && hwId && activationKey) {
+      //handleActivate();
+    }
+  }, [route, hwId, activationKey]);
 
   return (
     <>
       <div className="flex flex-column min-h-screen">
-        {route === 'activate' && <Activation onProceed={onProceedFromActivate} machineId={hwId} isActive={activated} />}
+        {route === 'activate' && <Activation onDemo={onProceedFromActivate} machineId={hwId} isActive={activated} onActivate={handleActivate} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
