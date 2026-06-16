@@ -41,6 +41,18 @@ export default function Activation({ onDemo, isActive, onActivate, machineId }) 
                 <h4 className="my-1">Activation</h4>
                 <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
                 <p>Once you click it may take couple of minutes to activate.</p>
+                <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+                <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+                <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
+                <h4 className="my-1">Activation</h4>
+                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
+                <p>Once you click it may take couple of minutes to activate.</p>
               </React.Fragment>
             )}
           </div>
