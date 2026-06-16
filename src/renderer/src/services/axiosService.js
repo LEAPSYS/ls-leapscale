@@ -35,8 +35,8 @@ backendApiClient.interceptors.request.use(
 
 const jupiterApiClient = axios.create({
   // baseURL: 'https://service.leapsys.in/jupiter-prd',
-  // baseURL: 'https://service.leapsys.in/jupiter-uat',
-  baseURL: 'http://localhost:8888/jupiter-local',
+  baseURL: 'https://service.leapsys.in/jupiter-uat',
+  // baseURL: 'http://localhost:8888/jupiter-local',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
