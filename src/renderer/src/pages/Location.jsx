@@ -32,28 +32,27 @@ export default function Location({ onSelect }) {
   };
 
   return (
-    <>
-      <header className="p-0">
+    <React.Fragment>
+      <header className="p-0 flex-shrink-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-      <main className="flex-1 p-0">
-        
-         <ScrollPanel style={{ width: '100%', height: '435px' }}>
-        <div className="surface-card py-2 px-3 ">
-          <h3 className="my-1">Location Page</h3>
-          <p>Once you click it may take couple of minutes to activate.</p>
-          <div className="grid p-4">
-            {DUMMY_LOCATIONS.map((loc) => (
-              <div className="col-4" key={loc}>
-                <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
-                  {loc}
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
+          <div className="surface-card py-2 px-3 ">
+            <h3 className="my-1">Location Page</h3>
+            <p>Once you click it may take couple of minutes to activate.</p>
+            <div className="grid p-4">
+              {DUMMY_LOCATIONS.map((loc) => (
+                <div className="col-4" key={loc}>
+                  <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
+                    {loc}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
         </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }

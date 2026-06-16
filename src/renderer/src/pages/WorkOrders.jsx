@@ -25,7 +25,7 @@ export default function WorkOrders({ onSelect }) {
 
   const endContent = (
     <React.Fragment>
-       <Button label="Back" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
+      <Button label="Back" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
       <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-primary" />
     </React.Fragment>
   );
@@ -53,25 +53,25 @@ export default function WorkOrders({ onSelect }) {
     //     </div>
     //   </div>
     // </div>
-    <>
-    <header className="p-0">
-      <Toolbar start={startContent}  end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
-    </header>
-    <main className="flex-1 p-0">
-      <ScrollPanel style={{ width: '100%', height: '435px' }}>
-      <div className="surface-card py-2 px-3">
-        <div className="grid p-2">
-          {DUMMY_WORK_ORDERS.map((wo) => (
-            <div className="col-4" key={wo}>
-              <div style={getStyle(wo)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(wo)} role="button" tabIndex={0}>
-                {wo}
-              </div>
+    <React.Fragment>
+      <header className="p-0 flex-shrink-0">
+        <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
+      </header>
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
+          <div className="surface-card py-2 px-3">
+            <div className="grid p-2">
+              {DUMMY_WORK_ORDERS.map((wo) => (
+                <div className="col-4" key={wo}>
+                  <div style={getStyle(wo)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(wo)} role="button" tabIndex={0}>
+                    {wo}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      </ScrollPanel>
+          </div>
+        </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }

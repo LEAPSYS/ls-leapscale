@@ -40,13 +40,13 @@ export default function Login({ onProceed, onBack }) {
   };
 
   return (
-    <>
-      <header className="p-0">
+    <React.Fragment>
+      <header className="p-0 flex-shrink-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-      <main className="flex-1 p-0">
-        <ScrollPanel style={{ width: '100%' }}>
-          <div className="surface-card py-0 px-2 ">
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
+          <div className="surface-card py-2 px-3 ">
             <h4 className="my-1">Login Page</h4>
             <div className="flex flex-wrap align-items-center justify-content-center">
               <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
@@ -62,6 +62,6 @@ export default function Login({ onProceed, onBack }) {
           </div>
         </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }

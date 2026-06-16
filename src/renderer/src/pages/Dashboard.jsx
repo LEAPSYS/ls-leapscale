@@ -44,13 +44,13 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
   );
 
   return (
-    <>
-      <header className="p-0">
+    <React.Fragment>
+      <header className="p-0 flex-shrink-0">
         <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-      <main className="flex-1 p-0">
-        <ScrollPanel style={{ width: '100%', height: '435px' }}>
-          <div className="surface-card py-3 px-3 ">
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
+          <div className="surface-card py-2 px-3 ">
             <div className="flex ">
               <DataTable value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
                 <Column field="code" header="Code"></Column>
@@ -170,6 +170,6 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
           </div> */}
         </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }

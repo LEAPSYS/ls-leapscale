@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
+import { ScrollPanel } from 'primereact/scrollpanel';
 import Brand from '../components/Brand';
 
 Connect.propTypes = {
@@ -13,8 +14,7 @@ Connect.propTypes = {
   onBack: PropTypes.func.isRequired
 };
 
-export default function Connect({ ports, selectedPort, onSelectPort, onConnect, onRefresh,onBack }) {
-
+export default function Connect({ ports, selectedPort, onSelectPort, onConnect, onRefresh, onBack }) {
   const startContent = <Brand></Brand>;
   // const startContent = (
   //   <React.Fragment>
@@ -32,7 +32,7 @@ export default function Connect({ ports, selectedPort, onSelectPort, onConnect, 
   );
 
   return (
-    <>
+    <React.Fragment>
       {/* <Toolbar start={startContent} center={centerContent} end={endContent} />
       <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
         <div x>
@@ -53,33 +53,34 @@ export default function Connect({ ports, selectedPort, onSelectPort, onConnect, 
           </div>
         </div>
       </div> */}
-      <header className="p-0">
-        <Toolbar start={startContent}  end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
-        
+      <header className="p-0 flex-shrink-0">
+        <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
       </header>
-      <main className="flex-1 p-0">
-        <div className="surface-card py-2 px-3 ">
-          <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
-        <div >
-          <div className="p-field p-mb-3">
-            <label htmlFor="ports">Available Ports</label>
-            <select id="ports" value={selectedPort} onChange={(e) => onSelectPort(e.target.value)} className="p-inputtext p-mt-2" style={{ width: '100%', padding: '10px', borderRadius: 6 }}>
-              <option value="">-- select a port --</option>
-              {ports.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
+      <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        <ScrollPanel style={{ width: '100%', height: '100%' }}>
+          <div className="surface-card py-2 px-3 ">
+            <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
+              <div>
+                <div className="p-field p-mb-3">
+                  <label htmlFor="ports">Available Ports</label>
+                  <select id="ports" value={selectedPort} onChange={(e) => onSelectPort(e.target.value)} className="p-inputtext p-mt-2" style={{ width: '100%', padding: '10px', borderRadius: 6 }}>
+                    <option value="">-- select a port --</option>
+                    {ports.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          <div className="p-d-flex p-jc-center p-ai-center p-gap-3" style={{ marginTop: 8 }}>
-            <Button label="Connect" onClick={onConnect} className="p-button-success w-full" />
+                <div className="p-d-flex p-jc-center p-ai-center p-gap-3" style={{ marginTop: 8 }}>
+                  <Button label="Connect" onClick={onConnect} className="p-button-success w-full" />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-        </div>
+        </ScrollPanel>
       </main>
-    </>
+    </React.Fragment>
   );
 }
