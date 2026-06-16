@@ -6,6 +6,9 @@ import { Toolbar } from 'primereact/toolbar';
 import apiService from '../services/apiService';
 import Brand from '../components/Brand';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { Divider } from 'primereact/divider';
+import { Card } from 'primereact/card';
+import { Avatar } from 'primereact/avatar';
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -47,7 +50,7 @@ export default function Login({ onProceed, onBack }) {
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <h4 className="my-1">Login Page</h4>
+            {/* <h4 className="my-1">Login Page</h4>
             <div className="flex flex-wrap align-items-center justify-content-center">
               <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
               <img src={qrImage} alt="QR code" style={{ width: 100, height: 150 }} />
@@ -58,6 +61,30 @@ export default function Login({ onProceed, onBack }) {
               {loginError && <p>Error: {JSON.stringify(loginError)}</p>}
               {loginResult && <p>{loginResult.access_token}</p>}
               <p>{true}</p>
+            </div> */}
+            <div className="flex flex-row justify-content-center gap-1 ">
+              <div className="w-5">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                  sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+              </div>
+
+              <div className="w-1">
+                <Divider layout="vertical" />
+              </div>
+
+              <div className="w-5 p-2">
+               <div className="flex align-items-center border-1 border-300  border-round-lg p-2">
+                <Avatar  icon="pi pi-user"  >
+
+                </Avatar>
+                <div>
+                  <p>User 1</p>
+                </div>
+
+               </div>
+              </div>
             </div>
           </div>
         </ScrollPanel>

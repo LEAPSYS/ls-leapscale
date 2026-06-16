@@ -18,7 +18,10 @@ export default function Activation({ onDemo, isActive, onActivate, machineId }) 
   const endContent = (
     <React.Fragment>
       <Button label="Demo" onClick={() => onDemo()} visible={true} className="p-button-secondary p-2 mr-1" />
-      <Button label="Activate" onClick={() => onActivate()} className="p-button-success p-2" />
+      {!isActive ? (
+        <Button label="Activate" onClick={() => onActivate()} className="p-button-success p-2 " />
+      ) : (
+        <Button label="Login"  className="p-button-success p-2 " onClick={() => onDemo()}/>)}
     </React.Fragment>
   );
 
@@ -34,22 +37,10 @@ export default function Activation({ onDemo, isActive, onActivate, machineId }) 
               <React.Fragment>
                 <h4 className="my-1"> Activated</h4>
                 <p>Your machine is already activated. You can proceed to use the application.</p>
-                <Button label="Good To Go" className="p-button-success p-2 mt-3" />
+                {/* <Button label="Good To Go" className="p-button-success p-2 mt-3" /> */}
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
-                <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
-                <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
-                <h4 className="my-1">Activation</h4>
-                <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
-                <p>Once you click it may take couple of minutes to activate.</p>
                 <h4 className="my-1">Activation</h4>
                 <span>{machineId.replace(/-/g, '').toUpperCase()}</span>
                 <p>Once you click it may take couple of minutes to activate.</p>
