@@ -65,7 +65,6 @@ export default function Login({ onProceed, onBack }) {
 
   const donwWithOtp = (token) => {
     setKeySelected(null);
-    console.log('Hello Puja', token);
     setTokens('');
   };
 
@@ -113,7 +112,7 @@ export default function Login({ onProceed, onBack }) {
               {loginResult && <p>{loginResult.access_token}</p>}
               <p>{true}</p>
             </div> */}
-            <div className="flex flex-row  justify-content-center gap-1 ">
+            <div className="flex flex-row justify-content-center gap-1">
               <div className="w-5">
                 {selected === 'new' ? (
                   <div className="flex flex-wrap align-items-center justify-content-around">
@@ -123,7 +122,7 @@ export default function Login({ onProceed, onBack }) {
                 ) : (
                   <div className="flex flex-column flex-wrap align-items-center justify-content-center ">
                     <p>{selected}</p>
-                    <InputOtp value={token} mask onChange={(e) => setToken(e.value)} />
+                    <InputOtp value={token} mask onChange={(e) => setTokens(e.value)} />
                     <div className="flex flex-column gap-2 m-3">
                       <div className="flex flex-row gap-3  justify-content-evenly">
                         <div style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
@@ -136,7 +135,7 @@ export default function Login({ onProceed, onBack }) {
                           3
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-row gap-3 justify-content-evenly ">
                         <div style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
                           4
@@ -182,29 +181,29 @@ export default function Login({ onProceed, onBack }) {
               <div className="w-1">
                 <Divider layout="vertical" />
               </div>
-              <div className="w-7 p-2 flex flex-column" >
-                <div className='overflow-hidden flex-1' style={{ minHeight: 0}}>
-                <ScrollPanel style={{ width: '100%', height: '410px' }}>
-                  <div className="surface-card">
-                    <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" style={getStyle('new')} onClick={() => ClickHandler('new')} role="button" tabIndex={0}>
-                      <Avatar icon="pi pi-user-plus" style={selected === 'new' ? { backgroundColor: 'white', color: 'black' } : {}} />
-                      <div>
-                        <h6 className="m-0 p-0">New User</h6>
-                        <p className="m-0 p-0 text-sm">Click here to add new user</p>
-                      </div>
-                    </div>
-
-                    {DUMMY_EXISTING_USERS.map((user) => (
-                      <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user} style={getStyle(user)} onClick={() => ClickHandler(user)} role="button" tabIndex={0}>
-                        <Avatar icon="pi pi-user" style={selected === user ? { backgroundColor: 'white', color: 'black' } : {}} />
+              <div className="w-7 p-2 ">
+                <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+                  <ScrollPanel style={{ width: '100%', height: '410px' }}>
+                    <div className="surface-card">
+                      <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" style={getStyle('new')} onClick={() => ClickHandler('new')} role="button" tabIndex={0}>
+                        <Avatar icon="pi pi-user-plus" style={selected === 'new' ? { backgroundColor: 'white', color: 'black' } : {}} />
                         <div>
-                          <h6 className="m-0 p-0">{user}</h6>
-                          <p className="m-0 p-0 text-sm">Click here to login as {user}</p>
+                          <h6 className="m-0 p-0">New User</h6>
+                          <p className="m-0 p-0 text-sm">Click here to add new user</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </ScrollPanel>
+
+                      {DUMMY_EXISTING_USERS.map((user) => (
+                        <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user} style={getStyle(user)} onClick={() => ClickHandler(user)} role="button" tabIndex={0}>
+                          <Avatar icon="pi pi-user" style={selected === user ? { backgroundColor: 'white', color: 'black' } : {}} />
+                          <div>
+                            <h6 className="m-0 p-0">{user}</h6>
+                            <p className="m-0 p-0 text-sm">Click here to login as {user}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollPanel>
                 </div>
               </div>
             </div>
