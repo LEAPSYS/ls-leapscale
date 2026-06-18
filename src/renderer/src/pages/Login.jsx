@@ -51,9 +51,9 @@ export default function Login({ onProceed, onBack }) {
 
   const keyPadStyle = (wo) => {
     if (keySelected === wo) {
-      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', paddingInline: '15px', margin: '5px' };
+      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', paddingInline: '25px', margin: '5px' };
     } else {
-      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', paddingInline: '15px', margin: '5px' };
+      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', paddingInline: '25px', margin: '5px' };
     }
   };
 
@@ -63,7 +63,12 @@ export default function Login({ onProceed, onBack }) {
     setSelected(user);
   };
 
-  const donwWithOtp = (token) => {
+  const donewWithOtp = (token) => {
+    if(token.length!==4)
+    {
+     console.log('Enter 4 digit otp')
+      return;
+    }
     setKeySelected(null);
     setTokens('');
   };
@@ -124,7 +129,7 @@ export default function Login({ onProceed, onBack }) {
                     <p>{selected}</p>
                     <InputOtp value={token} mask onChange={(e) => setTokens(e.value)} />
                     <div className="flex flex-column gap-2 m-3">
-                      <div className="flex flex-row gap-3  justify-content-evenly">
+                      <div className="flex flex-row gap-1  justify-content-evenly">
                         <div style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
                           1
                         </div>
@@ -136,7 +141,7 @@ export default function Login({ onProceed, onBack }) {
                         </div>
                       </div>
 
-                      <div className="flex flex-row gap-3 justify-content-evenly ">
+                      <div className="flex flex-row gap-1 justify-content-evenly ">
                         <div style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
                           4
                         </div>
@@ -147,7 +152,7 @@ export default function Login({ onProceed, onBack }) {
                           6
                         </div>
                       </div>
-                      <div className="flex flex-row gap-3 justify-content-evenly ">
+                      <div className="flex flex-row gap-1 justify-content-evenly ">
                         <div style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
                           7
                         </div>
@@ -158,23 +163,24 @@ export default function Login({ onProceed, onBack }) {
                           9
                         </div>
                       </div>
-                      <div className="flex flex-row gap-3 justify-content-evenly ">
+                      <div className="flex flex-row gap-1 justify-content-evenly ">
                         <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleBackspace}>
-                          <i className="pi pi-arrow-left" style={{ fontSize: '0.65rem' }}></i>
+                          <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
                         </div>
                         <div style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
                           0
                         </div>
-                        <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleClear}>
+                        {/* <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleClear}>
                           <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
-                        </div>
+                        </div> */}
+                        <Button  className={token.length===4 ? 'p-button-success':''} style={{
+                           paddingInline: '25px', margin: '5px' 
+                        }} onClick={() => donewWithOtp(token)}>
+                          <i className="pi pi-arrow-left" style={{ fontSize: '0.65rem' }}></i>
+                        </Button>
                       </div>
                     </div>
-                    {token.length === 4 && (
-                      <Button className="pt-1 pb-1" onClick={() => donwWithOtp(token)}>
-                        Move Ahead
-                      </Button>
-                    )}
+                    
                   </div>
                 )}
               </div>
