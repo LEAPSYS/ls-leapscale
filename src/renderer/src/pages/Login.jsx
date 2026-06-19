@@ -10,6 +10,9 @@ import { Divider } from 'primereact/divider';
 import { Card } from 'primereact/card';
 import { Avatar } from 'primereact/avatar';
 import { InputOtp } from 'primereact/inputotp';
+import ArrowLeft from '../../../../resources/subdirectory_arrow_left.png';
+import BackspaceIcon from '../../../../resources/backspace_black.png'
+
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -51,9 +54,9 @@ export default function Login({ onProceed, onBack }) {
 
   const keyPadStyle = (wo) => {
     if (keySelected === wo) {
-      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', paddingInline: '25px', margin: '5px' };
+      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)',borderRadius:'3px',paddingBlock:'0.25rem'};
     } else {
-      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', paddingInline: '25px', margin: '5px' };
+      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)',borderRadius:'3px',paddingBlock:'0.25rem' };
     }
   };
 
@@ -125,58 +128,57 @@ export default function Login({ onProceed, onBack }) {
                     <img src={qrImage} alt="QR code" style={{ width: 200, height: 200 }} />
                   </div>
                 ) : (
-                  <div className="flex flex-column flex-wrap align-items-center justify-content-center ">
+                  <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2 ">
                     <p>{selected}</p>
-                    <InputOtp value={token} mask onChange={(e) => setTokens(e.value)} />
-                    <div className="flex flex-column gap-2 m-3">
-                      <div className="flex flex-row gap-1  justify-content-evenly">
-                        <div style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
+                    <InputOtp value={token}  mask onChange={(e) => setTokens(e.value)} />
+                    <div className="flex flex-column gap-2 w-full m-3">
+                      <div className="flex flex-row gap-2  justify-content-around">
+                        <div className='flex-1 text-center' style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
                           1
                         </div>
-                        <div style={keyPadStyle(2)} onClick={() => handleKeypadClick('2')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(2)} onClick={() => handleKeypadClick('2')}>
                           2
                         </div>
-                        <div style={keyPadStyle(3)} onClick={() => handleKeypadClick('3')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(3)} onClick={() => handleKeypadClick('3')}>
                           3
                         </div>
                       </div>
 
-                      <div className="flex flex-row gap-1 justify-content-evenly ">
-                        <div style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
+                      <div className="flex flex-row gap-2 justify-content-evenly ">
+                        <div className='flex-1 text-center' style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
                           4
                         </div>
-                        <div style={keyPadStyle(5)} onClick={() => handleKeypadClick('5')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(5)} onClick={() => handleKeypadClick('5')}>
                           5
                         </div>
-                        <div style={keyPadStyle(6)} onClick={() => handleKeypadClick('6')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(6)} onClick={() => handleKeypadClick('6')}>
                           6
                         </div>
                       </div>
-                      <div className="flex flex-row gap-1 justify-content-evenly ">
-                        <div style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
+                      <div className="flex flex-row gap-2 justify-content-evenly ">
+                        <div className='flex-1 text-center' style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
                           7
                         </div>
-                        <div style={keyPadStyle(8)} onClick={() => handleKeypadClick('8')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(8)} onClick={() => handleKeypadClick('8')}>
                           8
                         </div>
-                        <div style={keyPadStyle(9)} onClick={() => handleKeypadClick('9')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(9)} onClick={() => handleKeypadClick('9')}>
                           9
                         </div>
                       </div>
-                      <div className="flex flex-row gap-1 justify-content-evenly ">
-                        <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleBackspace}>
-                          <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
+                      <div className="flex flex-row gap-2 justify-content-evenly ">
+                        <div className='flex flex-1 p-0 justify-content-center align-items-center hover:bg-gray-100' style={keyPadStyle('back')}  onClick={handleBackspace}>
+                          <img src={BackspaceIcon} alt="backspace"  />
                         </div>
-                        <div style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
+                        <div className='flex-1 text-center' style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
                           0
                         </div>
                         {/* <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleClear}>
                           <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
                         </div> */}
-                        <Button  className={token.length===4 ? 'p-button-success':''} style={{
-                           paddingInline: '25px', margin: '5px' 
-                        }} onClick={() => donewWithOtp(token)}>
-                          <i className="pi pi-arrow-left" style={{ fontSize: '0.65rem' }}></i>
+                        <Button  className={token.length===4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center ':'p-button-danger p-0 flex-1 justify-content-center align-items-center'}   onClick={() => donewWithOtp(token)}>
+                          
+                          <img src={ArrowLeft} alt="backspace"  />
                         </Button>
                       </div>
                     </div>
