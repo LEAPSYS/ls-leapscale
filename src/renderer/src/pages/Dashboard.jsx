@@ -24,6 +24,14 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
     { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
     { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
     { id: 3, code: '759010', description: 'White Pepper', uomKg: '0.8', quantity: 0.009 },
+    { id: 4, code: '709002', description: 'Rock Salt Powder', uomKg: '3.5', quantity: 1.19 },
+    { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
+    { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
+    { id: 3, code: '759010', description: 'White Pepper', uomKg: '0.8', quantity: 0.009 },
+    { id: 4, code: '709002', description: 'Rock Salt Powder', uomKg: '3.5', quantity: 1.19 },
+    { id: 1, code: '709001', description: 'Salt Regular', uomKg: '2.5', quantity: 36.7 },
+    { id: 2, code: '759014', description: 'Green Chilli', uomKg: '1.2', quantity: 0.07 },
+    { id: 3, code: '759010', description: 'White Pepper', uomKg: '0.8', quantity: 0.009 },
     { id: 4, code: '709002', description: 'Rock Salt Powder', uomKg: '3.5', quantity: 1.19 }
   ]);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -51,15 +59,16 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <div className="flex ">
-              <DataTable value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
+            <div className="flex gap-3">
+              <DataTable className="w-8" scrollable scrollHeight="430px" value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
                 <Column field="code" header="Code"></Column>
-                <Column field="description" header="Name"></Column>
-                <Column field="uomKg" header="UOM (Kg)"></Column>
-                <Column field="quantity" header="Quantity"></Column>
+
+                {/* <Column field="uomKg" header="UOM (Kg)"></Column> */}
+                <Column header="Material Quantity" body={(rowData) => `${rowData.quantity} (${rowData.uomKg})`}></Column>
+                <Column header="Measured Weight" body={(rowData) => rowData.measuredWeight ?? 0}></Column>
               </DataTable>
-              <div class="w-4">
-                {!selectedItem ? (
+              <div className="w-4">
+                {/* {!selectedItem ? (
                   <div className="flex flex-wrap align-items-center justify-content-center px-3">
                     <h5 className="m-0">Select an item from the list to begin weighing</h5>
                   </div>
@@ -78,6 +87,37 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
                     <label style={{ color: 'var(--text-color-secondary)', fontSize: '0.875rem' }}>Scale Status</label>
                     <div style={{ fontSize: '1rem', fontWeight: 'bold', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}>{portStatus.toUpperCase()}</div>
                     <Button label="Clear Selection" onClick={() => setSelectedItem(null)}></Button>
+                  </div>
+                )} */}
+                {!selectedItem ? (
+                  <div className="flex flex-wrap align-items-center justify-content-center px-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
+                    <h6 className="m-0">Select an item from the list to begin weighing</h6>
+                  </div>
+                ) : (
+                  <div className="flex-1 ">
+                    <div className="flex flex-wrap align-items-center justify-content-between  px-2 m-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
+                      <h6 className="m-0">{portStatus === 'connected' ? 'Connected' : 'Not Connected'}</h6>
+                      <i className="pi pi-circle-fill" style={{ fontSize: '0.75rem', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}></i>
+                    </div>
+                    <div className="flex flex-wrap flex-column    p-2 m-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
+                      <div className="flex  ">
+                        <div className="flex-1 mr-1 mb-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                          <h6 className="m-0 p-0 text-center" style={{ borderBottom: '2px solid var(--surface-500)' }}>
+                            Live
+                          </h6>
+                          <div className="p-text-bold text-center" style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
+                            {live}
+                          </div>
+                        </div>
+                        <div className="flex-1 ml-1 mb-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                          <h6 className="m-0 p-0 text-center " style={{ borderBottom: '2px solid var(--surface-500)' }}>Stable</h6>
+                          <div className="p-text-bold text-center" style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
+                            {stable}
+                          </div>
+                        </div>
+                      </div>
+                      <Button label="Accept"></Button>
+                    </div>
                   </div>
                 )}
               </div>
