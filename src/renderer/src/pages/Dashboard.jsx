@@ -59,15 +59,15 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <div className="flex gap-3">
-              <DataTable className="w-8" scrollable scrollHeight="430px" value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
+            <div className="flex gap-2">
+              <DataTable className="w-7" scrollable scrollHeight="430px" value={pendingItems} size="small" onRowClick={(e) => setSelectedItem(e.data)} selectionMode="single" selection={selectedItem} rowClassName={() => 'cursor-pointer'}>
                 <Column field="code" header="Code"></Column>
 
                 {/* <Column field="uomKg" header="UOM (Kg)"></Column> */}
                 <Column header="Material Quantity" body={(rowData) => `${rowData.quantity} (${rowData.uomKg})`}></Column>
                 <Column header="Measured Weight" body={(rowData) => rowData.measuredWeight ?? 0}></Column>
               </DataTable>
-              <div className="w-4">
+              <div className="w-5">
                 {/* {!selectedItem ? (
                   <div className="flex flex-wrap align-items-center justify-content-center px-3">
                     <h5 className="m-0">Select an item from the list to begin weighing</h5>
