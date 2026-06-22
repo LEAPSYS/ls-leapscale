@@ -96,22 +96,22 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
                 ) : (
                   <div className="flex-1 ">
                     <div className="flex flex-wrap align-items-center justify-content-between  px-2 m-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
-                      <h6 className="m-0">{portStatus === 'connected' ? 'Connected' : 'Not Connected'}</h6>
+                      <h6 className="m-0">{portStatus.toUpperCase()}</h6>
                       <i className="pi pi-circle-fill" style={{ fontSize: '0.75rem', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}></i>
                     </div>
                     <div className="flex flex-wrap flex-column    p-2 m-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
                       <div className="flex  ">
                         <div className="flex-1 mr-1 mb-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                          <h6 className="m-0 p-0 text-center" style={{ borderBottom: '2px solid var(--surface-500)' }}>
+                          <h6 className="m-0 p-0 text-center" style={{fontSize:'0.75rem', borderBottom: '2px solid var(--surface-500)' }}>
                             Live
                           </h6>
-                          <div className="p-text-bold text-center" style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
+                          <div className="p-text-bold text-center" style={{ fontSize: '1.2rem', color: 'var(--primary-color)' }}>
                             {live}
                           </div>
                         </div>
                         <div className="flex-1 ml-1 mb-2" style={{border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                          <h6 className="m-0 p-0 text-center " style={{ borderBottom: '2px solid var(--surface-500)' }}>Stable</h6>
-                          <div className="p-text-bold text-center" style={{ fontSize: '1rem', color: 'var(--primary-color)' }}>
+                          <h6 className="m-0 p-0 text-center " style={{fontSize:'0.75rem', borderBottom: '2px solid var(--surface-500)' }}>Stable</h6>
+                          <div className="p-text-bold text-center" style={{ fontSize: '1.2rem', color: 'var(--primary-color)' }}>
                             {stable}
                           </div>
                         </div>
