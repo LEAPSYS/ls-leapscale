@@ -58,6 +58,7 @@ export default function App() {
     try {
       const machineId = await window.api.getMachineId();
       setHwId(machineId);
+      localStorage.setItem('hwId',machineId)
     } catch (e) {
       console.error('machine id error', e);
     }
@@ -71,6 +72,7 @@ export default function App() {
   const readSavedActivationKey = async () => {
     const result = await window.api.readFile('leapscale.bin');
     setActivationKey(result.data);
+    localStorage.setItem('activationkey',result.data)
     console.log(result.data);
   };
 

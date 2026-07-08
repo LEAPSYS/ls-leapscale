@@ -10,7 +10,7 @@ const backendApiClient = axios.create({
 
 backendApiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('refresh_token');
     if (!config.url.includes('/auth/login')) {
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -35,8 +35,8 @@ backendApiClient.interceptors.request.use(
 
 const jupiterApiClient = axios.create({
   // baseURL: 'https://service.leapsys.in/jupiter-prd',
-  baseURL: 'https://service.leapsys.in/jupiter-uat',
-  // baseURL: 'http://localhost:8888/jupiter-local',
+  // baseURL: 'https://service.leapsys.in/jupiter-uat',
+  baseURL: 'http://localhost:8888/jupiter-local',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -48,6 +48,7 @@ jupiterApiClient.interceptors.request.use(
     const token = localStorage.getItem('access_token');
     if (!config.url.includes('/auth/login')) {
       if (token) {
+        console.log(`access token: ${token}`)
         config.headers.Authorization = `Bearer ${token}`;
       }
     }

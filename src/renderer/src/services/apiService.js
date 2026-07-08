@@ -52,7 +52,33 @@ const getIngredients=async (workOrderId) => {
   return response.data;
 };
 
+const loadSavedUSers = async (hwId, activationKey) => {
+  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-saved-hmi-users`, {
+    hwId: hwId,
+    activationKey: activationKey,
+    hwCode: null
+  });
+};
+
+const getDeviceSessionQr = async (hwId, activationKey) => {
+  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-device-login-qr`, {
+    hwId: hwId,
+    activationKey: activationKey,
+    hwCode: null
+  }
+);
+};
+
+const checkUserPinSetStatus = async (deviceSessionKey) => {
+  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/check-user-pin-set-status/${deviceSessionKey}`);
+};
+
+
+
 export default {
+  checkUserPinSetStatus,
+  getDeviceSessionQr,
+  loadSavedUSers,
   getUsers,
   getUserById,
   createUser,
