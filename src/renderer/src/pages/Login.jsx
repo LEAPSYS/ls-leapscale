@@ -13,6 +13,11 @@ import ArrowLeft from '../../../../resources/subdirectory_arrow_left.png';
 import BackspaceIcon from '../../../../resources/backspace_black.png';
 import { useEffect } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { useRef } from 'react';
+import 'primeicons/primeicons.css';
+import { Badge } from 'primereact/badge';
+        
+        
 
 
 Login.propTypes = {
@@ -33,7 +38,6 @@ export default function Login({ onProceed, onBack }) {
   const [userPinSaved, setUserPinSaved] = useState(null);
   
 
-  const DUMMY_EXISTING_USERS = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6', 'User 7', 'User 8', 'User 9', 'User 10'];
 
   useEffect(() => {
        (async () => {
@@ -49,22 +53,48 @@ export default function Login({ onProceed, onBack }) {
     </React.Fragment>
   );
 
+
   const [loginResult, setLoginResult] = useState(null);
   const [loginError, setLoginError] = useState(null);
 
-  const handleLogin = async () => {
-    await apiService
-      .login('pkishor@leapsys.net', 'moNu288*')
-      .then((result) => {
-        console.log(result);
-        setLoginResult(result?.data?.data);
-        apiService.storeToken(result.data.data.access_token);
-      })
-      .catch((err) => {
-        setLoginError(err);
-        console.log(err);
-      }); 
-  };
+  // const handleLogin = async () => {
+  //   await apiService
+  //     .login('pkishor@leapsys.net', 'moNu288*')
+  //     .then((result) => {
+  //       console.log(result);
+  //       setLoginResult(result?.data?.data);
+  //       apiService.storeToken(result.data.data.access_token);
+  //     })
+  //     .catch((err) => {
+  //       setLoginError(err);
+  //       console.log(err);
+  //     }); 
+  // };
+
+  const handleLogin = async (token) => {
+     try {
+      if (token.length !== 4) {
+         response = await apiService.login(token, selected.email);
+         if (response.data.invalidUser) {
+             console.log("Invalid User")
+         }
+         if (respnse.data.loginValidity) {
+              localStorage.setItem(response.data.refreshToken);
+              
+         } else {
+              setSelected('new');
+              setUserPinSaved(null);
+              setShowQr(false);
+         } 
+         
+
+      } else {
+         
+      }
+    } catch (error) {
+      console.log(`handleLogin error ${error}`)
+    }
+  }
 
   const loadSavedUsers = async () => {
     try {
@@ -87,7 +117,7 @@ export default function Login({ onProceed, onBack }) {
                  setSavedUsers([]);
            }
       } catch(error) {
-        console.log(error);
+        console.log(`loadSavedUsers ${error}`);
       }
   };
 
@@ -172,7 +202,7 @@ export default function Login({ onProceed, onBack }) {
   const clickHandler = (user) => {
     setKeySelected(null);
     setTokens('');
-    setSelected(user.email);
+    setSelected(user);
     setShowQr(false);
   };
 
@@ -248,14 +278,39 @@ export default function Login({ onProceed, onBack }) {
                   )
                 ) : userPinSaved === false ? (
                    <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                      <Button onClick={() => getDeviceSessionQr()}>Login via Qr</Button>
+                      <Card style={{ background:"#f4f2d8fe" }} >
+                            <div style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "5px"}}>
+                                <i className="pi pi-times" style={{ fontSize: '3rem', color: "#f10505" ,  width: "70px"}}></i>
+                          </div>
+                            <p className="m-0">
+                                QR Code Expired
+                            </p>
+                            <Button onClick={() => getDeviceSessionQr()}>Login via Qr</Button>
+                      </Card>
+                      
                     </div>
                 ) :  (
-                      <p>User PIN Saved Successfully</p>
+                    <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                        <Card style={{ background:"#f6f5ddfe" }} >
+                          <div style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "30px"}}>
+                            <Badge
+                                value={
+                                  <i className="pi pi-check-square" style={{ fontSize: '3rem', color: "#22c55e" ,  width: "70px"}}></i>
+                                }
+                               size="xlarge" severity="success"
+                            >
+                                
+                            </Badge>
+                          </div>
+                            <p className="m-0">
+                                User Added Successfully
+                            </p> 
+                        </Card>
+                    </div>
                 )
                 ) : (
                   <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2 ">
-                    <p>{selected?.email}</p>
+                    <h5>{selected?.name}</h5>
                     <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
                     <div className="flex flex-column gap-2 w-full m-3">
                       <div className="flex flex-row gap-2  justify-content-around">
@@ -302,7 +357,7 @@ export default function Login({ onProceed, onBack }) {
                         {/* <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleClear}>
                           <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
                         </div> */}
-                        <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center ' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => donewWithOtp(token)}>
+                        <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center ' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
                           <img src={ArrowLeft} alt="backspace" />
                         </Button>
                       </div>
@@ -320,17 +375,17 @@ export default function Login({ onProceed, onBack }) {
                       <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" style={getStyle('new')} onClick={() => clickHandler('new')} role="button" tabIndex={0}>
                         <Avatar icon="pi pi-user-plus" shape="circle" style={selected === 'new' ? { backgroundColor: 'white', color: 'black' } : {}} />
                         <div>
-                          <h6 className="m-0 p-0">New User</h6>
+                          <h5 className="m-0 p-0">New User</h5>
                           <p className="m-0 p-0 text-sm">Click here to add new user</p>
                         </div>
                       </div>
 
                       {savedUsers.length > 0 ? (
                       savedUsers.map((user) => (
-                        <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user.email}  style={getStyle(user.email)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
+                        <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user}  style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
                           <Avatar label={getInitials(user.name)} shape="circle" size="medium"/>
                           <div>
-                            <h6 className="m-0 p-0">{user.name}</h6>
+                            <h5 className="m-0 p-0">{user.name}</h5>
                             <p className="m-0 p-0 text-sm">{user.email}</p>
                           </div>
                         </div>

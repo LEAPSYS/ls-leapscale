@@ -10,7 +10,7 @@ const backendApiClient = axios.create({
 
 backendApiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('refresh_token');
+    const token = localStorage.getItem('access_token');
     if (!config.url.includes('/auth/login')) {
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
