@@ -66,14 +66,19 @@ const getDeviceSessionQr = async (hwId, activationKey) => {
 );
 };
 
-const checkUserPinSetStatus = async (deviceSessionKey) => {
-  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/check-user-pin-set-status/${deviceSessionKey}`);
+const verifyDeviceLogin = async (deviceSessionKey) => {
+  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/verify-device-login/${deviceSessionKey}`);
 };
+
+const setUserPin = async(deviceSessionKey,userPin) => {
+   return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/set-user-pin/${deviceSessionKey}/${userPin}`);
+}
 
 
 
 export default {
-  checkUserPinSetStatus,
+  setUserPin,
+  verifyDeviceLogin,
   getDeviceSessionQr,
   loadSavedUSers,
   getUsers,

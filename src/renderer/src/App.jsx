@@ -58,7 +58,7 @@ export default function App() {
     try {
       const machineId = await window.api.getMachineId();
       setHwId(machineId);
-      localStorage.setItem('hwId',machineId)
+      //localStorage.setItem('hwId',machineId)
     } catch (e) {
       console.error('machine id error', e);
     }
@@ -72,7 +72,7 @@ export default function App() {
   const readSavedActivationKey = async () => {
     const result = await window.api.readFile('leapscale.bin');
     setActivationKey(result.data);
-    localStorage.setItem('activationkey',result.data)
+    //localStorage.setItem('activationkey',result.data)
     console.log(result.data);
   };
 
@@ -211,7 +211,7 @@ export default function App() {
     <>
       <div className="flex flex-column h-screen">
         {route === 'activate' && <Activation showLogin={onProceedFromActivate} isActive={activated} onActivate={handleActivate}/>}
-        {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} />}
+        {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} machineId = {hwId} activationKey = {activationKey} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}

@@ -16,16 +16,19 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { useRef } from 'react';
 import 'primeicons/primeicons.css';
 import { Badge } from 'primereact/badge';
+import { Knob } from 'primereact/knob';
         
         
 
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
-  onBack: PropTypes.func.isRequired
+  onBack: PropTypes.func.isRequired,
+  machineId: PropTypes.string.isRequired,
+  activationKey: PropTypes.string.isRequired,
 };
 
-export default function Login({ onProceed, onBack }) {
+export default function Login({ onProceed, onBack, machineId, activationKey}) {
   const startContent = <Brand></Brand>;
   const [selected, setSelected] = useState('new');
   const [newUserOrExistingUser, setNewUserOrExistingUser] = useState(true);
@@ -33,15 +36,19 @@ export default function Login({ onProceed, onBack }) {
   const [token, setTokens] = useState('');
   const [showQr, setShowQr] = useState(false);
   const [qrCodeExpired, setQrCodeExpired] = useState(false);
+  const [invalidUser, setInvalidUser] = useState(false);
   const [savedUsers, setSavedUsers] = useState([]);
   const [qrImage, setQrImage] = useState("");
   const [userPinSaved, setUserPinSaved] = useState(null);
+  const [seconds, setSeconds] = useState(0);
+  const [deviceSessionKey, setDeviceSessionKey] = useState(null);
   
 
 
   useEffect(() => {
        (async () => {
         setUserPinSaved(null);
+        setDeviceSessionKey(null);
       await loadSavedUsers();
     })();
     }, []);
@@ -49,7 +56,7 @@ export default function Login({ onProceed, onBack }) {
   const endContent = (
     <React.Fragment>
       <Button label="Back" onClick={() => onBack()} className="p-button-danger p-2 mr-1" />
-      <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" />
+      {/* <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" /> */}
     </React.Fragment>
   );
 
@@ -71,20 +78,26 @@ export default function Login({ onProceed, onBack }) {
   //     }); 
   // };
 
-  const handleLogin = async (token) => {
+  const handleLogin = async (userPin) => {
      try {
-      if (token.length !== 4) {
-         response = await apiService.login(token, selected.email);
+      if (token.length === 4) {
+         console.log(`Inside Handle Login`)
+         response = await apiService.login(selected.email, userPin);
+         console.log(`handleLogin response ${handleLogin}`)
          if (response.data.invalidUser) {
-             console.log("Invalid User")
+             console.log("Invalid User");
+             setInvalidUser(true);
+             setRoute('connect');
          }
          if (respnse.data.loginValidity) {
-              localStorage.setItem(response.data.refreshToken);
+              onProceed();
+              apiService.storeToken(result.data.accessToken);
               
          } else {
               setSelected('new');
               setUserPinSaved(null);
               setShowQr(false);
+              await loadSavedUsers();
          } 
          
 
@@ -92,15 +105,36 @@ export default function Login({ onProceed, onBack }) {
          
       }
     } catch (error) {
-      console.log(`handleLogin error ${error}`)
+      console.log(`handleLogin error ${error}`);
+      await loadSavedUsers();
+    }
+  }
+
+  const setUserPin = async(userPin) => {
+    try {
+    const response = await apiService.setUserPin(deviceSessionKey,userPin);
+      if(response) {
+        if (response.status === 200) {
+              setSelected('new');
+              setUserPinSaved(true);
+              setShowQr(false);
+              await loadSavedUsers();
+        }
+      } else {
+        setUserPinSaved(false);
+        await loadSavedUsers();
+      }
+    } catch (error) {
+        console.log(`setUserPin ${error}`);
+        await loadSavedUsers();
     }
   }
 
   const loadSavedUsers = async () => {
     try {
-    const activationKey = localStorage.getItem('activationkey');
-    const hwId = localStorage.getItem('hwId');
-    const response = await apiService.loadSavedUSers(hwId, activationKey);
+    console.log(machineId);
+    console.log(activationKey)
+    const response = await apiService.loadSavedUSers(machineId, activationKey);
             if (response) {
               if (response.status === 200) {
                       if(Array.isArray(response.data)) {
@@ -117,6 +151,7 @@ export default function Login({ onProceed, onBack }) {
                  setSavedUsers([]);
            }
       } catch(error) {
+        setSavedUsers([]);
         console.log(`loadSavedUsers ${error}`);
       }
   };
@@ -129,14 +164,13 @@ export default function Login({ onProceed, onBack }) {
 
   const getDeviceSessionQr = async () => {
     try {
-      const activationKey = localStorage.getItem('activationkey');
-      const hwId = localStorage.getItem('hwId');
-      const qrImageResponse = await apiService.getDeviceSessionQr(hwId, activationKey);
+      const qrImageResponse = await apiService.getDeviceSessionQr(machineId, activationKey);
       console.log(`qrImageResponse: ${qrImageResponse}`);
       if(qrImageResponse) {
         if (qrImageResponse.status === 200) {
             console.log(qrImageResponse.data.deviceSessionKey);
             const deviceSessionKey = qrImageResponse.data.deviceSessionKey;
+            setDeviceSessionKey(deviceSessionKey);
             const qrImageBlob = base64ToBlob(qrImageResponse.data.qrBase64);
             const imageUrl = URL.createObjectURL(qrImageBlob);
             setUserPinSaved(null);
@@ -147,38 +181,54 @@ export default function Login({ onProceed, onBack }) {
       }
 
    } catch (error) {
-      console.log(error);
+      console.log(`getDeviceSessionQr ${error}`);
+      setSelected('new');
+      setShowQr(false);
+      await loadSavedUsers();
    }
   }
 
   const startPolling = (deviceSessionKey) => {
-  const interval = setInterval(() => {
-    apiService.checkUserPinSetStatus(deviceSessionKey)
-      .then((response) => {
-        if (response) {
-            if (response.status == 200) {
+    try {
+          let elapsedSeconds = 0;
+          const interval = setInterval(() => {
+            elapsedSeconds += 2;
+            setSeconds(elapsedSeconds);
+            apiService.verifyDeviceLogin(deviceSessionKey)
+              .then((response) => {
+                if (response) {
+                    if (response.status == 200) {
 
-              if (response.data == '1') {
-                console.log("User PIN set successfully");
-                loadSavedUsers();
-                setUserPinSaved(true);
-                clearInterval(interval);
-              } 
+                      if (response.data == '1') {
+                        console.log("User PIN set successfully");
+                        setSelected('LoginSuccess')
+                        clearInterval(interval);
+                      } 
 
-              if (response.data == '0') {
-                console.log("QR code expired");
-                setUserPinSaved(false);
-                clearInterval(interval);
+                      if (response.data == '0') {
+                        console.log("QR code expired");
+                        clearInterval(interval);
+                      }
+                    }
               }
-            }
-      }
-      })
-      .catch((error) => {
-        clearInterval(interval);
-        console.error(error);
-      });
-  }, 2000);
-};
+              })
+              .catch((error) => {
+                clearInterval(interval);
+                console.error(error);
+              });
+              if (elapsedSeconds >= 120) {
+                    clearInterval(interval);
+                    console.log("Polling timeout");
+                }
+
+          }, 2000);
+    } catch (error) {
+        console.log(`startPolling ${error}`);
+        setSelected('new');
+        setShowQr(false);
+         loadSavedUsers();
+  }
+  };
 
   const getInitials = (name = "") => {
       const words = name.trim().split(/\s+/).filter(Boolean);
@@ -206,14 +256,7 @@ export default function Login({ onProceed, onBack }) {
     setShowQr(false);
   };
 
-  const donewWithOtp = (token) => {
-    if (token.length !== 4) {
-      console.log('Enter 4 digit otp');
-      return;
-    }
-    setKeySelected(null);
-    setTokens('');
-  };
+
 
   const getStyle = (wo) => {
     if (selected === wo) {
@@ -265,10 +308,15 @@ export default function Login({ onProceed, onBack }) {
                   userPinSaved === null ? (
                   showQr ? (
                     <div className="flex flex-column align-items-center justify-content-center m-2 ">
-                      <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
+                      <p>Scan QR via phone to login</p>
                       <img src={qrImage} alt="QR code" style={{ width: 200, height: 200 }} />
-                      <div className="m-2">
-                        <ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="6" fill="var(--surface-ground)" animationDuration=".9s" />
+                      <div className="m-2" >
+                        <Knob
+                            value={(seconds / 120) * 100}
+                            valueTemplate={`${seconds}s`}
+                            readOnly
+                            size={100}
+                        />
                       </div>
                     </div>
                   ) : (
@@ -278,39 +326,40 @@ export default function Login({ onProceed, onBack }) {
                   )
                 ) : userPinSaved === false ? (
                    <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                      <Card style={{ background:"#f4f2d8fe" }} >
+                      <Card style={{ background:"#ffffff" ,boxShadow: "none"}} >
                             <div style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "5px"}}>
-                                <i className="pi pi-times" style={{ fontSize: '3rem', color: "#f10505" ,  width: "70px"}}></i>
+                                <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: "#ffbb00" ,  width: "70px", fontWeight: "bold"}}></i>
                           </div>
-                            <p className="m-0">
+                            <p className=" py-.5 px-1">
                                 QR Code Expired
                             </p>
-                            <Button onClick={() => getDeviceSessionQr()}>Login via Qr</Button>
+                            <Button onClick={() => getDeviceSessionQr()}>Regenerate Qr</Button>
                       </Card>
-                      
                     </div>
                 ) :  (
                     <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                        <Card style={{ background:"#f6f5ddfe" }} >
-                          <div style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "30px"}}>
-                            <Badge
-                                value={
-                                  <i className="pi pi-check-square" style={{ fontSize: '3rem', color: "#22c55e" ,  width: "70px"}}></i>
-                                }
-                               size="xlarge" severity="success"
-                            >
-                                
-                            </Badge>
+                       <Card style={{ background:"#ffffff", boxShadow: "none" }} >
+                            <div style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "5px"}}>
+                                <i className="pi pi-check-circle" style={{ fontSize: '3rem', color: "#40f105" ,  width: "70px", fontWeight: "bold"}}></i>
                           </div>
-                            <p className="m-0">
-                                User Added Successfully
-                            </p> 
-                        </Card>
+                            <p className=" px-1.5">
+                                User Added<br />Successfully
+                            </p>
+                      </Card>
                     </div>
                 )
                 ) : (
                   <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2 ">
-                    <h5>{selected?.name}</h5>
+                    <h5>{selected === 'LoginSuccess' ? (
+                      <> 
+                      <div style={{ textAlign: "center" }}>
+                        ✔️ Login Successful! 
+                       </div>
+                      <div  style={{ textAlign: "center" }}>
+                          Please set your PIN to continue.
+                      </div>
+                      </>  ) 
+                      : (selected?.name)}</h5>
                     <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
                     <div className="flex flex-column gap-2 w-full m-3">
                       <div className="flex flex-row gap-2  justify-content-around">
@@ -357,7 +406,7 @@ export default function Login({ onProceed, onBack }) {
                         {/* <div style={keyPadStyle('back')} className="hover:bg-gray-100" onClick={handleClear}>
                           <i className="pi pi-times" style={{ fontSize: '0.65rem' }}></i>
                         </div> */}
-                        <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center ' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
+                        <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center ' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => selected === 'LoginSuccess'? setUserPin(token) : handleLogin(token)}>
                           <img src={ArrowLeft} alt="backspace" />
                         </Button>
                       </div>
