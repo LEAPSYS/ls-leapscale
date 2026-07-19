@@ -47,11 +47,11 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
 
   useEffect(() => {
        (async () => {
+        await loadSavedUsers();
         setInvalidUser(false);
         setSelected('new');
         setUserPinSaved(null);
         setDeviceSessionKey(null);
-      await loadSavedUsers();
     })();
     }, []);
 
@@ -262,14 +262,13 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
   };
 
   const clickHandler = (user) => {
-    clearInterval(interval);
     setInvalidUser(false);
     setUserPinSaved(null);
     setShowQr(false);
     setKeySelected(null);
     setTokens('');
     setSelected(user);
-    setShowQr(false);
+    clearInterval(interval);
   };
 
 
