@@ -16,7 +16,7 @@ const createUser = async (data) => {
 };
 
 const login = async (username, userpin) => {
-  return await apiClient.backendApiClient.post(`/api/hmi/v1/login-with-user-pin/${userpin}/${username}`);
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/login-with-user-pin/${userpin}/${username}`);
 };
 
 const storeToken = (token) => {

@@ -82,15 +82,15 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
      try {
       if (token.length === 4) {
          console.log(`Inside Handle Login`)
-         response = await apiService.login(selected.email, userPin);
+         const response = await apiService.login(selected.email, userPin);
          console.log(`handleLogin response ${handleLogin}`)
          if (response.data.invalidUser) {
              console.log("Invalid User");
              setInvalidUser(true);
              setRoute('connect');
          }
-         if (respnse.data.loginValidity) {
-              onProceed();
+         if (response.data.loginValidity) {
+              await onProceed();
               apiService.storeToken(result.data.accessToken);
               
          } else {
@@ -206,6 +206,8 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
                       } 
 
                       if (response.data == '0') {
+                        setSelected('new');
+                        setUserPinSaved(false);
                         console.log("QR code expired");
                         clearInterval(interval);
                       }
@@ -315,7 +317,7 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
                             value={(seconds / 120) * 100}
                             valueTemplate={`${seconds}s`}
                             readOnly
-                            size={100}
+                            size={110}
                         />
                       </div>
                     </div>
