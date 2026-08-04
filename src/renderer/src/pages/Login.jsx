@@ -17,9 +17,6 @@ import { useRef } from 'react';
 import 'primeicons/primeicons.css';
 import { Badge } from 'primereact/badge';
 import { Knob } from 'primereact/knob';
-        
-        
-
 
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
@@ -42,8 +39,6 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
   const [userPinSaved, setUserPinSaved] = useState(null);
   const [seconds, setSeconds] = useState(0);
   const [deviceSessionKey, setDeviceSessionKey] = useState(null);
-  
-
 
   useEffect(() => {
        (async () => {

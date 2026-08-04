@@ -100,9 +100,9 @@ export default function App() {
             });
     console.log('activation clicked');
     } catch(error) {
-        setActivated(false);    
+        setActivated(false);
         if (!err.response) {  //If Backend server is down or unreachable
-          setActivated(false);     
+          setActivated(false);
         }
     }
     
