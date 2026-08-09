@@ -44,13 +44,13 @@ const getWorkOrders = async (workStationId) => {
   return response.data;
 };
 
-const getIngredients=async (workOrderId) => {
+const getIngredients = async (workOrderId) => {
   const response = await apiClient.jupiterApiClient.get(`/api/v1/ingredients/${workOrderId}`);
   return response.data;
 };
 
 const loadSavedUSers = async (hwId, activationKey) => {
-  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-saved-hmi-users`, {
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-saved-hmi-users`, {
     hwId: hwId,
     activationKey: activationKey,
     hwCode: null
@@ -58,23 +58,20 @@ const loadSavedUSers = async (hwId, activationKey) => {
 };
 
 const getDeviceSessionQr = async (hwId, activationKey) => {
-  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-device-login-qr`, {
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/generate-login-qr`, {
     hwId: hwId,
-    activationKey: activationKey,
-    hwCode: null
+    activationKey: activationKey
   }
-);
+  );
 };
 
 const verifyDeviceLogin = async (deviceSessionKey) => {
-  return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/verify-device-login/${deviceSessionKey}`);
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/verify-device-login/${deviceSessionKey}`);
 };
 
-const setUserPin = async(deviceSessionKey,userPin) => {
-   return  await apiClient.jupiterApiClient.post(`/api/hmi/v1/set-user-pin/${deviceSessionKey}/${userPin}`);
+const setUserPin = async (deviceSessionKey, userPin) => {
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/set-user-pin/${deviceSessionKey}/${userPin}`);
 }
-
-
 
 export default {
   setUserPin,
