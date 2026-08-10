@@ -69,6 +69,22 @@ const getWorkStations = async (hwId, activationKey) => {
   return response;
 };
 
+const getWorkOrders = async (workStationId) => {
+  const response = await apiClient.jupiterApiClient.get(
+    `/api/hmi/v1/get-work-orders`,
+    {
+      hwId: hwId,
+      activationKey: activationKey
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response;
+};
+
 //to be validated
 
 const getUsers = async () => {
@@ -83,11 +99,6 @@ const getUserById = async (id) => {
 
 const createUser = async (data) => {
   const response = await apiClient.backendApiClient.post('/users', data);
-  return response.data;
-};
-
-const getWorkOrders = async (workStationId) => {
-  const response = await apiClient.jupiterApiClient.get(`/api/v1/work-orders/${workStationId}`);
   return response.data;
 };
 

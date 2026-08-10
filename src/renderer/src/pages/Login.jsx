@@ -99,6 +99,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
   const loadSavedUsers = async () => {
     try {
+      setSavedUsers([])
       console.log(hwId);
       console.log(activationKey);
       const response = await apiService.getAllDeviceUsers(hwId, activationKey);
@@ -113,8 +114,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
             setSavedUsers(users);
           }
         }
-      } else {
-        setSavedUsers([]);
       }
     } catch (error) {
       setSelected('new');
@@ -315,7 +314,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
                           </div>
                         ) : (
                           <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                            <Button onClick={getDeviceSessionQr}>Login via QR</Button>
+                            <Button onClick={getDeviceSessionQr}>Show QR</Button>
                           </div>
                         )
                       ) : userPinSaved === false ? (
@@ -423,7 +422,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
                       {savedUsers.length > 0 ? (
                         savedUsers.map((user) => (
-                          <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user} style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
+                          <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user.name} style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
                             <Avatar label={getInitials(user.name)} shape="circle" size="medium" />
                             <div>
                               <h5 className="m-0 p-0">{user.name}</h5>
