@@ -18,7 +18,7 @@ export default function Location({ onSelect }) {
 
   const endContent = (
     <React.Fragment>
-      <Button label="Back" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
+      <Button label="Logout" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
       <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
     </React.Fragment>
   );
@@ -39,12 +39,11 @@ export default function Location({ onSelect }) {
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <h3 className="my-1">Location Page</h3>
-            <p>Once you click it may take couple of minutes to activate.</p>
+            <h3 className="my-1">Choose Workstation or Location</h3>
             <div className="grid p-4">
               {DUMMY_LOCATIONS.map((loc) => (
                 <div className="col-4" key={loc}>
-                  <div style={getStyle(loc)} className={`text-center p-6 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
+                  <div style={getStyle(loc)} className={`text-center p-4 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
                     {loc}
                   </div>
                 </div>

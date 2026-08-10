@@ -53,42 +53,20 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
   const [loginResult, setLoginResult] = useState(null);
   const [loginError, setLoginError] = useState(null);
 
-  // const handleLogin = async () => {
-  //   await apiService
-  //     .login('pkishor@leapsys.net', 'moNu288*')
-  //     .then((result) => {
-  //       console.log(result);
-  //       setLoginResult(result?.data?.data);
-  //       apiService.storeToken(result.data.data.access_token);
-  //     })
-  //     .catch((err) => {
-  //       setLoginError(err);
-  //       console.log(err);
-  //     });
-  // };
-
-  const handleLogin = async (userPin) => {
+  const handleLogin = async (pin) => {
     try {
-      if (token.length === 4) {
-        console.log(`Inside Handle Login`);
-        const response = await apiService.loginWithPin(hwId, activationKey, selected.email, userPin);
-        console.log(`handleLogin response ${handleLogin}`);
-        if (response.data.invalidUser) {
-          console.log('Invalid User');
-          setInvalidUser(true);
-        }
-        if (response.data.loginValidity) {
-          await onProceed();
-          apiService.storeToken(result.data.accessToken);
-        } else {
-          setSelected('new');
-          setUserPinSaved(null);
-          setShowQr(false);
-          await loadSavedUsers();
-        }
+      const response = await apiService.loginWithPin(hwId, activationKey, selected.email, pin);
+      if (response?.data?.access_token && response?.data?.refresh_token) {
+        apiService.storeTokens(response.data.access_token, response.data.refresh_token);
+        await onProceed();
+      } else {
+        setInvalidUser(true);
+        // setSelected('new');
+        // setUserPinSaved(null);
+        // setShowQr(false);
+        // await loadSavedUsers();
       }
     } catch (error) {
-      console.log(`handleLogin error ${error}`);
       setSelected('new');
       setUserPinSaved(null);
       setShowQr(false);
@@ -98,22 +76,21 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
   const setUserPin = async (userPin) => {
     try {
-      const response = await apiService.setUserPin(deviceSessionKey, userPin);
-      if (response) {
-        if (response.status === 200) {
-          setSelected('new');
-          setUserPinSaved(true);
-          setShowQr(false);
-          await loadSavedUsers();
-        }
-      } else {
-        setInvalidUser(false);
-        setSelected('new');
-        setUserPinSaved(null);
-        setShowQr(false);
-
-        await loadSavedUsers();
-      }
+      // const response = await apiService.setUserPin(deviceSessionKey, userPin);
+      // if (response) {
+      //   if (response.status === 200) {
+      //     setSelected('new');
+      //     setUserPinSaved(true);
+      //     setShowQr(false);
+      //     await loadSavedUsers();
+      //   }
+      // } else {
+      //   setInvalidUser(false);
+      //   setSelected('new');
+      //   setUserPinSaved(null);
+      //   setShowQr(false);
+      //   await loadSavedUsers();
+      // }
     } catch (error) {
       console.log(`setUserPin ${error}`);
       await loadSavedUsers();
@@ -157,19 +134,17 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
   const getDeviceSessionQr = async () => {
     try {
       const qrImageResponse = await apiService.getDeviceSessionQr(hwId, activationKey);
-      console.log(`qrImageResponse: ${qrImageResponse}`);
       if (qrImageResponse) {
         if (qrImageResponse.status === 200) {
-          console.log(qrImageResponse.data.deviceSessionKey);
-          const deviceSessionKey = qrImageResponse.data.deviceSessionKey;
-          setDeviceSessionKey(deviceSessionKey);
+          const sessionKey = qrImageResponse.data.sessionKey;
+          setDeviceSessionKey(sessionKey);
           const qrImageBlob = base64ToBlob(qrImageResponse.data.qrBase64);
           const imageUrl = URL.createObjectURL(qrImageBlob);
           setSelected('new');
           setUserPinSaved(null);
           setShowQr(true);
           setQrImage(imageUrl);
-          startPolling(deviceSessionKey);
+          startPolling(sessionKey);
         }
       }
     } catch (error) {
@@ -181,29 +156,35 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
     }
   };
 
-  const startPolling = (deviceSessionKey) => {
+  const startPolling = (sessionKey) => {
     try {
       let elapsedSeconds = 0;
       const interval = setInterval(() => {
         elapsedSeconds += 2;
         setSeconds(elapsedSeconds);
         apiService
-          .verifyDeviceLogin(deviceSessionKey)
-          .then((response) => {
+          .loginWithQrSessionKey(sessionKey)
+          .then(async (response) => {
             if (response) {
               if (response.status == 200) {
-                if (response.data == '1') {
-                  console.log('User PIN set successfully');
-                  setSelected('LoginSuccess');
+                if (response?.data?.access_token && response?.data?.refresh_token) {
                   clearInterval(interval);
+                  apiService.storeTokens(response.data.access_token, response.data.refresh_token);
+                  await onProceed();
                 }
 
-                if (response.data == '0') {
-                  setSelected('new');
-                  setUserPinSaved(false);
-                  console.log('QR code expired');
-                  clearInterval(interval);
-                }
+                // if (response.data == '1') {
+                //   console.log('User PIN set successfully');
+                //   setSelected('LoginSuccess');
+                //   clearInterval(interval);
+                // }
+
+                // if (response.data == '0') {
+                //   setSelected('new');
+                //   setUserPinSaved(false);
+                //   console.log('QR code expired');
+                //   clearInterval(interval);
+                // }
               }
             }
           })
@@ -211,8 +192,9 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
             clearInterval(interval);
             console.error(error);
           });
-        if (elapsedSeconds >= 120) {
+        if (elapsedSeconds >= 300) {
           clearInterval(interval);
+          setShowQr(false);
           console.log('Polling timeout');
         }
       }, 2000);
@@ -281,7 +263,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
       {/* <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" /> */}
     </React.Fragment>
   );
-  
+
   return (
     <React.Fragment>
       <header className="p-0 flex-shrink-0">
@@ -321,8 +303,8 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
                           <div className="flex flex-column align-items-center justify-content-center m-2">
                             <p>Scan QR via phone to login</p>
                             <img src={qrImage} alt="QR Code" style={{ width: 200, height: 200 }} />
-                            <div className="m-2">
-                              <Knob value={(seconds / 120) * 100} valueTemplate={`${seconds}s`} readOnly size={110} />
+                            <div className="m-0">
+                              <Knob value={(seconds / 300) * 100} valueTemplate={`${seconds}s`} readOnly size={80} />
                             </div>
                           </div>
                         ) : (

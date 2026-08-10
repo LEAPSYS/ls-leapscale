@@ -147,10 +147,15 @@ export default function App() {
     setRoute('connect');
   };
 
+  const handleLogout = async () => {
+    apiService.logout();
+    setRoute('login');
+  };
+
   const handleSelectLocation = async (loc) => {
     if (!loc) {
-      setRoute('login');
       setLocation(null);
+      handleLogout();
       return;
     }
     setLocation(loc);

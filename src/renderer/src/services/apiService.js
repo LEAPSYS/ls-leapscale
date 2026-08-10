@@ -2,6 +2,16 @@ import apiClient from './axiosService';
 
 //validated
 
+const storeTokens = (accessToken, refreshToken) => {
+  localStorage.setItem('access_token', accessToken);
+  localStorage.setItem('refresh_token', refreshToken);
+};
+
+const logout = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+};
+
 const activateHmi = async (hwId, activationKey) => {
   return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
     hwId: hwId,
@@ -25,6 +35,19 @@ const loginWithPin = async (hwId, activationKey, username, pin) => {
   });
 };
 
+const getDeviceSessionQr = async (hwId, activationKey) => {
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/generate-login-qr`, {
+    hwId: hwId,
+    activationKey: activationKey
+  });
+};
+
+const loginWithQrSessionKey = async (deviceSessionKey) => {
+  return await apiClient.jupiterApiClient.post(`/api/auth/v1/login-with-qr-session-key`, {
+    sessionKey: deviceSessionKey
+  });
+};
+
 //to be validated
 
 const getUsers = async () => {
@@ -42,14 +65,6 @@ const createUser = async (data) => {
   return response.data;
 };
 
-const storeToken = (token) => {
-  localStorage.setItem('access_token', token);
-};
-
-const logout = () => {
-  localStorage.removeItem('access_token');
-};
-
 const getWorkStationDetails = async (hwId) => {
   const response = await apiClient.jupiterApiClient.get(`/api/v1/workstation-details`);
   return response.data;
@@ -65,24 +80,8 @@ const getIngredients = async (workOrderId) => {
   return response.data;
 };
 
-const getDeviceSessionQr = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/generate-login-qr`, {
-    hwId: hwId,
-    activationKey: activationKey
-  });
-};
-
-const verifyDeviceLogin = async (deviceSessionKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/verify-device-login/${deviceSessionKey}`);
-};
-
-const setUserPin = async (deviceSessionKey, userPin) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/set-user-pin/${deviceSessionKey}/${userPin}`);
-};
-
 export default {
-  setUserPin,
-  verifyDeviceLogin,
+  loginWithQrSessionKey,
   getDeviceSessionQr,
   getAllDeviceUsers,
   getUsers,
@@ -90,7 +89,7 @@ export default {
   createUser,
   loginWithPin,
   logout,
-  storeToken,
+  storeTokens,
   activateHmi,
   getIngredients
 };
