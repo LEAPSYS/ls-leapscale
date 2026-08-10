@@ -52,23 +52,6 @@ const loginWithQrSessionKey = async (deviceSessionKey) => {
   });
 };
 
-//to be validated
-
-const getUsers = async () => {
-  const response = await apiClient.backendApiClient.get('/users');
-  return response.data;
-};
-
-const getUserById = async (id) => {
-  const response = await apiClient.backendApiClient.get(`/users/${id}`);
-  return response.data;
-};
-
-const createUser = async (data) => {
-  const response = await apiClient.backendApiClient.post('/users', data);
-  return response.data;
-};
-
 const getWorkStations = async (hwId, activationKey) => {
   const token = getAccessToken();
   const response = await apiClient.jupiterApiClient.post(
@@ -84,6 +67,23 @@ const getWorkStations = async (hwId, activationKey) => {
     }
   );
   return response;
+};
+
+//to be validated
+
+const getUsers = async () => {
+  const response = await apiClient.backendApiClient.get('/users');
+  return response.data;
+};
+
+const getUserById = async (id) => {
+  const response = await apiClient.backendApiClient.get(`/users/${id}`);
+  return response.data;
+};
+
+const createUser = async (data) => {
+  const response = await apiClient.backendApiClient.post('/users', data);
+  return response.data;
 };
 
 const getWorkOrders = async (workStationId) => {

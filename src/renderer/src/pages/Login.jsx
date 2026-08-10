@@ -216,10 +216,10 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
   };
 
   const keyPadStyle = (wo) => {
-    if (keySelected === wo) {
-      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', borderRadius: '3px', paddingBlock: '0.25rem' };
+    if (String(keySelected) === String(wo)) {
+      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', borderRadius: '8px', paddingBlock: '0.25rem' };
     } else {
-      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', borderRadius: '3px', paddingBlock: '0.25rem' };
+      return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', borderRadius: '8px', paddingBlock: '0.25rem' };
     }
   };
 
@@ -244,12 +244,18 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
       setTokens(token + val);
     }
 
-    setKeySelected(parseInt(val));
+    setKeySelected(val);
+    setTimeout(() => {
+      setKeySelected(null);
+    }, 150);
   };
 
   const handleBackspace = () => {
-    setKeySelected(null);
+    setKeySelected('back');
     setTokens(token.slice(0, -1));
+    setTimeout(() => {
+      setKeySelected(null);
+    }, 150);
   };
 
   const handleClear = () => {
@@ -390,7 +396,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
                             <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
                               0
                             </div>
-                            <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => (selected === 'LoginSuccess' ? setUserPin(token) : handleLogin(token))}>
+                            <Button disabled={token.length !== 4} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => (selected === 'LoginSuccess' ? setUserPin(token) : handleLogin(token))}>
                               <img src={ArrowLeft} alt="submit" />
                             </Button>
                           </div>

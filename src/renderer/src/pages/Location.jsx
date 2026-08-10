@@ -78,7 +78,7 @@ export default function Location({ onSelect, hwId, activationKey }) {
             ) : locations.length === 0 ? (
               <p className="p-4">No workstations available.</p>
             ) : (
-              <div className="grid p-4">
+              <div className="grid p-2">
                 {locations.map((loc, index) => (
                   <div className="col-4" key={getLocationKey(loc, index)}>
                     <div style={getStyle(loc)} className={`text-center p-3 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
