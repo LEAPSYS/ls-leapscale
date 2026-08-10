@@ -90,7 +90,7 @@ export default function WorkOrders({ onSelect, hwId, activationKey, location }) 
                         <>
                           {wo.production_item && <div className="text-xs font-semibold mt-1">{wo.production_item}</div>}
                           {wo.item_name && <div className="text-xs font-normal mt-1">{wo.item_name}</div>}
-                          {wo.owner && <div className="text-xs font-normal opacity-90 mt-1">Owner: {wo.owner}</div>}
+                          {wo.owner && <div className="text-xs font-normal opacity-90 mt-1">Creator: {wo.owner}</div>}
                           {wo.status && <div className="text-xs font-semibold opacity-80 mt-1">Status: {wo.status}</div>}
                         </>
                       )}
