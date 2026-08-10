@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'primereact/button';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
 import { ScrollPanel } from 'primereact/scrollpanel';
-
-const DUMMY_LOCATIONS = ['Workstation WS1', 'Workstation WS2', 'Workstation WS3', 'Workstation WS4'];
+import apiService from '../services/apiService';
 
 Location.propTypes = {
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  hwId: PropTypes.string,
+  activationKey: PropTypes.string
 };
 
-export default function Location({ onSelect }) {
+export default function Location({ onSelect, hwId, activationKey }) {
   const [selected, setSelected] = useState(null);
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchWorkstations = async () => {
+      try {
+        setLoading(true);
+        const response = await apiService.getWorkStations(hwId, activationKey);
+        const data = response?.data?.data || response?.data || response;
+        if (Array.isArray(data)) {
+          setLocations(data);
+        } else {
+          setLocations([]);
+        }
+      } catch (err) {
+        console.error('Error fetching workstations:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWorkstations();
+  }, [hwId, activationKey]);
 
   const startContent = <Brand></Brand>;
 
@@ -31,6 +54,16 @@ export default function Location({ onSelect }) {
     }
   };
 
+  const getLocationName = (loc) => {
+    if (typeof loc === 'string') return loc;
+    return loc?.name || loc?.workstationName || loc?.workstationCode || loc?.id || 'Workstation';
+  };
+
+  const getLocationKey = (loc, index) => {
+    if (typeof loc === 'string') return loc;
+    return loc?.id || loc?._id || loc?.name || index;
+  };
+
   return (
     <React.Fragment>
       <header className="p-0 flex-shrink-0">
@@ -39,16 +72,22 @@ export default function Location({ onSelect }) {
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <h3 className="my-1">Choose Workstation or Location</h3>
-            <div className="grid p-4">
-              {DUMMY_LOCATIONS.map((loc) => (
-                <div className="col-4" key={loc}>
-                  <div style={getStyle(loc)} className={`text-center p-4 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
-                    {loc}
+            <h3 className="my-1">Choose Workstation</h3>
+            {loading ? (
+              <p className="p-4">Loading workstations...</p>
+            ) : locations.length === 0 ? (
+              <p className="p-4">No workstations available.</p>
+            ) : (
+              <div className="grid p-4">
+                {locations.map((loc, index) => (
+                  <div className="col-4" key={getLocationKey(loc, index)}>
+                    <div style={getStyle(loc)} className={`text-center p-3 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
+                      {getLocationName(loc)}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </ScrollPanel>
       </main>

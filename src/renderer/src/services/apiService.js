@@ -12,6 +12,10 @@ const logout = () => {
   localStorage.removeItem('refresh_token');
 };
 
+const getAccessToken = () => {
+  return localStorage.getItem('access_token');
+};
+
 const activateHmi = async (hwId, activationKey) => {
   return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
     hwId: hwId,
@@ -65,9 +69,21 @@ const createUser = async (data) => {
   return response.data;
 };
 
-const getWorkStationDetails = async (hwId) => {
-  const response = await apiClient.jupiterApiClient.get(`/api/v1/workstation-details`);
-  return response.data;
+const getWorkStations = async (hwId, activationKey) => {
+  const token = getAccessToken();
+  const response = await apiClient.jupiterApiClient.post(
+    `/api/hmi/v1/get-workstations`,
+    {
+      hwId: hwId,
+      activationKey: activationKey
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response;
 };
 
 const getWorkOrders = async (workStationId) => {
@@ -81,6 +97,7 @@ const getIngredients = async (workOrderId) => {
 };
 
 export default {
+  getWorkStations,
   loginWithQrSessionKey,
   getDeviceSessionQr,
   getAllDeviceUsers,
