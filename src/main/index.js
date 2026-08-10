@@ -6,6 +6,9 @@ import { SerialPort } from 'serialport';
 import { ReadlineParser } from 'serialport';
 import ingredientsData from '../../resources/ingredients.json';
 import { machineId } from 'node-machine-id';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let mainWindow;
 let port;
@@ -20,9 +23,11 @@ const fs = require('fs/promises');
 const path = require('path');
 
 function createWindow() {
+  const isFullscreen = process.env.FULLSCREEN !== undefined ? process.env.FULLSCREEN === 'true' : false;
+
   mainWindow = new BrowserWindow({
-    fullscreen: true,
-    frame: false,
+    fullscreen: isFullscreen,
+    frame: !isFullscreen,
     alwaysOnTop: false,
     width: 800,
     height: 600,

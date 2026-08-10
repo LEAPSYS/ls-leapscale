@@ -1,5 +1,32 @@
 import apiClient from './axiosService';
 
+//validated
+
+const activateHmi = async (hwId, activationKey) => {
+  return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
+    hwId: hwId,
+    activationKey: activationKey
+  });
+};
+
+const getAllDeviceUsers = async (hwId, activationKey) => {
+  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-all-device-users`, {
+    hwId: hwId,
+    activationKey: activationKey
+  });
+};
+
+const loginWithPin = async (hwId, activationKey, username, pin) => {
+  return await apiClient.jupiterApiClient.post(`/api/auth/v1/login-with-pin`, {
+    hwId: hwId,
+    activationKey: activationKey,
+    username: username,
+    pin: pin
+  });
+};
+
+//to be validated
+
 const getUsers = async () => {
   const response = await apiClient.backendApiClient.get('/users');
   return response.data;
@@ -15,23 +42,12 @@ const createUser = async (data) => {
   return response.data;
 };
 
-const login = async (username, userpin) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/login-with-user-pin/${userpin}/${username}`);
-};
-
 const storeToken = (token) => {
   localStorage.setItem('access_token', token);
 };
 
 const logout = () => {
   localStorage.removeItem('access_token');
-};
-
-const activateHmi = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
-    hwId: hwId,
-    activationKey: activationKey
-  });
 };
 
 const getWorkStationDetails = async (hwId) => {
@@ -49,20 +65,11 @@ const getIngredients = async (workOrderId) => {
   return response.data;
 };
 
-const loadSavedUSers = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-saved-hmi-users`, {
-    hwId: hwId,
-    activationKey: activationKey,
-    hwCode: null
-  });
-};
-
 const getDeviceSessionQr = async (hwId, activationKey) => {
   return await apiClient.jupiterApiClient.post(`/api/hmi/v1/generate-login-qr`, {
     hwId: hwId,
     activationKey: activationKey
-  }
-  );
+  });
 };
 
 const verifyDeviceLogin = async (deviceSessionKey) => {
@@ -71,17 +78,17 @@ const verifyDeviceLogin = async (deviceSessionKey) => {
 
 const setUserPin = async (deviceSessionKey, userPin) => {
   return await apiClient.jupiterApiClient.post(`/api/hmi/v1/set-user-pin/${deviceSessionKey}/${userPin}`);
-}
+};
 
 export default {
   setUserPin,
   verifyDeviceLogin,
   getDeviceSessionQr,
-  loadSavedUSers,
+  getAllDeviceUsers,
   getUsers,
   getUserById,
   createUser,
-  login,
+  loginWithPin,
   logout,
   storeToken,
   activateHmi,

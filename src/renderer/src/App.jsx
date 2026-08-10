@@ -78,34 +78,34 @@ export default function App() {
 
   const handleActivate = async () => {
     try {
-          setActivationStatus(0);
-          setActivated(false);
-          setSyncing(true);
-          await apiService
-            .activateHmi(hwId, activationKey)
-            .then((result) => {
-              console.log(result.data);
-              setHwCode(result.data?.hwCode);
-              saveActivationKey(result.data?.activationKey);
-              setActivationStatus(result.data?.activationStatus);
+      setActivationStatus(0);
+      setActivated(false);
+      setSyncing(true);
+      await apiService
+        .activateHmi(hwId, activationKey)
+        .then((result) => {
+          console.log(result.data);
+          setHwCode(result.data?.hwCode);
+          saveActivationKey(result.data?.activationKey);
+          setActivationStatus(result.data?.activationStatus);
 
-              if (result.data?.activationStatus === 1) {
-                setActivated(true);
-              }
-              setTimeout(() => setSyncing(false), 2000);
-            })
-            .catch((err) => {
-              console.log(err);
-              setTimeout(() => setSyncing(false), 2000);
-            });
-    console.log('activation clicked');
-    } catch(error) {
+          if (result.data?.activationStatus === 1) {
+            setActivated(true);
+          }
+          setTimeout(() => setSyncing(false), 2000);
+        })
+        .catch((err) => {
+          console.log(err);
+          setTimeout(() => setSyncing(false), 2000);
+        });
+      console.log('activation clicked');
+    } catch (error) {
+      setActivated(false);
+      if (!err.response) {
+        //If Backend server is down or unreachable
         setActivated(false);
-        if (!err.response) {  //If Backend server is down or unreachable
-          setActivated(false);
-        }
+      }
     }
-    
   };
 
   const onProceedFromLogin = async () => {
@@ -122,7 +122,7 @@ export default function App() {
 
   const onProceedFromActivate = () => {
     setRoute('login');
-  }
+  };
 
   const onBackFromDashboard = () => {
     setRoute('connect');
@@ -204,14 +204,14 @@ export default function App() {
   useEffect(() => {
     if (route === 'activate' && hwId && activationKey) {
       handleActivate();
-    } 
+    }
   }, [route, hwId, activationKey]);
 
   return (
     <>
       <div className="flex flex-column h-screen">
-        {route === 'activate' && <Activation showLogin={onProceedFromActivate} isActive={activated} onActivate={handleActivate}/>}
-        {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} machineId = {hwId} activationKey = {activationKey} />}
+        {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
+        {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}

@@ -21,11 +21,11 @@ import { Knob } from 'primereact/knob';
 Login.propTypes = {
   onProceed: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
-  machineId: PropTypes.string.isRequired,
-  activationKey: PropTypes.string.isRequired,
+  hwId: PropTypes.string.isRequired,
+  activationKey: PropTypes.string.isRequired
 };
 
-export default function Login({ onProceed, onBack, machineId, activationKey}) {
+export default function Login({ onProceed, onBack, hwId, activationKey }) {
   const startContent = <Brand></Brand>;
   const [selected, setSelected] = useState('new');
   const [newUserOrExistingUser, setNewUserOrExistingUser] = useState(true);
@@ -35,28 +35,20 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
   const [qrCodeExpired, setQrCodeExpired] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
   const [savedUsers, setSavedUsers] = useState([]);
-  const [qrImage, setQrImage] = useState("");
+  const [qrImage, setQrImage] = useState('');
   const [userPinSaved, setUserPinSaved] = useState(null);
   const [seconds, setSeconds] = useState(0);
   const [deviceSessionKey, setDeviceSessionKey] = useState(null);
 
   useEffect(() => {
-       (async () => {
-        await loadSavedUsers();
-        setInvalidUser(false);
-        setSelected('new');
-        setUserPinSaved(null);
-        setDeviceSessionKey(null);
+    (async () => {
+      await loadSavedUsers();
+      setInvalidUser(false);
+      setSelected('new');
+      setUserPinSaved(null);
+      setDeviceSessionKey(null);
     })();
-    }, []);
-
-  const endContent = (
-    <React.Fragment>
-      <Button label="Back" onClick={() => onBack()} className="p-button-danger p-2 mr-1" />
-      {/* <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" /> */}
-    </React.Fragment>
-  );
-
+  }, []);
 
   const [loginResult, setLoginResult] = useState(null);
   const [loginError, setLoginError] = useState(null);
@@ -72,29 +64,29 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
   //     .catch((err) => {
   //       setLoginError(err);
   //       console.log(err);
-  //     }); 
+  //     });
   // };
 
   const handleLogin = async (userPin) => {
-     try {
+    try {
       if (token.length === 4) {
-         console.log(`Inside Handle Login`)
-         const response = await apiService.login(selected.email, userPin);
-         console.log(`handleLogin response ${handleLogin}`)
-         if (response.data.invalidUser) {
-             console.log("Invalid User");
-             setInvalidUser(true);
-         }
-         if (response.data.loginValidity) {
-              await onProceed();
-              apiService.storeToken(result.data.accessToken);
-         } else {
-              setSelected('new');
-              setUserPinSaved(null);
-              setShowQr(false);
-              await loadSavedUsers();
-         } 
-       } 
+        console.log(`Inside Handle Login`);
+        const response = await apiService.loginWithPin(hwId, activationKey, selected.email, userPin);
+        console.log(`handleLogin response ${handleLogin}`);
+        if (response.data.invalidUser) {
+          console.log('Invalid User');
+          setInvalidUser(true);
+        }
+        if (response.data.loginValidity) {
+          await onProceed();
+          apiService.storeToken(result.data.accessToken);
+        } else {
+          setSelected('new');
+          setUserPinSaved(null);
+          setShowQr(false);
+          await loadSavedUsers();
+        }
+      }
     } catch (error) {
       console.log(`handleLogin error ${error}`);
       setSelected('new');
@@ -102,150 +94,143 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
       setShowQr(false);
       await loadSavedUsers();
     }
-  }
+  };
 
-  const setUserPin = async(userPin) => {
+  const setUserPin = async (userPin) => {
     try {
-    const response = await apiService.setUserPin(deviceSessionKey,userPin);
-      if(response) {
+      const response = await apiService.setUserPin(deviceSessionKey, userPin);
+      if (response) {
         if (response.status === 200) {
-              setSelected('new');
-              setUserPinSaved(true);
-              setShowQr(false);
-              await loadSavedUsers();
+          setSelected('new');
+          setUserPinSaved(true);
+          setShowQr(false);
+          await loadSavedUsers();
         }
       } else {
-      setInvalidUser(false);
-      setSelected('new');
-      setUserPinSaved(null);
-      setShowQr(false);
+        setInvalidUser(false);
+        setSelected('new');
+        setUserPinSaved(null);
+        setShowQr(false);
 
         await loadSavedUsers();
       }
     } catch (error) {
-        console.log(`setUserPin ${error}`);
-        await loadSavedUsers();
+      console.log(`setUserPin ${error}`);
+      await loadSavedUsers();
     }
-  }
+  };
 
   const loadSavedUsers = async () => {
     try {
-    console.log(machineId);
-    console.log(activationKey)
-    const response = await apiService.loadSavedUSers(machineId, activationKey);
-            if (response) {
-              if (response.status === 200) {
-                      if(Array.isArray(response.data)) {
-                      console.log(response.data);
-                      const users = response.data.map(user => ({
-                          name: user.name,
-                          email: user.email
-                      }
-                    ))
-                    setSavedUsers(users);
-                  }
-              } 
-           } else {
-                 setSavedUsers([]);
-           }
-      } catch(error) {
-        setSelected('new');
-        setUserPinSaved(true);
-        setShowQr(false);
+      console.log(hwId);
+      console.log(activationKey);
+      const response = await apiService.getAllDeviceUsers(hwId, activationKey);
+      if (response) {
+        if (response.status === 200) {
+          if (Array.isArray(response.data)) {
+            console.log(response.data);
+            const users = response.data.map((user) => ({
+              name: user.username,
+              email: user.username
+            }));
+            setSavedUsers(users);
+          }
+        }
+      } else {
         setSavedUsers([]);
-        console.log(`loadSavedUsers ${error}`);
       }
+    } catch (error) {
+      setSelected('new');
+      setUserPinSaved(true);
+      setShowQr(false);
+      setSavedUsers([]);
+      console.log(`loadSavedUsers ${error}`);
+    }
   };
 
-  const base64ToBlob = (base64, mimeType = "image/png") => {
+  const base64ToBlob = (base64, mimeType = 'image/png') => {
     const binary = atob(base64);
-    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
     return new Blob([bytes], { type: mimeType });
   };
 
   const getDeviceSessionQr = async () => {
     try {
-      const qrImageResponse = await apiService.getDeviceSessionQr(machineId, activationKey);
+      const qrImageResponse = await apiService.getDeviceSessionQr(hwId, activationKey);
       console.log(`qrImageResponse: ${qrImageResponse}`);
-      if(qrImageResponse) {
+      if (qrImageResponse) {
         if (qrImageResponse.status === 200) {
-            console.log(qrImageResponse.data.deviceSessionKey);
-            const deviceSessionKey = qrImageResponse.data.deviceSessionKey;
-            setDeviceSessionKey(deviceSessionKey);
-            const qrImageBlob = base64ToBlob(qrImageResponse.data.qrBase64);
-            const imageUrl = URL.createObjectURL(qrImageBlob);
-            setSelected('new');
-            setUserPinSaved(null);
-            setShowQr(true);
-            setQrImage(imageUrl);
-            startPolling(deviceSessionKey);
+          console.log(qrImageResponse.data.deviceSessionKey);
+          const deviceSessionKey = qrImageResponse.data.deviceSessionKey;
+          setDeviceSessionKey(deviceSessionKey);
+          const qrImageBlob = base64ToBlob(qrImageResponse.data.qrBase64);
+          const imageUrl = URL.createObjectURL(qrImageBlob);
+          setSelected('new');
+          setUserPinSaved(null);
+          setShowQr(true);
+          setQrImage(imageUrl);
+          startPolling(deviceSessionKey);
         }
       }
-
-   } catch (error) {
+    } catch (error) {
       console.log(`getDeviceSessionQr ${error}`);
       setUserPinSaved(null);
       setSelected('new');
       setShowQr(false);
       await loadSavedUsers();
-   }
-  }
+    }
+  };
 
   const startPolling = (deviceSessionKey) => {
     try {
-          let elapsedSeconds = 0;
-          const interval = setInterval(() => {
-            elapsedSeconds += 2;
-            setSeconds(elapsedSeconds);
-            apiService.verifyDeviceLogin(deviceSessionKey)
-              .then((response) => {
-                if (response) {
-                    if (response.status == 200) {
-
-                      if (response.data == '1') {
-                        console.log("User PIN set successfully");
-                        setSelected('LoginSuccess')
-                        clearInterval(interval);
-                      } 
-
-                      if (response.data == '0') {
-                        setSelected('new');
-                        setUserPinSaved(false);
-                        console.log("QR code expired");
-                        clearInterval(interval);
-                      }
-                    }
-              }
-              })
-              .catch((error) => {
-                clearInterval(interval);
-                console.error(error);
-              });
-              if (elapsedSeconds >= 120) {
-                    clearInterval(interval);
-                    console.log("Polling timeout");
+      let elapsedSeconds = 0;
+      const interval = setInterval(() => {
+        elapsedSeconds += 2;
+        setSeconds(elapsedSeconds);
+        apiService
+          .verifyDeviceLogin(deviceSessionKey)
+          .then((response) => {
+            if (response) {
+              if (response.status == 200) {
+                if (response.data == '1') {
+                  console.log('User PIN set successfully');
+                  setSelected('LoginSuccess');
+                  clearInterval(interval);
                 }
 
-          }, 2000);
+                if (response.data == '0') {
+                  setSelected('new');
+                  setUserPinSaved(false);
+                  console.log('QR code expired');
+                  clearInterval(interval);
+                }
+              }
+            }
+          })
+          .catch((error) => {
+            clearInterval(interval);
+            console.error(error);
+          });
+        if (elapsedSeconds >= 120) {
+          clearInterval(interval);
+          console.log('Polling timeout');
+        }
+      }, 2000);
     } catch (error) {
-        console.log(`startPolling ${error}`);
-        setSelected('new');
-        setShowQr(false);
-         loadSavedUsers();
-  }
+      console.log(`startPolling ${error}`);
+      setSelected('new');
+      setShowQr(false);
+      loadSavedUsers();
+    }
   };
 
- 
+  const getInitials = (name = '') => {
+    const words = name.trim().split(/\s+/).filter(Boolean);
 
-  const getInitials = (name = "") => {
-      const words = name.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return '';
+    if (words.length === 1) return words[0][0].toUpperCase();
 
-      if (words.length === 0) return "";
-      if (words.length === 1) return words[0][0].toUpperCase();
-
-      return (
-        words[0][0] + words[words.length - 1][0]
-      ).toUpperCase();
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
   };
 
   const keyPadStyle = (wo) => {
@@ -263,10 +248,8 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
     setKeySelected(null);
     setTokens('');
     setSelected(user);
-    clearInterval(interval);
+    //clearInterval(interval);
   };
-
-
 
   const getStyle = (wo) => {
     if (selected === wo) {
@@ -292,6 +275,13 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
     setTokens('');
   };
 
+  const endContent = (
+    <React.Fragment>
+      <Button label="Back" onClick={() => onBack()} className="p-button-danger p-2 mr-1" />
+      {/* <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" /> */}
+    </React.Fragment>
+  );
+  
   return (
     <React.Fragment>
       <header className="p-0 flex-shrink-0">
@@ -314,134 +304,120 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
             </div> */}
             <div className="flex flex-row justify-content-center gap-1 ">
               <div className="w-5">
-                    {invalidUser ? (
-                        <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                          <Card style={{ background: "#ffffff", boxShadow: "none" }}>
-                            <div style={{ display: "flex",justifyContent: "center",alignItems: "center",marginBottom: "5px",}}>
-                              <i className="pi pi-exclamation-circle" style={{ fontSize: "3rem",color: "#ffbb00",width: "70px",fontWeight: "bold",}}></i>
+                {invalidUser ? (
+                  <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                    <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                        <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
+                      </div>
+                      <p className="py-1 px-1 text-center">Invalid PIN. Please enter your PIN again.</p>
+                    </Card>
+                  </div>
+                ) : (
+                  <>
+                    {selected === 'new' ? (
+                      userPinSaved === null ? (
+                        showQr ? (
+                          <div className="flex flex-column align-items-center justify-content-center m-2">
+                            <p>Scan QR via phone to login</p>
+                            <img src={qrImage} alt="QR Code" style={{ width: 200, height: 200 }} />
+                            <div className="m-2">
+                              <Knob value={(seconds / 120) * 100} valueTemplate={`${seconds}s`} readOnly size={110} />
                             </div>
-                            <p className="py-1 px-1 text-center">
-                              Invalid PIN. Please enter your PIN again.
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                            <Button onClick={getDeviceSessionQr}>Login via QR</Button>
+                          </div>
+                        )
+                      ) : userPinSaved === false ? (
+                        <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                          <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                              <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
+                            </div>
+                            <p className="py-1 px-1 text-center">QR Code Expired</p>
+                            <Button onClick={getDeviceSessionQr}>Regenerate QR</Button>
+                          </Card>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                          <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                              <i className="pi pi-check-circle" style={{ fontSize: '3rem', color: '#40f105', width: '70px', fontWeight: 'bold' }}></i>
+                            </div>
+                            <p className="text-center">
+                              User Added
+                              <br />
+                              Successfully
                             </p>
                           </Card>
                         </div>
+                      )
                     ) : (
-                      <>
-                        {selected === "new" ? (
-                          userPinSaved === null ? (
-                            showQr ? (
-                              <div className="flex flex-column align-items-center justify-content-center m-2">
-                                <p>Scan QR via phone to login</p>
-                                <img src={qrImage} alt="QR Code" style={{ width: 200, height: 200 }}/>
-                                <div className="m-2">
-                                  <Knob value={(seconds / 120) * 100} valueTemplate={`${seconds}s`} readOnly size={110}/>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                                <Button onClick={getDeviceSessionQr}>
-                                  Login via QR
-                                </Button>
-                              </div>
-                            )
-                          ) : userPinSaved === false ? (
-                            <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                              <Card style={{ background: "#ffffff", boxShadow: "none" }}>
-                                <div
-                                  style={{display: "flex",justifyContent: "center",alignItems: "center", marginBottom: "5px",}}>
-                                  <i className="pi pi-exclamation-circle" style={{ fontSize: "3rem", color: "#ffbb00", width: "70px", fontWeight: "bold",}}></i>
-                                </div>
-                                <p className="py-1 px-1 text-center">
-                                  QR Code Expired
-                                </p>
-                                <Button onClick={getDeviceSessionQr}>
-                                  Regenerate QR
-                                </Button>
-                              </Card>
-                            </div>
+                      <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2">
+                        <h5 className="text-center">
+                          {selected === 'LoginSuccess' ? (
+                            <>
+                              <div>✔️ Login Successful!</div>
+                              <div>Please set your PIN to continue.</div>
+                            </>
                           ) : (
-                            <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                              <Card style={{ background: "#ffffff", boxShadow: "none" }}>
-                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "5px",}}>
-                                  <i className="pi pi-check-circle" style={{ fontSize: "3rem", color: "#40f105", width: "70px", fontWeight: "bold",}}></i>
-                                </div>
-                                <p className="text-center">
-                                  User Added
-                                  <br />
-                                  Successfully
-                                </p>
-                              </Card>
+                            selected?.name
+                          )}
+                        </h5>
+                        <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
+                        <div className="flex flex-column gap-2 w-full m-3">
+                          <div className="flex flex-row gap-2 justify-content-around">
+                            <div className="flex-1 text-center" style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
+                              1
                             </div>
-                          )
-                        ) : (
-                          <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2">
-                            <h5 className="text-center">
-                              {selected === "LoginSuccess" ? (
-                                <>
-                                  <div>✔️ Login Successful!</div>
-                                  <div>Please set your PIN to continue.</div>
-                                </>
-                              ) : (
-                                selected?.name
-                              )}
-                            </h5>
-                            <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)}/>
-                            <div className="flex flex-column gap-2 w-full m-3">
-                              <div className="flex flex-row gap-2 justify-content-around">
-                                <div className="flex-1 text-center" style={keyPadStyle(1)} onClick={() => handleKeypadClick("1")}>
-                                  1
-                                </div>
-                                <div className="flex-1 text-center"  style={keyPadStyle(2)} onClick={() => handleKeypadClick("2")}>
-                                  2
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(3)} onClick={() => handleKeypadClick("3")}>
-                                  3
-                                </div>
-                              </div>
-                              <div className="flex flex-row gap-2 justify-content-evenly">
-                                <div className="flex-1 text-center" style={keyPadStyle(4)} onClick={() => handleKeypadClick("4")}>
-                                  4
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(5)} onClick={() => handleKeypadClick("5")}>
-                                  5
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(6)} onClick={() => handleKeypadClick("6")}>
-                                  6
-                                </div>
-                              </div>
-                              <div className="flex flex-row gap-2 justify-content-evenly">
-                                <div className="flex-1 text-center" style={keyPadStyle(7)} onClick={() => handleKeypadClick("7")}>
-                                  7
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(8)} onClick={() => handleKeypadClick("8")}>
-                                  8
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(9)} onClick={() => handleKeypadClick("9")}>
-                                  9
-                                </div>
-                              </div>
-                              <div className="flex flex-row gap-2 justify-content-evenly">
-                                <div className="flex flex-1 p-0 justify-content-center align-items-center hover:bg-gray-100" style={keyPadStyle("back")} onClick={handleBackspace}>
-                                <img src={BackspaceIcon} alt="backspace" />
-                                </div>
-                                <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick("0")}>
-                                  0
-                                </div>
-                                <Button className={
-                                    token.length === 4
-                                      ? "p-button-success p-0 flex-1 justify-content-center align-items-center"
-                                      : "p-button-danger p-0 flex-1 justify-content-center align-items-center"
-                                  }
-                                  onClick={() => selected === "LoginSuccess" ? setUserPin(token) : handleLogin(token)}>
-                                  <img src={ArrowLeft} alt="submit" />
-                                </Button>
-                              </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(2)} onClick={() => handleKeypadClick('2')}>
+                              2
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(3)} onClick={() => handleKeypadClick('3')}>
+                              3
                             </div>
                           </div>
-                        )}
-                      </>
+                          <div className="flex flex-row gap-2 justify-content-evenly">
+                            <div className="flex-1 text-center" style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
+                              4
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(5)} onClick={() => handleKeypadClick('5')}>
+                              5
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(6)} onClick={() => handleKeypadClick('6')}>
+                              6
+                            </div>
+                          </div>
+                          <div className="flex flex-row gap-2 justify-content-evenly">
+                            <div className="flex-1 text-center" style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
+                              7
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(8)} onClick={() => handleKeypadClick('8')}>
+                              8
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(9)} onClick={() => handleKeypadClick('9')}>
+                              9
+                            </div>
+                          </div>
+                          <div className="flex flex-row gap-2 justify-content-evenly">
+                            <div className="flex flex-1 p-0 justify-content-center align-items-center hover:bg-gray-100" style={keyPadStyle('back')} onClick={handleBackspace}>
+                              <img src={BackspaceIcon} alt="backspace" />
+                            </div>
+                            <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
+                              0
+                            </div>
+                            <Button className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-danger p-0 flex-1 justify-content-center align-items-center'} onClick={() => (selected === 'LoginSuccess' ? setUserPin(token) : handleLogin(token))}>
+                              <img src={ArrowLeft} alt="submit" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </div>
+                  </>
+                )}
+              </div>
               <div className="w-1">
                 <Divider layout="vertical" />
               </div>
@@ -458,19 +434,18 @@ export default function Login({ onProceed, onBack, machineId, activationKey}) {
                       </div>
 
                       {savedUsers.length > 0 ? (
-                      savedUsers.map((user) => (
-                        <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user}  style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
-                          <Avatar label={getInitials(user.name)} shape="circle" size="medium"/>
-                          <div>
-                            <h5 className="m-0 p-0">{user.name}</h5>
-                            <p className="m-0 p-0 text-sm">{user.email}</p>
+                        savedUsers.map((user) => (
+                          <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user} style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
+                            <Avatar label={getInitials(user.name)} shape="circle" size="medium" />
+                            <div>
+                              <h5 className="m-0 p-0">{user.name}</h5>
+                              <p className="m-0 p-0 text-sm">{user.email}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))
                       ) : (
                         <p></p>
-                      )
-                    }
+                      )}
                     </div>
                   </ScrollPanel>
                 </div>

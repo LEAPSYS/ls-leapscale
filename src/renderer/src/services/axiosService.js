@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const backendApiClient = axios.create({
-  baseURL: 'https://backend.leapsys.in',
+  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -34,8 +34,7 @@ backendApiClient.interceptors.request.use(
 // );
 
 const jupiterApiClient = axios.create({
-  baseURL: 'https://service.leapsys.in/jupiter-prd',
-  // baseURL: 'http://localhost:8888/jupiter-local',
+  baseURL: import.meta.env.VITE_JUPITER_BASE_URL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -47,7 +46,7 @@ jupiterApiClient.interceptors.request.use(
     const token = localStorage.getItem('access_token');
     if (!config.url.includes('/auth/login')) {
       if (token) {
-        console.log(`access token: ${token}`)
+        console.log(`access token: ${token}`);
         config.headers.Authorization = `Bearer ${token}`;
       }
     }

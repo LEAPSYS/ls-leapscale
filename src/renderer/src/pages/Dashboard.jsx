@@ -114,7 +114,7 @@ export default function Dashboard({ live, stable, onDisconnect, portStatus, onBa
                           </div>
                         </div>
                       </div>
-                      <Button label="Accept" ></Button>
+                      <Button label="Accept"></Button>
                     </div>
                   </div>
                 )}
