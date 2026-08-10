@@ -69,12 +69,14 @@ const getWorkStations = async (hwId, activationKey) => {
   return response;
 };
 
-const getWorkOrders = async (workStationId) => {
-  const response = await apiClient.jupiterApiClient.get(
+const getWorkOrders = async (hwId, activationKey, location) => {
+  const token = getAccessToken();
+  const response = await apiClient.jupiterApiClient.post(
     `/api/hmi/v1/get-work-orders`,
     {
       hwId: hwId,
-      activationKey: activationKey
+      activationKey: activationKey,
+      location: location
     },
     {
       headers: {
@@ -108,6 +110,7 @@ const getIngredients = async (workOrderId) => {
 };
 
 export default {
+  getWorkOrders,
   getWorkStations,
   loginWithQrSessionKey,
   getDeviceSessionQr,

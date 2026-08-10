@@ -99,7 +99,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
   const loadSavedUsers = async () => {
     try {
-      setSavedUsers([])
+      setSavedUsers([]);
       console.log(hwId);
       console.log(activationKey);
       const response = await apiService.getAllDeviceUsers(hwId, activationKey);
