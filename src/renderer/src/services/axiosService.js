@@ -33,15 +33,15 @@ backendApiClient.interceptors.request.use(
 //   }
 // );
 
-const jupiterApiClient = axios.create({
-  baseURL: import.meta.env.VITE_JUPITER_BASE_URL,
+const orbitApiClient = axios.create({
+  baseURL: import.meta.env.VITE_ORBIT_BASE_URL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-jupiterApiClient.interceptors.request.use(
+orbitApiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
     if (!config.url.includes('/auth/login')) {
@@ -55,7 +55,7 @@ jupiterApiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// jupiterApiClient.interceptors.response.use(
+// orbitApiClient.interceptors.response.use(
 //   (response) => response,
 //   (error) => {
 //     if (error.response?.status === 401) {
@@ -67,4 +67,4 @@ jupiterApiClient.interceptors.request.use(
 //   }
 // );
 
-export default { backendApiClient, jupiterApiClient };
+export default { backendApiClient, orbitApiClient };

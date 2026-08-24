@@ -17,21 +17,21 @@ const getAccessToken = () => {
 };
 
 const activateHmi = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post('/api/hmi/v1/activate-device', {
+  return await apiClient.orbitApiClient.post('/api/hmi/v1/activate-device', {
     hwId: hwId,
     activationKey: activationKey
   });
 };
 
 const getAllDeviceUsers = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/get-all-device-users`, {
+  return await apiClient.orbitApiClient.post(`/api/hmi/v1/get-all-device-users`, {
     hwId: hwId,
     activationKey: activationKey
   });
 };
 
 const loginWithPin = async (hwId, activationKey, username, pin) => {
-  return await apiClient.jupiterApiClient.post(`/api/auth/v1/login-with-pin`, {
+  return await apiClient.orbitApiClient.post(`/api/auth/v1/login-with-pin`, {
     hwId: hwId,
     activationKey: activationKey,
     username: username,
@@ -40,21 +40,21 @@ const loginWithPin = async (hwId, activationKey, username, pin) => {
 };
 
 const getDeviceSessionQr = async (hwId, activationKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/hmi/v1/generate-login-qr`, {
+  return await apiClient.orbitApiClient.post(`/api/hmi/v1/generate-login-qr`, {
     hwId: hwId,
     activationKey: activationKey
   });
 };
 
 const loginWithQrSessionKey = async (deviceSessionKey) => {
-  return await apiClient.jupiterApiClient.post(`/api/auth/v1/login-with-qr-session-key`, {
+  return await apiClient.orbitApiClient.post(`/api/auth/v1/login-with-qr-session-key`, {
     sessionKey: deviceSessionKey
   });
 };
 
 const getWorkStations = async (hwId, activationKey) => {
   const token = getAccessToken();
-  const response = await apiClient.jupiterApiClient.post(
+  const response = await apiClient.orbitApiClient.post(
     `/api/hmi/v1/get-workstations`,
     {
       hwId: hwId,
@@ -71,7 +71,7 @@ const getWorkStations = async (hwId, activationKey) => {
 
 const getWorkOrders = async (hwId, activationKey, location) => {
   const token = getAccessToken();
-  const response = await apiClient.jupiterApiClient.post(
+  const response = await apiClient.orbitApiClient.post(
     `/api/hmi/v1/get-work-orders`,
     {
       hwId: hwId,
@@ -105,7 +105,7 @@ const createUser = async (data) => {
 };
 
 const getIngredients = async (workOrderId) => {
-  const response = await apiClient.jupiterApiClient.get(`/api/v1/ingredients/${workOrderId}`);
+  const response = await apiClient.orbitApiClient.get(`/api/v1/ingredients/${workOrderId}`);
   return response.data;
 };
 
