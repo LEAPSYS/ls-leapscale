@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Login from './pages/Login';
+import Operation from './pages/Operation';
 import Location from './pages/Location';
 import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
@@ -9,7 +10,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-  const [route, setRoute] = useState('activate'); // 'login' | 'location' | 'workorders' | 'connect' | 'dashboard'
+  const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'location' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [hwId, setHwId] = useState('');
   const [hwCode, setHwCode] = useState(null);
@@ -109,7 +110,7 @@ export default function App() {
   };
 
   const onProceedFromLogin = async () => {
-    setRoute('location');
+    setRoute('operation');
   };
 
   const onBackFromLogin = () => {
@@ -160,6 +161,12 @@ export default function App() {
     }
     setLocation(loc);
     setRoute('workorders');
+  };
+
+  const handleSelectOperation = (operation) => {
+    if (operation) {
+      setRoute('location');
+    }
   };
 
   const handleSelectWorkOrder = async (wo) => {
@@ -217,6 +224,7 @@ export default function App() {
       <div className="flex flex-column h-screen">
         {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
+        {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} hwId={hwId} activationKey={activationKey} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} location={location} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}
