@@ -87,6 +87,10 @@ const getWorkOrders = async (hwId, activationKey, location) => {
   return response;
 };
 
+const executeSp = async (params) => {
+  return await apiClient.orbitApiClient.post('/api/horizon/v1/execute-sp', params);
+};
+
 //to be validated
 
 const getUsers = async () => {
@@ -110,6 +114,7 @@ const getIngredients = async (workOrderId) => {
 };
 
 export default {
+  executeSp,
   getWorkOrders,
   getWorkStations,
   loginWithQrSessionKey,
