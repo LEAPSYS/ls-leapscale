@@ -12,15 +12,22 @@ JobCard.propTypes = {
   onBack: PropTypes.func.isRequired
 };
 
+const PAGE_SIZE = 6;
+
 export default function JobCard({ operation, onSelect, onBack }) {
   const [selected, setSelected] = useState(null);
   const [jobCards, setJobCards] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pageNum, setPageNum] = useState(0);
 
   const getOperationValue = (selectedOperation) => {
     if (typeof selectedOperation === 'string') return selectedOperation;
     return selectedOperation?.name || selectedOperation?.operationName || selectedOperation?.operationCode || '';
   };
+
+  useEffect(() => {
+    setPageNum(0);
+  }, [operation]);
 
   useEffect(() => {
     const fetchJobCards = async () => {
@@ -30,8 +37,8 @@ export default function JobCard({ operation, onSelect, onBack }) {
           paramFor: 'GET_JC_BY_OP',
           param1: getOperationValue(operation),
           param2: 'Open',
-          param3: '10',
-          param4: '0',
+          param3: String(PAGE_SIZE),
+          param4: String(pageNum),
           param5: '',
           param6: '',
           param7: '',
@@ -50,11 +57,28 @@ export default function JobCard({ operation, onSelect, onBack }) {
     };
 
     fetchJobCards();
-  }, [operation]);
+  }, [operation, pageNum]);
+
+  useEffect(() => {
+    setSelected(null);
+  }, [pageNum]);
+
+  const handlePrevious = () => setPageNum((prev) => Math.max(prev - 1, 0));
+  const handleNext = () => setPageNum((prev) => (jobCards.length < PAGE_SIZE ? prev : prev + 1));
 
   const getJobCardName = (jobCard) => {
     if (typeof jobCard === 'string') return jobCard;
     return jobCard?.name || jobCard?.jobCardNo || jobCard?.jobCardNumber || jobCard?.id || 'Job Card';
+  };
+
+  const getJobCardDetails = (jobCard) => {
+    if (typeof jobCard === 'string') return null;
+
+    return {
+      workOrder: jobCard?.work_order || '-',
+      item: jobCard?.production_item || '-',
+      quantity: jobCard?.for_quantity ?? '-'
+    };
   };
 
   const getJobCardKey = (jobCard, index) => {
@@ -85,20 +109,37 @@ export default function JobCard({ operation, onSelect, onBack }) {
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            <h3 className="my-1">Choose Job Card</h3>
+            <div className="flex align-items-center justify-content-between">
+              <h3 className="my-1">Choose Job Card</h3>
+              <div>
+                <Button icon="pi pi-chevron-left" onClick={handlePrevious} disabled={pageNum === 0 || loading} className="p-button-outlined p-2 mr-2" />
+                <Button icon="pi pi-chevron-right" iconPos="right" onClick={handleNext} disabled={jobCards.length < PAGE_SIZE || loading} className="p-button-outlined p-2" />
+              </div>
+            </div>
             {loading ? (
               <p className="p-4">Loading job cards...</p>
             ) : jobCards.length === 0 ? (
               <p className="p-4">No open job cards available.</p>
             ) : (
               <div className="grid p-2">
-                {jobCards.map((jobCard, index) => (
-                  <div className="col-4" key={getJobCardKey(jobCard, index)}>
-                    <div style={getStyle(jobCard)} className="text-center p-3 border-round-sm font-bold" onClick={() => setSelected(jobCard)} role="button" tabIndex={0}>
-                      {getJobCardName(jobCard)}
+                {jobCards.map((jobCard, index) => {
+                  const details = getJobCardDetails(jobCard);
+                  return (
+                    <div className="col-6" key={getJobCardKey(jobCard, index)}>
+                      <div style={getStyle(jobCard)} className="text-center p-3 border-round-sm font-bold" onClick={() => setSelected(jobCard)} role="button" tabIndex={0}>
+                        <div>Job Card: {getJobCardName(jobCard)}</div>
+                        {details && (
+                          <React.Fragment>
+                            <div>Work Order: {details.workOrder}</div>
+                            <div>
+                              Item: {details.item} (Qty: {details.quantity})
+                            </div>
+                          </React.Fragment>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
