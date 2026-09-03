@@ -241,7 +241,7 @@ export default function App() {
         {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
         {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} />}
-        {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} onLogout={handleLogout} />}
+        {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} />}
         {route === 'location' && <Location onSelect={handleSelectLocation} hwId={hwId} activationKey={activationKey} />}
         {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} location={location} />}
         {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}

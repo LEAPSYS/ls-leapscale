@@ -54,15 +54,7 @@ export default function Activation({ onProceed, isActive, onActivate }) {
     startTimer();
   };
 
-  const endContent = (
-    <React.Fragment>
-      {/* <Button label="Demo" onClick={() => onDemo()} visible={true} className="p-button-secondary p-2 mr-1" />
-      {!isActive ? (
-        <Button label="Activate" onClick={() => onActivate()} className="p-button-success p-2 " />
-      ) : (
-        <Button label="Login"  className="p-button-success p-2 " onClick={() => onDemo()}/>)} */}
-    </React.Fragment>
-  );
+  const endContent = <React.Fragment>{inactive && <Button label="Activate" onClick={() => retryActivation()} className="p-button-success p-2 " />}</React.Fragment>;
 
   return (
     <React.Fragment>
@@ -74,7 +66,6 @@ export default function Activation({ onProceed, isActive, onActivate }) {
           {inactive ? (
             <div className="flex flex-column justify-content-center align-items-center text-center">
               <p className="surface-card py-2 px-3">This device is not activated. Please activate your device to continue.</p>
-              <Button label="Activate" onClick={() => retryActivation()} className="p-button-success p-3" />
             </div>
           ) : (
             <div className="surface-card py-2 px-3 flex flex-column justify-content-center align-items-center">

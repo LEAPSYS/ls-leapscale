@@ -9,11 +9,10 @@ import apiService from '../services/apiService';
 JobCard.propTypes = {
   operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   onSelect: PropTypes.func.isRequired,
-  onBack: PropTypes.func.isRequired,
-  onLogout: PropTypes.func.isRequired
+  onBack: PropTypes.func.isRequired
 };
 
-export default function JobCard({ operation, onSelect, onBack, onLogout }) {
+export default function JobCard({ operation, onSelect, onBack }) {
   const [selected, setSelected] = useState(null);
   const [jobCards, setJobCards] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -74,7 +73,6 @@ export default function JobCard({ operation, onSelect, onBack, onLogout }) {
   const endContent = (
     <React.Fragment>
       <Button label="Back" onClick={onBack} className="p-button-danger p-2 mr-1" />
-      <Button label="Logout" onClick={onLogout} className="p-button-danger p-2 mr-1" />
       <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
     </React.Fragment>
   );

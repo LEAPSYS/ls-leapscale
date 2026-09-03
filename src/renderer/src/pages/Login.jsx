@@ -12,10 +12,7 @@ import { InputOtp } from 'primereact/inputotp';
 import ArrowLeft from '../../../../resources/subdirectory_arrow_left.png';
 import BackspaceIcon from '../../../../resources/backspace_black.png';
 import { useEffect } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { useRef } from 'react';
 import 'primeicons/primeicons.css';
-import { Badge } from 'primereact/badge';
 import { Knob } from 'primereact/knob';
 
 Login.propTypes = {
@@ -28,17 +25,14 @@ Login.propTypes = {
 export default function Login({ onProceed, onBack, hwId, activationKey }) {
   const startContent = <Brand></Brand>;
   const [selected, setSelected] = useState('new');
-  const [newUserOrExistingUser, setNewUserOrExistingUser] = useState(true);
   const [keySelected, setKeySelected] = useState(null);
   const [token, setTokens] = useState('');
   const [showQr, setShowQr] = useState(false);
-  const [qrCodeExpired, setQrCodeExpired] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
   const [savedUsers, setSavedUsers] = useState([]);
   const [qrImage, setQrImage] = useState('');
   const [userPinSaved, setUserPinSaved] = useState(null);
   const [seconds, setSeconds] = useState(0);
-  const [deviceSessionKey, setDeviceSessionKey] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -46,7 +40,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
       setInvalidUser(false);
       setSelected('new');
       setUserPinSaved(null);
-      setDeviceSessionKey(null);
     })();
   }, []);
 
@@ -61,38 +54,11 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
         await onProceed();
       } else {
         setInvalidUser(true);
-        // setSelected('new');
-        // setUserPinSaved(null);
-        // setShowQr(false);
-        // await loadSavedUsers();
       }
     } catch (error) {
       setSelected('new');
       setUserPinSaved(null);
       setShowQr(false);
-      await loadSavedUsers();
-    }
-  };
-
-  const setUserPin = async (userPin) => {
-    try {
-      // const response = await apiService.setUserPin(deviceSessionKey, userPin);
-      // if (response) {
-      //   if (response.status === 200) {
-      //     setSelected('new');
-      //     setUserPinSaved(true);
-      //     setShowQr(false);
-      //     await loadSavedUsers();
-      //   }
-      // } else {
-      //   setInvalidUser(false);
-      //   setSelected('new');
-      //   setUserPinSaved(null);
-      //   setShowQr(false);
-      //   await loadSavedUsers();
-      // }
-    } catch (error) {
-      console.log(`setUserPin ${error}`);
       await loadSavedUsers();
     }
   };
@@ -136,7 +102,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
       if (qrImageResponse) {
         if (qrImageResponse.status === 200) {
           const sessionKey = qrImageResponse.data.sessionKey;
-          setDeviceSessionKey(sessionKey);
           const qrImageBlob = base64ToBlob(qrImageResponse.data.qrBase64);
           const imageUrl = URL.createObjectURL(qrImageBlob);
           setSelected('new');
@@ -171,19 +136,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
                   apiService.storeTokens(response.data.access_token, response.data.refresh_token);
                   await onProceed();
                 }
-
-                // if (response.data == '1') {
-                //   console.log('User PIN set successfully');
-                //   setSelected('LoginSuccess');
-                //   clearInterval(interval);
-                // }
-
-                // if (response.data == '0') {
-                //   setSelected('new');
-                //   setUserPinSaved(false);
-                //   console.log('QR code expired');
-                //   clearInterval(interval);
-                // }
               }
             }
           })
@@ -229,7 +181,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
     setKeySelected(null);
     setTokens('');
     setSelected(user);
-    //clearInterval(interval);
   };
 
   const getStyle = (wo) => {
@@ -265,7 +216,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
   const endContent = (
     <React.Fragment>
       <Button label="Back" onClick={() => onBack()} className="p-button-danger p-2 mr-1" />
-      {/* <Button label="Demo" onClick={() => onProceed()} className="p-button-primary" /> */}
     </React.Fragment>
   );
 
@@ -277,18 +227,6 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
           <div className="surface-card py-2 px-3 ">
-            {/* <h4 className="my-1">Login Page</h4>
-            <div className="flex flex-wrap align-items-center justify-content-center">
-              <p>Scan this QR with your mobile to activate your Leapsmart/HMI device.</p>
-              <img src={qrImage} alt="QR code" style={{ width: 100, height: 150 }} />
-            </div>
-            <div>
-              <Button label="Test Login" onClick={() => handleLogin()} className="p-button-primary" />
-              {<p>Loading...</p>}
-              {loginError && <p>Error: {JSON.stringify(loginError)}</p>}
-              {loginResult && <p>{loginResult.access_token}</p>}
-              <p>{true}</p>
-            </div> */}
             <div className="flex flex-row justify-content-center gap-1 ">
               <div className="w-5">
                 {invalidUser ? (
@@ -395,7 +333,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
                             <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
                               0
                             </div>
-                            <Button disabled={token.length !== 4} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => (selected === 'LoginSuccess' ? setUserPin(token) : handleLogin(token))}>
+                            <Button disabled={token.length !== 4} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
                               <img src={ArrowLeft} alt="submit" />
                             </Button>
                           </div>
