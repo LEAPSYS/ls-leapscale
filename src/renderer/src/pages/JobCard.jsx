@@ -92,7 +92,7 @@ export default function JobCard({ operation, onSelect, onBack }) {
       return { backgroundColor: '#eff6ff', borderColor: '#3b82f6', boxShadow: '0 0 0 1px #3b82f6' };
     }
 
-    return { backgroundColor: 'var(--surface-card)', borderColor: 'var(--surface-200)' };
+    return { backgroundColor: 'var(--surface-card)', borderColor: 'var(--surface-200)', boxShadow: 'none' };
   };
 
   const endContent = (
@@ -129,7 +129,7 @@ export default function JobCard({ operation, onSelect, onBack }) {
                   return (
                     <div className="col-12 md:col-6 lg:col-4" key={getJobCardKey(jobCard, index)}>
                       <div
-                        style={{ ...getStyle(jobCard), border: '1px solid', transition: 'all 0.15s ease' }}
+                        style={{ ...getStyle(jobCard), borderWidth: '1px', borderStyle: 'solid', transition: 'all 0.15s ease' }}
                         className="border-round-lg p-2 cursor-pointer"
                         onClick={() => setSelected(jobCard)}
                         role="button"
