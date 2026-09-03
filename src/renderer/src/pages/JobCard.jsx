@@ -86,12 +86,13 @@ export default function JobCard({ operation, onSelect, onBack }) {
     return jobCard?.id || jobCard?._id || jobCard?.jobCardNo || jobCard?.name || index;
   };
 
+
   const getStyle = (jobCard) => {
     if (selected === jobCard) {
-      return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)' };
+      return { backgroundColor: '#eff6ff', borderColor: '#3b82f6', boxShadow: '0 0 0 1px #3b82f6' };
     }
 
-    return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px dashed var(--surface-500)' };
+    return { backgroundColor: 'var(--surface-card)', borderColor: 'var(--surface-200)' };
   };
 
   const endContent = (
@@ -124,15 +125,57 @@ export default function JobCard({ operation, onSelect, onBack }) {
               <div className="grid p-2">
                 {jobCards.map((jobCard, index) => {
                   const details = getJobCardDetails(jobCard);
+                  const isSelected = selected === jobCard;
                   return (
-                    <div className="col-6" key={getJobCardKey(jobCard, index)}>
-                      <div style={getStyle(jobCard)} className="text-center p-3 border-round-sm font-bold" onClick={() => setSelected(jobCard)} role="button" tabIndex={0}>
-                        <div>Job Card: {getJobCardName(jobCard)}</div>
+                    <div className="col-12 md:col-6 lg:col-4" key={getJobCardKey(jobCard, index)}>
+                      <div
+                        style={{ ...getStyle(jobCard), border: '1px solid', transition: 'all 0.15s ease' }}
+                        className="border-round-lg p-2 cursor-pointer"
+                        onClick={() => setSelected(jobCard)}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <div className="flex align-items-center justify-content-between mb-1">
+                          <div className="flex align-items-center gap-2">
+                            <span
+                              className="flex align-items-center justify-content-center border-round-md"
+                              style={{ width: '28px', height: '28px', backgroundColor: '#e0e7ff', color: '#4f46e5' }}
+                            >
+                              <i className="pi pi-clipboard text-sm" />
+                            </span>
+                            <span className="text-xs font-medium text-color-secondary uppercase">Job Card</span>
+                          </div>
+                          {isSelected && (
+                            <span className="flex align-items-center gap-1 text-xs font-medium" style={{ color: '#3b82f6' }}>
+                              <i className="pi pi-check-circle" />
+                              SELECTED
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-lg font-bold mb-1">{getJobCardName(jobCard)}</div>
                         {details && (
                           <React.Fragment>
-                            <div>Work Order: {details.workOrder}</div>
-                            <div>
-                              Item: {details.item} (Qty: {details.quantity})
+                            <div className="mb-1">
+                              <div className="text-xs text-color-secondary uppercase mb-0">Work Order</div>
+                              <div className="font-semibold">{details.workOrder}</div>
+                            </div>
+                            <div className="flex align-items-center justify-content-between pt-1" style={{ borderTop: '1px solid var(--surface-200)' }}>
+                              <div className="flex align-items-center gap-2">
+                                <span
+                                  className="flex align-items-center justify-content-center border-round-md"
+                                  style={{ width: '24px', height: '24px', backgroundColor: '#dcfce7', color: '#16a34a' }}
+                                >
+                                  <i className="pi pi-box text-xs" />
+                                </span>
+                                <div>
+                                  <div className="text-xs text-color-secondary uppercase">Item</div>
+                                  <div className="font-semibold">{details.item}</div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-color-secondary uppercase">Qty</div>
+                                <div className="font-semibold">{details.quantity}</div>
+                              </div>
                             </div>
                           </React.Fragment>
                         )}
