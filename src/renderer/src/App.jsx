@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Login from './pages/Login';
 import Operation from './pages/Operation';
 import JobCard from './pages/JobCard';
-import Location from './pages/Location';
+import WorkStation from './pages/WorkStation';
 import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
@@ -11,7 +11,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-  const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'jobcard' | 'location' | 'workorders' | 'connect' | 'dashboard'
+  const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'jobcard' | 'workstation' | 'workorders' | 'connect' | 'dashboard'
   const [ports, setPorts] = useState([]);
   const [hwId, setHwId] = useState('');
   const [hwCode, setHwCode] = useState(null);
@@ -19,7 +19,7 @@ export default function App() {
   const [selectedPort, setSelectedPort] = useState('');
   const [operation, setOperation] = useState(null);
   const [jobCard, setJobCard] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [workstation, setWorkStation] = useState(null);
   const [workOrder, setWorkOrder] = useState(null);
   const [live, setLive] = useState('0.000');
   const [stable, setStable] = useState('0.000');
@@ -156,13 +156,13 @@ export default function App() {
     setRoute('login');
   };
 
-  const handleSelectLocation = async (loc) => {
-    if (!loc) {
-      setLocation(null);
+  const handleSelectWorkStation = async (ws) => {
+    if (!ws) {
+      setWorkStation(null);
       handleLogout();
       return;
     }
-    setLocation(loc);
+    setWorkStation(ws);
     setRoute('workorders');
   };
 
@@ -176,7 +176,7 @@ export default function App() {
   const handleSelectJobCard = (selectedJobCard) => {
     if (selectedJobCard) {
       setJobCard(selectedJobCard);
-      setRoute('location');
+      setRoute('workstation');
     }
   };
 
@@ -187,7 +187,7 @@ export default function App() {
 
   const handleSelectWorkOrder = async (wo) => {
     if (!wo) {
-      setRoute('location');
+      setRoute('workstation');
       setWorkOrder(null);
       return;
     }
@@ -242,9 +242,9 @@ export default function App() {
         {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
         {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} />}
         {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} />}
-        {route === 'location' && <Location onSelect={handleSelectLocation} hwId={hwId} activationKey={activationKey} />}
-        {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} location={location} />}
-        {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} location={location} onBack={onBackFromConnect} />}
+        {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
+        {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}
+        {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
         {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
         <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} hwCode={hwCode} syncing={syncing}></StatusBar>
       </div>

@@ -69,14 +69,14 @@ const getWorkStations = async (hwId, activationKey) => {
   return response;
 };
 
-const getWorkOrders = async (hwId, activationKey, location) => {
+const getWorkOrders = async (hwId, activationKey, workstation) => {
   const token = getAccessToken();
   const response = await apiClient.orbitApiClient.post(
     `/api/hmi/v1/get-work-orders`,
     {
       hwId: hwId,
       activationKey: activationKey,
-      location: location
+      workstation: workstation
     },
     {
       headers: {

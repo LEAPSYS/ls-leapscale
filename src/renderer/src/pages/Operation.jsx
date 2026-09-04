@@ -78,7 +78,7 @@ export default function Operation({ onSelect, onLogout }) {
       </header>
       <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <ScrollPanel style={{ width: '100%', height: '100%' }}>
-          <div className="surface-card py-2 px-3 ">
+          <div className="py-2 px-3">
             <h3 className="my-1">Choose Operation</h3>
             {loading ? (
               <p className="p-4">Loading operations...</p>

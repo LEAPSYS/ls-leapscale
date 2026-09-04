@@ -10,10 +10,10 @@ WorkOrders.propTypes = {
   onSelect: PropTypes.func.isRequired,
   hwId: PropTypes.string,
   activationKey: PropTypes.string,
-  location: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  workstation: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 
-export default function WorkOrders({ onSelect, hwId, activationKey, location }) {
+export default function WorkOrders({ onSelect, hwId, activationKey, workstation }) {
   const [selected, setSelected] = useState(null);
   const [workOrders, setWorkOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function WorkOrders({ onSelect, hwId, activationKey, location }) 
     const fetchWorkOrders = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getWorkOrders(hwId, activationKey, location);
+        const response = await apiService.getWorkOrders(hwId, activationKey, workstation);
         const list = response?.data?.data || response?.data || response;
         if (Array.isArray(list)) {
           setWorkOrders(list);
@@ -37,7 +37,7 @@ export default function WorkOrders({ onSelect, hwId, activationKey, location }) 
       }
     };
     fetchWorkOrders();
-  }, [hwId, activationKey, location]);
+  }, [hwId, activationKey, workstation]);
 
   const startContent = <Brand></Brand>;
 

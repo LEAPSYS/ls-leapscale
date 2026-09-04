@@ -6,30 +6,45 @@ import Brand from '../components/Brand';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import apiService from '../services/apiService';
 
-Location.propTypes = {
+WorkStation.propTypes = {
   onSelect: PropTypes.func.isRequired,
   hwId: PropTypes.string,
+  operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   activationKey: PropTypes.string
 };
 
-export default function Location({ onSelect, hwId, activationKey }) {
+export default function WorkStation({ onSelect, hwId, operation, activationKey }) {
   const [selected, setSelected] = useState(null);
-  const [locations, setLocations] = useState([]);
+  const [workstations, setWorkStations] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const getOperationValue = (selectedOperation) => {
+    if (typeof selectedOperation === 'string') return selectedOperation;
+    return selectedOperation?.name || selectedOperation?.operationName || selectedOperation?.operationCode || '';
+  };
 
   useEffect(() => {
     const fetchWorkstations = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getWorkStations(hwId, activationKey);
+        const response = await apiService.executeSp({
+          paramFor: 'GET_WS_LIST',
+          param1: getOperationValue(operation),
+          param2: 'Open',
+          param3: '',
+          param4: '',
+          param5: '',
+          param6: '',
+          param7: '',
+          param8: '',
+          param9: '',
+          param10: ''
+        });
         const data = response?.data?.data || response?.data || response;
-        if (Array.isArray(data)) {
-          setLocations(data);
-        } else {
-          setLocations([]);
-        }
-      } catch (err) {
-        console.error('Error fetching workstations:', err);
+        setWorkStations(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching workstations:', error);
+        setWorkStations([]);
       } finally {
         setLoading(false);
       }
@@ -46,22 +61,24 @@ export default function Location({ onSelect, hwId, activationKey }) {
     </React.Fragment>
   );
 
-  const getStyle = (loc) => {
-    if (selected === loc) {
+  const getStyle = (ws) => {
+    if (selected === ws) {
       return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)' };
     } else {
       return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px dashed var(--surface-500)' };
     }
   };
 
-  const getLocationName = (loc) => {
-    if (typeof loc === 'string') return loc;
-    return loc?.name || loc?.workstationName || loc?.workstationCode || loc?.id || 'Workstation';
+  const getWorkStationName = (ws) => {
+    console.log('TEST');
+    console.log(ws);
+    if (typeof ws === 'string') return ws;
+    return ws?.name || ws?.workstation || ws?.workstationCode || ws?.id || 'Workstation';
   };
 
-  const getLocationKey = (loc, index) => {
-    if (typeof loc === 'string') return loc;
-    return loc?.id || loc?._id || loc?.name || index;
+  const getWorkStationKey = (ws, index) => {
+    if (typeof ws === 'string') return ws;
+    return ws?.id || ws?._id || ws?.name || index;
   };
 
   return (
@@ -75,14 +92,14 @@ export default function Location({ onSelect, hwId, activationKey }) {
             <h3 className="my-1">Choose Workstation</h3>
             {loading ? (
               <p className="p-4">Loading workstations...</p>
-            ) : locations.length === 0 ? (
+            ) : workstations.length === 0 ? (
               <p className="p-4">No workstations available.</p>
             ) : (
               <div className="grid p-2">
-                {locations.map((loc, index) => (
-                  <div className="col-4" key={getLocationKey(loc, index)}>
-                    <div style={getStyle(loc)} className={`text-center p-3 border-round-sm font-bold`} onClick={() => setSelected(loc)} role="button" tabIndex={0}>
-                      {getLocationName(loc)}
+                {workstations.map((ws, index) => (
+                  <div className="col-4" key={getWorkStationKey(ws, index)}>
+                    <div style={getStyle(ws)} className={`text-center p-3 border-round-sm font-bold`} onClick={() => setSelected(ws)} role="button" tabIndex={0}>
+                      {getWorkStationName(ws)}
                     </div>
                   </div>
                 ))}
