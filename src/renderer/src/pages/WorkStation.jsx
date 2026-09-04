@@ -28,7 +28,7 @@ export default function WorkStation({ onBack, onSelect, hwId, operation, activat
         const fetchWorkstations = async () => {
             try {
                 setLoading(true);
-                const response = await apiService.executeSp({
+                const response = await apiService.getHmiData({
                     paramFor: 'GET_WS_LIST',
                     param1: getOperationValue(operation),
                     param2: 'Open',

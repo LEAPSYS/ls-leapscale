@@ -8,8 +8,8 @@ import apiService from '../services/apiService';
 
 WorkOrders.propTypes = {
     onSelect: PropTypes.func.isRequired,
-    hwId: PropTypes.string,
-    activationKey: PropTypes.string,
+    hwId: PropTypes.string.isRequired,
+    activationKey: PropTypes.string.isRequired,
     workstation: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 

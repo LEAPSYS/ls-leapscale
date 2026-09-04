@@ -8,10 +8,12 @@ import apiService from '../services/apiService';
 
 Operation.propTypes = {
     onSelect: PropTypes.func.isRequired,
+    hwId: PropTypes.string.isRequired,
+    activationKey: PropTypes.string.isRequired,
     onLogout: PropTypes.func.isRequired
 };
 
-export default function Operation({ onSelect, onLogout }) {
+export default function Operation({ onSelect, onLogout, hwId, activationKey }) {
     const [selected, setSelected] = useState(null);
     const [operations, setOperations] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -20,18 +22,24 @@ export default function Operation({ onSelect, onLogout }) {
         const fetchOperations = async () => {
             try {
                 setLoading(true);
-                const response = await apiService.executeSp({
-                    paramFor: 'GET_OP_LIST',
-                    param1: '',
-                    param2: '',
-                    param3: '',
-                    param4: '',
-                    param5: '',
-                    param6: '',
-                    param7: '',
-                    param8: '',
-                    param9: '',
-                    param10: ''
+                const response = await apiService.getHmiData({
+                    spRequest: {
+                        paramFor: 'GET_OP_LIST',
+                        param1: '',
+                        param2: '',
+                        param3: '',
+                        param4: '',
+                        param5: '',
+                        param6: '',
+                        param7: '',
+                        param8: '',
+                        param9: '',
+                        param10: ''
+                    },
+                    hmiDeviceRequest: {
+                        hwId: hwId,
+                        activationKey: activationKey
+                    }
                 });
                 const data = response?.data?.data || response?.data || response;
                 setOperations(Array.isArray(data) ? data : []);

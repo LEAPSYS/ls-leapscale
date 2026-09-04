@@ -11,7 +11,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'jobcard' | 'workstation' | 'workorders' | 'connect' | 'dashboard'
+    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorders' | 'connect' | 'dashboard'
     const [ports, setPorts] = useState([]);
     const [hwId, setHwId] = useState('');
     const [hwCode, setHwCode] = useState(null);
@@ -240,7 +240,7 @@ export default function App() {
             <div className="flex flex-column h-screen">
                 {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
                 {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
-                {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} />}
+                {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} activationKey={activationKey} />}
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
                 {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} />}
                 {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}

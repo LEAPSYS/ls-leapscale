@@ -34,7 +34,7 @@ export default function JobCard({ operation, onSelect, onBack, workstation }) {
         const fetchJobCards = async () => {
             try {
                 setLoading(true);
-                const response = await apiService.executeSp({
+                const response = await apiService.getHmiData({
                     paramFor: 'GET_JC_LIST',
                     param1: getOperationValue(operation),
                     param2: 'Open',
