@@ -25,14 +25,11 @@ export default function App() {
     const [stable, setStable] = useState('0.000');
     const [portStatus, setPortStatus] = useState('disconnected');
     const [ingredients, setIngredients] = useState([]);
-    const [selectedIngredient, setSelectedIngredient] = useState(null);
     const [mangingStatus, setMangingStatus] = useState(null);
     const [syncing, setSyncing] = useState(false);
     const [activationStatus, setActivationStatus] = useState(0);
     const [activated, setActivated] = useState(false);
     const [networkConnected, setNetworkConnected] = useState(false);
-    const [workStationDetails, setWorkStationDetails] = useState(null);
-    const [workOrders, setWorkOrders] = useState(null);
 
     window.addEventListener('online', () => {
         console.log('Connected!');
@@ -161,25 +158,30 @@ export default function App() {
             return;
         }
         setWorkStation(ws);
-        setRoute('workorders');
+        setRoute('jobcard');
     };
 
     const handleSelectOperation = (operation) => {
         if (operation) {
             setOperation(operation);
-            setRoute('jobcard');
+            setRoute('workstation');
         }
     };
 
     const handleSelectJobCard = (selectedJobCard) => {
         if (selectedJobCard) {
             setJobCard(selectedJobCard);
-            setRoute('workstation');
+            setRoute('workorders');
         }
     };
 
     const handleBackFromJobCard = () => {
         setJobCard(null);
+        setRoute('workstation');
+    };
+
+    const handleBackFromWorkStation = () => {
+        setWorkStation(null);
         setRoute('operation');
     };
 
@@ -239,8 +241,8 @@ export default function App() {
                 {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
                 {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
                 {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} />}
-                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} />}
-                {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
+                {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
+                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} />}
                 {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}

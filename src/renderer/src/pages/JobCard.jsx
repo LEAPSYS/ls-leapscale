@@ -7,6 +7,7 @@ import Brand from '../components/Brand';
 import apiService from '../services/apiService';
 
 JobCard.propTypes = {
+    workstation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onSelect: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired
@@ -14,7 +15,7 @@ JobCard.propTypes = {
 
 const PAGE_SIZE = 6;
 
-export default function JobCard({ operation, onSelect, onBack }) {
+export default function JobCard({ operation, onSelect, onBack, workstation }) {
     const [selected, setSelected] = useState(null);
     const [jobCards, setJobCards] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -34,12 +35,12 @@ export default function JobCard({ operation, onSelect, onBack }) {
             try {
                 setLoading(true);
                 const response = await apiService.executeSp({
-                    paramFor: 'GET_JC_BY_OP',
+                    paramFor: 'GET_JC_LIST',
                     param1: getOperationValue(operation),
                     param2: 'Open',
-                    param3: String(PAGE_SIZE),
-                    param4: String(pageNum),
-                    param5: '',
+                    param3: getWorkStationName(workstation),
+                    param4: String(PAGE_SIZE),
+                    param5: String(pageNum),
                     param6: '',
                     param7: '',
                     param8: '',
@@ -57,7 +58,7 @@ export default function JobCard({ operation, onSelect, onBack }) {
         };
 
         fetchJobCards();
-    }, [operation, pageNum]);
+    }, [operation, workstation, pageNum]);
 
     useEffect(() => {
         setSelected(null);
@@ -79,6 +80,13 @@ export default function JobCard({ operation, onSelect, onBack }) {
             item: jobCard?.production_item || '-',
             quantity: jobCard?.for_quantity ?? '-'
         };
+    };
+
+    const getWorkStationName = (ws) => {
+        console.log('TEST');
+        console.log(ws);
+        if (typeof ws === 'string') return ws;
+        return ws?.name || ws?.workstation || ws?.workstationCode || ws?.id || 'Workstation';
     };
 
     const getJobCardKey = (jobCard, index) => {
