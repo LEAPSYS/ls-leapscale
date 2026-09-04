@@ -14,7 +14,7 @@ WorkStation.propTypes = {
     activationKey: PropTypes.string
 };
 
-export default function WorkStation({ onSelect, hwId, operation, activationKey }) {
+export default function WorkStation({ onBack, onSelect, hwId, operation, activationKey }) {
     const [selected, setSelected] = useState(null);
     const [workstations, setWorkStations] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function WorkStation({ onSelect, hwId, operation, activationKey }
 
     const endContent = (
         <React.Fragment>
-            <Button label="Logout" onClick={() => onSelect(null)} className="p-button-danger p-2 mr-1" />
+            <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
             <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
         </React.Fragment>
     );
