@@ -111,7 +111,7 @@ export default function JobCard({ operation, onSelect, onBack, workstation, hwId
     const endContent = (
         <React.Fragment>
             <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
-            <Button label="Next" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
+            <Button label="Continue" onClick={() => onSelect(selected)} disabled={!selected} className="p-button-success p-2" />
         </React.Fragment>
     );
 

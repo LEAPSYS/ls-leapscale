@@ -27,7 +27,7 @@ export default function Connect({ ports, selectedPort, onSelectPort, onConnect, 
     const endContent = (
         <React.Fragment>
             <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
-            <Button label="Refresh" onClick={onRefresh} className="p-button-plain" />
+            <Button label="Refresh" onClick={onRefresh} className="p-button-warning" />
         </React.Fragment>
     );
 
