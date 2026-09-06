@@ -4,7 +4,6 @@ import Operation from './pages/Operation';
 import JobCard from './pages/JobCard';
 import WorkOrderItems from './pages/WorkOrderItems';
 import WorkStation from './pages/WorkStation';
-import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
 import Activation from './pages/Activation';
@@ -12,7 +11,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorderitems' | 'workorders' | 'connect' | 'dashboard'
+    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorderitems' | 'connect' | 'dashboard'
     const [ports, setPorts] = useState([]);
     const [hwId, setHwId] = useState('');
     const [hwCode, setHwCode] = useState(null);
@@ -21,7 +20,6 @@ export default function App() {
     const [operation, setOperation] = useState(null);
     const [jobCard, setJobCard] = useState(null);
     const [workstation, setWorkStation] = useState(null);
-    const [workOrder, setWorkOrder] = useState(null);
     const [live, setLive] = useState('0.000');
     const [stable, setStable] = useState('0.000');
     const [portStatus, setPortStatus] = useState('disconnected');
@@ -117,7 +115,7 @@ export default function App() {
     };
 
     const onBackFromConnect = async () => {
-        setRoute('workorders');
+        setRoute('workstation');
     };
 
     const onProceedFromActivate = () => {
@@ -188,23 +186,13 @@ export default function App() {
     const handleSelectWorkOrderItems = (selectedJobCard) => {
         if (selectedJobCard) {
             setJobCard(selectedJobCard);
-            setRoute('workorders');
+            setRoute('connect');
         }
     };
 
     const handleBackFromWorkStation = () => {
         setWorkStation(null);
         setRoute('operation');
-    };
-
-    const handleSelectWorkOrder = async (wo) => {
-        if (!wo) {
-            setRoute('workstation');
-            setWorkOrder(null);
-            return;
-        }
-        setWorkOrder(wo);
-        setRoute('connect');
     };
 
     useEffect(() => {
@@ -256,7 +244,6 @@ export default function App() {
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
                 {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} activationKey={activationKey} />}
                 {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} operation={operation} hwId={hwId} activationKey={activationKey} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
-                {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
                 <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} hwCode={hwCode} syncing={syncing}></StatusBar>
