@@ -31,19 +31,9 @@ const getValue = (jobCard, keys, fallback = '-') => {
     return fallback;
 };
 
-const getItemName = (item) => {
-    if (typeof item === 'string') return item;
-    return getValue(item, ['item', 'item_name', 'production_item', 'item_code', 'name'], 'Work Order Item');
-};
-
-const getItemQuantity = (item) => {
-    if (typeof item === 'string') return '-';
-    return getValue(item, ['quantity', 'for_quantity', 'qty']);
-};
-
 const getItemKey = (item, index) => {
     if (typeof item === 'string') return item;
-    return item?.id || item?._id || item?.item_code || item?.item || index;
+    return item?.idx ?? item?.item_code ?? index;
 };
 
 export default function WorkOrderItems({ jobCard, operation, hwId, live, stable, portStatus, onSelect, onBack }) {
@@ -122,11 +112,9 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
             <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
                 <ScrollPanel style={{ width: '100%', height: '100%' }}>
                     <div className="surface-card py-2 px-3">
-                        <div className="surface-100 border-round-md p-3 mb-3">
-                            <div className="text-xs text-color-secondary uppercase">Job Card</div>
-                            <div className="text-lg font-bold">{jobCardName}</div>
-                            <div className="text-sm text-color-secondary mt-1">Work Order: {workOrder}</div>
-                        </div>
+                        <h3 className="my-1">
+                            {jobCardName} - Work Order: {workOrder}
+                        </h3>
                         {loading ? (
                             <p className="p-4">Loading work order items...</p>
                         ) : error ? (
@@ -134,67 +122,57 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                         ) : items.length === 0 ? (
                             <p className="p-4">No work order items available.</p>
                         ) : (
-                            <div className="flex gap-3">
-                                <DataTable
-                                    className="w-7 pt-2 pb-2"
-                                    scrollable
-                                    scrollHeight="410px"
-                                    value={items.map((item, index) => ({ key: getItemKey(item, index), name: getItemName(item), quantity: getItemQuantity(item) }))}
-                                    size="small"
-                                    onRowClick={(e) => setSelectedItem(e.data)}
-                                    selectionMode="single"
-                                    selection={selectedItem}
-                                    rowClassName={() => 'cursor-pointer'}
-                                >
-                                    <Column field="name" header="Item"></Column>
-                                    <Column field="quantity" header="Quantity"></Column>
-                                    <Column header="Measured Weight" body={(rowData) => weighedItems[rowData.key] ?? '-'}></Column>
-                                    <Column
-                                        header="Status"
-                                        style={{ width: '80px', textAlign: 'center' }}
-                                        body={(rowData) => (weighedItems[rowData.key] !== undefined ? <i className="pi pi-check-circle" style={{ color: 'var(--green-500)', fontSize: '1.1rem' }}></i> : <i className="pi pi-circle" style={{ color: 'var(--surface-400)', fontSize: '1.1rem' }}></i>)}
-                                    ></Column>
-                                </DataTable>
-                                <div className="w-5">
-                                    {!selectedItem ? (
-                                        <div className="flex-1 ">
-                                            <div className="flex flex-wrap align-items-center justify-content-center px-2 my-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
-                                                <h6 className="m-0 p-0" style={{ fontSize: '0.75rem' }}>
-                                                    Select an item from the list to begin weighing
-                                                </h6>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex-1 ">
-                                            <div className="flex flex-wrap align-items-center justify-content-between  px-2 my-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
-                                                <h6 className="m-0 p-0">{(portStatus || 'disconnected').toUpperCase()}</h6>
-                                                <i className="pi pi-circle-fill" style={{ fontSize: '0.75rem', color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}></i>
-                                            </div>
-                                            <div className="flex flex-wrap flex-column p-2 my-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.25rem' }}>
-                                                <div className="flex  ">
-                                                    <div className="flex-1 mr-1 mb-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                                                        <h6 className="m-0 p-0 text-center" style={{ fontSize: '0.75rem', borderBottom: '2px solid var(--surface-500)' }}>
-                                                            Live
-                                                        </h6>
-                                                        <div className="p-text-bold text-center" style={{ fontSize: '1.2rem', color: 'var(--primary-color)' }}>
-                                                            {live}
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex-1 ml-1 mb-2" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                                                        <h6 className="m-0 p-0 text-center " style={{ fontSize: '0.75rem', borderBottom: '2px solid var(--surface-500)' }}>
-                                                            Stable
-                                                        </h6>
-                                                        <div className="p-text-bold text-center" style={{ fontSize: '1.2rem', color: 'var(--primary-color)' }}>
-                                                            {stable}
-                                                        </div>
+                            <DataTable
+                                className="w-12 pt-2 pb-2"
+                                scrollable
+                                scrollHeight="calc(100vh - 130px)"
+                                value={items.map((item, index) => ({ key: getItemKey(item, index), idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty }))}
+                                size="small"
+                                dataKey="key"
+                                onSelectionChange={(e) => setSelectedItem(e.value)}
+                                selectionMode="single"
+                                selection={selectedItem}
+                                rowClassName={() => 'cursor-pointer'}
+                            >
+                                <Column field="idx" header="#" style={{ width: '60px' }}></Column>
+                                <Column field="itemCode" header="Item Code"></Column>
+                                <Column field="itemName" header="Item Name"></Column>
+                                <Column field="requiredQty" header="Required Qty"></Column>
+                                <Column
+                                    header="Weighing"
+                                    style={{ width: '420px' }}
+                                    body={(rowData) =>
+                                        rowData.key === selectedItem?.key ? (
+                                            <div className="flex align-items-center gap-3">
+                                                <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                                                    <h6 className="m-0 p-0" style={{ fontSize: '0.7rem', borderBottom: '2px solid var(--surface-500)' }}>
+                                                        Live
+                                                    </h6>
+                                                    <div className="p-text-bold" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
+                                                        {live}
                                                     </div>
                                                 </div>
-                                                <Button label="Accept" onClick={handleAccept}></Button>
+                                                <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                                                    <h6 className="m-0 p-0" style={{ fontSize: '0.7rem', borderBottom: '2px solid var(--surface-500)' }}>
+                                                        Stable
+                                                    </h6>
+                                                    <div className="p-text-bold" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
+                                                        {stable}
+                                                    </div>
+                                                </div>
+                                                <Button label="Accept" size="small" onClick={handleAccept}></Button>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                                        ) : (
+                                            <span>{weighedItems[rowData.key] ?? '-'}</span>
+                                        )
+                                    }
+                                ></Column>
+                                <Column
+                                    header="Status"
+                                    style={{ width: '80px', textAlign: 'center' }}
+                                    body={(rowData) => (weighedItems[rowData.key] !== undefined ? <i className="pi pi-check-circle" style={{ color: 'var(--green-500)', fontSize: '1.1rem' }}></i> : <i className="pi pi-circle" style={{ color: 'var(--surface-400)', fontSize: '1.1rem' }}></i>)}
+                                ></Column>
+                            </DataTable>
                         )}
                     </div>
                 </ScrollPanel>
