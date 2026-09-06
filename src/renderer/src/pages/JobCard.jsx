@@ -10,12 +10,14 @@ JobCard.propTypes = {
     workstation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onSelect: PropTypes.func.isRequired,
-    onBack: PropTypes.func.isRequired
+    onBack: PropTypes.func.isRequired,
+    hwId: PropTypes.string,
+    activationKey: PropTypes.string
 };
 
 const PAGE_SIZE = 6;
 
-export default function JobCard({ operation, onSelect, onBack, workstation }) {
+export default function JobCard({ operation, onSelect, onBack, workstation, hwId, activationKey }) {
     const [selected, setSelected] = useState(null);
     const [jobCards, setJobCards] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -35,17 +37,23 @@ export default function JobCard({ operation, onSelect, onBack, workstation }) {
             try {
                 setLoading(true);
                 const response = await apiService.getHmiData({
-                    paramFor: 'GET_JC_LIST',
-                    param1: getOperationValue(operation),
-                    param2: 'Open',
-                    param3: getWorkStationName(workstation),
-                    param4: String(PAGE_SIZE),
-                    param5: String(pageNum),
-                    param6: '',
-                    param7: '',
-                    param8: '',
-                    param9: '',
-                    param10: ''
+                    spRequest: {
+                        paramFor: 'GET_JC_LIST',
+                        param1: getOperationValue(operation),
+                        param2: 'Open',
+                        param3: getWorkStationName(workstation),
+                        param4: String(PAGE_SIZE),
+                        param5: String(pageNum),
+                        param6: '',
+                        param7: '',
+                        param8: '',
+                        param9: '',
+                        param10: ''
+                    },
+                    hmiDeviceRequest: {
+                        hwId: hwId,
+                        activationKey: activationKey
+                    }
                 });
                 const data = response?.data?.data || response?.data || response;
                 setJobCards(Array.isArray(data) ? data : []);
@@ -58,7 +66,7 @@ export default function JobCard({ operation, onSelect, onBack, workstation }) {
         };
 
         fetchJobCards();
-    }, [operation, workstation, pageNum]);
+    }, [operation, workstation, pageNum, hwId, activationKey]);
 
     useEffect(() => {
         setSelected(null);

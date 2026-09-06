@@ -29,17 +29,23 @@ export default function WorkStation({ onBack, onSelect, hwId, operation, activat
             try {
                 setLoading(true);
                 const response = await apiService.getHmiData({
-                    paramFor: 'GET_WS_LIST',
-                    param1: getOperationValue(operation),
-                    param2: 'Open',
-                    param3: '',
-                    param4: '',
-                    param5: '',
-                    param6: '',
-                    param7: '',
-                    param8: '',
-                    param9: '',
-                    param10: ''
+                    spRequest: {
+                        paramFor: 'GET_WS_LIST',
+                        param1: getOperationValue(operation),
+                        param2: 'Open',
+                        param3: '',
+                        param4: '',
+                        param5: '',
+                        param6: '',
+                        param7: '',
+                        param8: '',
+                        param9: '',
+                        param10: ''
+                    },
+                    hmiDeviceRequest: {
+                        hwId: hwId,
+                        activationKey: activationKey
+                    }
                 });
                 const data = response?.data?.data || response?.data || response;
                 setWorkStations(Array.isArray(data) ? data : []);

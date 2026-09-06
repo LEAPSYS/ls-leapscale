@@ -242,7 +242,7 @@ export default function App() {
                 {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
                 {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} activationKey={activationKey} />}
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
-                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} />}
+                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} activationKey={activationKey} />}
                 {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
