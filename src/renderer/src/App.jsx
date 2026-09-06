@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Login from './pages/Login';
 import Operation from './pages/Operation';
 import JobCard from './pages/JobCard';
+import WorkOrderItems from './pages/WorkOrderItems';
 import WorkStation from './pages/WorkStation';
 import WorkOrders from './pages/WorkOrders';
 import Connect from './pages/Connect';
@@ -11,7 +12,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorders' | 'connect' | 'dashboard'
+    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorderitems' | 'workorders' | 'connect' | 'dashboard'
     const [ports, setPorts] = useState([]);
     const [hwId, setHwId] = useState('');
     const [hwCode, setHwCode] = useState(null);
@@ -171,13 +172,24 @@ export default function App() {
     const handleSelectJobCard = (selectedJobCard) => {
         if (selectedJobCard) {
             setJobCard(selectedJobCard);
-            setRoute('workorders');
+            setRoute('workorderitems');
         }
     };
 
     const handleBackFromJobCard = () => {
         setJobCard(null);
         setRoute('workstation');
+    };
+
+    const handleBackFromWorkOrderItems = () => {
+        setRoute('jobcard');
+    };
+
+    const handleSelectWorkOrderItems = (selectedJobCard) => {
+        if (selectedJobCard) {
+            setJobCard(selectedJobCard);
+            setRoute('workorders');
+        }
     };
 
     const handleBackFromWorkStation = () => {
@@ -243,6 +255,7 @@ export default function App() {
                 {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} activationKey={activationKey} />}
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
                 {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} activationKey={activationKey} />}
+                {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
                 {route === 'workorders' && <WorkOrders onSelect={handleSelectWorkOrder} hwId={hwId} activationKey={activationKey} workstation={workstation} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
