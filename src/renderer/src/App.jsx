@@ -233,7 +233,7 @@ export default function App() {
                 {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} />}
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} operation={operation} />}
                 {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} />}
-                {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} operation={operation} hwId={hwId} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
+                {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} operation={operation} hwId={hwId} live={live} stable={stable} portStatus={portStatus} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
                 <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} hwCode={hwCode} syncing={syncing}></StatusBar>
