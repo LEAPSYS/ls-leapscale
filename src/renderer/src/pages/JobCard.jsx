@@ -11,13 +11,12 @@ JobCard.propTypes = {
     operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onSelect: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
-    hwId: PropTypes.string,
-    activationKey: PropTypes.string
+    hwId: PropTypes.string
 };
 
 const PAGE_SIZE = 6;
 
-export default function JobCard({ operation, onSelect, onBack, workstation, hwId, activationKey }) {
+export default function JobCard({ operation, onSelect, onBack, workstation, hwId }) {
     const [selected, setSelected] = useState(null);
     const [jobCards, setJobCards] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -51,8 +50,7 @@ export default function JobCard({ operation, onSelect, onBack, workstation, hwId
                         param10: ''
                     },
                     hmiDeviceRequest: {
-                        hwId: hwId,
-                        activationKey: activationKey
+                        hwId: hwId
                     }
                 });
                 const data = response?.data?.data || response?.data || response;
@@ -66,7 +64,7 @@ export default function JobCard({ operation, onSelect, onBack, workstation, hwId
         };
 
         fetchJobCards();
-    }, [operation, workstation, pageNum, hwId, activationKey]);
+    }, [operation, workstation, pageNum, hwId]);
 
     useEffect(() => {
         setSelected(null);

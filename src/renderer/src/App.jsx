@@ -15,7 +15,6 @@ export default function App() {
     const [ports, setPorts] = useState([]);
     const [hwId, setHwId] = useState('');
     const [hwCode, setHwCode] = useState(null);
-    const [activationKey, setActivationKey] = useState('');
     const [selectedPort, setSelectedPort] = useState('');
     const [operation, setOperation] = useState(null);
     const [jobCard, setJobCard] = useState(null);
@@ -63,28 +62,16 @@ export default function App() {
         }
     };
 
-    const saveActivationKey = async (activationKey) => {
-        const result = await window.api.saveFile('leapscale.bin', activationKey);
-        console.log(result);
-    };
-
-    const readSavedActivationKey = async () => {
-        const result = await window.api.readFile('leapscale.bin');
-        setActivationKey(result.data);
-        console.log(result.data);
-    };
-
     const handleActivate = async () => {
         try {
             setActivationStatus(0);
             setActivated(false);
             setSyncing(true);
             await apiService
-                .activateHmi(hwId, activationKey)
+                .activateHmi(hwId)
                 .then((result) => {
                     console.log(result.data);
                     setHwCode(result.data?.hwCode);
-                    saveActivationKey(result.data?.activationKey);
                     setActivationStatus(result.data?.activationStatus);
 
                     if (result.data?.activationStatus === 1) {
@@ -202,7 +189,6 @@ export default function App() {
             setNetworkConnected(navigator.onLine);
             await loadPorts();
             await loadMachineId();
-            await readSavedActivationKey();
             const data = await window.api.loadItems();
             if (!data.error && data?.ingredients) {
                 setIngredients(data.ingredients);
@@ -230,20 +216,20 @@ export default function App() {
     }, []);
 
     useEffect(() => {
-        if (route === 'activate' && hwId && activationKey) {
+        if (route === 'activate' && hwId) {
             handleActivate();
         }
-    }, [route, hwId, activationKey]);
+    }, [route, hwId]);
 
     return (
         <>
             <div className="flex flex-column h-screen">
                 {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
-                {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} activationKey={activationKey} />}
-                {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} activationKey={activationKey} />}
-                {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} activationKey={activationKey} operation={operation} />}
-                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} activationKey={activationKey} />}
-                {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} operation={operation} hwId={hwId} activationKey={activationKey} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
+                {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} />}
+                {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} />}
+                {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} operation={operation} />}
+                {route === 'jobcard' && <JobCard operation={operation} onSelect={handleSelectJobCard} onBack={handleBackFromJobCard} workstation={workstation} hwId={hwId} />}
+                {route === 'workorderitems' && <WorkOrderItems jobCard={jobCard} operation={operation} hwId={hwId} onSelect={handleSelectWorkOrderItems} onBack={handleBackFromWorkOrderItems} />}
                 {route === 'connect' && <Connect ports={ports} selectedPort={selectedPort} onSelectPort={setSelectedPort} onConnect={handleConnect} onRefresh={loadPorts} workstation={workstation} onBack={onBackFromConnect} />}
                 {route === 'dashboard' && <Dashboard live={live} stable={stable} onDisconnect={handleDisconnect} portStatus={portStatus} onBack={onBackFromDashboard} />}
                 <StatusBar networkConnected={networkConnected} activationStatus={activationStatus} hwCode={hwCode} syncing={syncing}></StatusBar>

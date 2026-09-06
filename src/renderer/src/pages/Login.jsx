@@ -18,11 +18,10 @@ import { Knob } from 'primereact/knob';
 Login.propTypes = {
     onProceed: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
-    hwId: PropTypes.string.isRequired,
-    activationKey: PropTypes.string.isRequired
+    hwId: PropTypes.string.isRequired
 };
 
-export default function Login({ onProceed, onBack, hwId, activationKey }) {
+export default function Login({ onProceed, onBack, hwId }) {
     const startContent = <Brand></Brand>;
     const [selected, setSelected] = useState('new');
     const [keySelected, setKeySelected] = useState(null);
@@ -48,7 +47,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
     const handleLogin = async (pin) => {
         try {
-            const response = await apiService.loginWithPin(hwId, activationKey, selected.email, pin);
+            const response = await apiService.loginWithPin(hwId, selected.email, pin);
             if (response?.data?.access_token && response?.data?.refresh_token) {
                 apiService.storeTokens(response.data.access_token, response.data.refresh_token);
                 await onProceed();
@@ -67,8 +66,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
         try {
             setSavedUsers([]);
             console.log(hwId);
-            console.log(activationKey);
-            const response = await apiService.getAllDeviceUsers(hwId, activationKey);
+            const response = await apiService.getAllDeviceUsers(hwId);
             if (response) {
                 if (response.status === 200) {
                     if (Array.isArray(response.data)) {
@@ -98,7 +96,7 @@ export default function Login({ onProceed, onBack, hwId, activationKey }) {
 
     const getDeviceSessionQr = async () => {
         try {
-            const qrImageResponse = await apiService.getDeviceSessionQr(hwId, activationKey);
+            const qrImageResponse = await apiService.getDeviceSessionQr(hwId);
             if (qrImageResponse) {
                 if (qrImageResponse.status === 200) {
                     const sessionKey = qrImageResponse.data.sessionKey;

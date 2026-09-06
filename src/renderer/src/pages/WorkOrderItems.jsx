@@ -10,7 +10,6 @@ WorkOrderItems.propTypes = {
     jobCard: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     hwId: PropTypes.string.isRequired,
-    activationKey: PropTypes.string.isRequired,
     onSelect: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired
 };
@@ -42,7 +41,7 @@ const getItemKey = (item, index) => {
     return item?.id || item?._id || item?.item_code || item?.item || index;
 };
 
-export default function WorkOrderItems({ jobCard, operation, hwId, activationKey, onSelect, onBack }) {
+export default function WorkOrderItems({ jobCard, operation, hwId, onSelect, onBack }) {
     const [items, setItems] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
@@ -76,8 +75,7 @@ export default function WorkOrderItems({ jobCard, operation, hwId, activationKey
                         param10: 'string'
                     },
                     hmiDeviceRequest: {
-                        hwId,
-                        activationKey
+                        hwId
                     }
                 });
                 const data = response?.data?.data || response?.data || response;
@@ -92,7 +90,7 @@ export default function WorkOrderItems({ jobCard, operation, hwId, activationKey
         };
 
         fetchWorkOrderItems();
-    }, [operationName, workOrder, hwId, activationKey]);
+    }, [operationName, workOrder, hwId]);
 
     const endContent = (
         <React.Fragment>

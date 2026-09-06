@@ -66,7 +66,7 @@ export default function Activation({ onProceed, isActive, onActivate }) {
                     {inactive ? (
                         <div className="flex flex-column justify-content-center align-items-center text-center">
                             <p className="surface-card py-2 px-3">This device is not activated.</p>
-                            <P>Please press activate button to continue.</P>
+                            <p>Please press activate button to continue.</p>
                         </div>
                     ) : (
                         <div className="surface-card py-2 px-3 flex flex-column justify-content-center align-items-center">

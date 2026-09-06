@@ -9,11 +9,10 @@ import apiService from '../services/apiService';
 Operation.propTypes = {
     onSelect: PropTypes.func.isRequired,
     hwId: PropTypes.string.isRequired,
-    activationKey: PropTypes.string.isRequired,
     onLogout: PropTypes.func.isRequired
 };
 
-export default function Operation({ onSelect, onLogout, hwId, activationKey }) {
+export default function Operation({ onSelect, onLogout, hwId }) {
     const [selected, setSelected] = useState(null);
     const [operations, setOperations] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -37,8 +36,7 @@ export default function Operation({ onSelect, onLogout, hwId, activationKey }) {
                         param10: ''
                     },
                     hmiDeviceRequest: {
-                        hwId: hwId,
-                        activationKey: activationKey
+                        hwId: hwId
                     }
                 });
                 const data = response?.data?.data || response?.data || response;

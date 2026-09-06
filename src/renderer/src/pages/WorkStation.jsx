@@ -10,11 +10,10 @@ WorkStation.propTypes = {
     onBack: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     hwId: PropTypes.string,
-    operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    activationKey: PropTypes.string
+    operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired
 };
 
-export default function WorkStation({ onBack, onSelect, hwId, operation, activationKey }) {
+export default function WorkStation({ onBack, onSelect, hwId, operation }) {
     const [selected, setSelected] = useState(null);
     const [workstations, setWorkStations] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -43,8 +42,7 @@ export default function WorkStation({ onBack, onSelect, hwId, operation, activat
                         param10: ''
                     },
                     hmiDeviceRequest: {
-                        hwId: hwId,
-                        activationKey: activationKey
+                        hwId: hwId
                     }
                 });
                 const data = response?.data?.data || response?.data || response;
@@ -57,7 +55,7 @@ export default function WorkStation({ onBack, onSelect, hwId, operation, activat
             }
         };
         fetchWorkstations();
-    }, [hwId, activationKey]);
+    }, [hwId]);
 
     const startContent = <Brand></Brand>;
 

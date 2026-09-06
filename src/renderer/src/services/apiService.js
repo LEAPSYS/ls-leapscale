@@ -16,19 +16,19 @@ const getAccessToken = () => {
     return localStorage.getItem('access_token');
 };
 
-const activateHmi = async (hwId, activationKey) => {
+const activateHmi = async (hwId) => {
     return await apiClient.orbitApiClient.post('/api/hmi/v1/activate-device', {
         hwId: hwId
     });
 };
 
-const getAllDeviceUsers = async (hwId, activationKey) => {
+const getAllDeviceUsers = async (hwId) => {
     return await apiClient.orbitApiClient.post(`/api/hmi/v1/get-all-device-users`, {
         hwId: hwId
     });
 };
 
-const loginWithPin = async (hwId, activationKey, username, pin) => {
+const loginWithPin = async (hwId, username, pin) => {
     return await apiClient.orbitApiClient.post(`/api/auth/v1/login-with-pin`, {
         hwId: hwId,
         username: username,
@@ -36,7 +36,7 @@ const loginWithPin = async (hwId, activationKey, username, pin) => {
     });
 };
 
-const getDeviceSessionQr = async (hwId, activationKey) => {
+const getDeviceSessionQr = async (hwId) => {
     return await apiClient.orbitApiClient.post(`/api/hmi/v1/generate-login-qr`, {
         hwId: hwId
     });
@@ -48,7 +48,7 @@ const loginWithQrSessionKey = async (deviceSessionKey) => {
     });
 };
 
-const getWorkStations = async (hwId, activationKey) => {
+const getWorkStations = async (hwId) => {
     const token = getAccessToken();
     const response = await apiClient.orbitApiClient.post(
         `/api/hmi/v1/get-workstations`,
@@ -64,7 +64,7 @@ const getWorkStations = async (hwId, activationKey) => {
     return response;
 };
 
-const getWorkOrders = async (hwId, activationKey, workstation) => {
+const getWorkOrders = async (hwId, workstation) => {
     const token = getAccessToken();
     const response = await apiClient.orbitApiClient.post(
         `/api/hmi/v1/get-work-orders`,
