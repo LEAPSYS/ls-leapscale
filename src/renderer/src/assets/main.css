@@ -28,3 +28,8 @@ html {
 .p-toolbar {
     padding: 0.8rem;
 }
+
+.wo-items-table .p-datatable-thead > tr > th,
+.wo-items-table .p-datatable-tbody > tr > td {
+    font-size: 0.8rem;
+}

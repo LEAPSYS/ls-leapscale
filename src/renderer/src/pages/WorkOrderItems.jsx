@@ -4,6 +4,7 @@ import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { Sidebar } from 'primereact/sidebar';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
 import apiService from '../services/apiService';
@@ -97,6 +98,8 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
         setSelectedItem(null);
     };
 
+    const handleRowClick = (rowData) => setSelectedItem((prev) => (prev?.key === rowData.key ? prev : rowData));
+
     const endContent = (
         <React.Fragment>
             <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
@@ -113,7 +116,7 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                 <ScrollPanel style={{ width: '100%', height: '100%' }}>
                     <div className="surface-card py-2 px-3">
                         <h3 className="my-1">
-                            {jobCardName} - Work Order: {workOrder}
+                            {jobCardName} ({workOrder})
                         </h3>
                         {loading ? (
                             <p className="p-4">Loading work order items...</p>
@@ -123,50 +126,16 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                             <p className="p-4">No work order items available.</p>
                         ) : (
                             <DataTable
-                                className="w-12 pt-2 pb-2"
-                                scrollable
-                                scrollHeight="calc(100vh - 130px)"
+                                className="w-12 pt-2 pb-2 wo-items-table"
                                 value={items.map((item, index) => ({ key: getItemKey(item, index), idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty }))}
                                 size="small"
-                                dataKey="key"
-                                onSelectionChange={(e) => setSelectedItem(e.value)}
-                                selectionMode="single"
-                                selection={selectedItem}
-                                rowClassName={() => 'cursor-pointer'}
+                                onRowClick={(e) => handleRowClick(e.data)}
+                                rowClassName={(rowData) => (rowData.key === selectedItem?.key ? 'cursor-pointer p-highlight' : 'cursor-pointer')}
                             >
                                 <Column field="idx" header="#" style={{ width: '60px' }}></Column>
                                 <Column field="itemCode" header="Item Code"></Column>
-                                <Column field="itemName" header="Item Name"></Column>
                                 <Column field="requiredQty" header="Required Qty"></Column>
-                                <Column
-                                    header="Weighing"
-                                    style={{ width: '420px' }}
-                                    body={(rowData) =>
-                                        rowData.key === selectedItem?.key ? (
-                                            <div className="flex align-items-center gap-3">
-                                                <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                                                    <h6 className="m-0 p-0" style={{ fontSize: '0.7rem', borderBottom: '2px solid var(--surface-500)' }}>
-                                                        Live
-                                                    </h6>
-                                                    <div className="p-text-bold" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
-                                                        {live}
-                                                    </div>
-                                                </div>
-                                                <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
-                                                    <h6 className="m-0 p-0" style={{ fontSize: '0.7rem', borderBottom: '2px solid var(--surface-500)' }}>
-                                                        Stable
-                                                    </h6>
-                                                    <div className="p-text-bold" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
-                                                        {stable}
-                                                    </div>
-                                                </div>
-                                                <Button label="Accept" size="small" onClick={handleAccept}></Button>
-                                            </div>
-                                        ) : (
-                                            <span>{weighedItems[rowData.key] ?? '-'}</span>
-                                        )
-                                    }
-                                ></Column>
+                                <Column header="Measured Weight" body={(rowData) => weighedItems[rowData.key] ?? '-'}></Column>
                                 <Column
                                     header="Status"
                                     style={{ width: '80px', textAlign: 'center' }}
@@ -177,6 +146,35 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                     </div>
                 </ScrollPanel>
             </main>
+            <Sidebar visible={!!selectedItem} position="right" onHide={() => setSelectedItem(null)} header={selectedItem?.itemName}>
+                <div className="flex flex-column gap-3">
+                    <div className="flex gap-3">
+                        <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                            <h6 className="m-0 p-0" style={{ fontSize: '0.8rem', borderBottom: '2px solid var(--surface-500)' }}>
+                                Live
+                            </h6>
+                            <div className="p-text-bold" style={{ fontSize: '1.4rem', color: 'var(--primary-color)' }}>
+                                {live}
+                            </div>
+                        </div>
+                        <div className="flex-1 text-center" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px' }}>
+                            <h6 className="m-0 p-0" style={{ fontSize: '0.8rem', borderBottom: '2px solid var(--surface-500)' }}>
+                                Stable
+                            </h6>
+                            <div className="p-text-bold" style={{ fontSize: '1.4rem', color: 'var(--primary-color)' }}>
+                                {stable}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex align-items-center justify-content-between" style={{ border: '2px solid var(--surface-500)', borderRadius: '5px', padding: '0.5rem' }}>
+                        <span>Scale Status</span>
+                        <span className="font-bold" style={{ color: portStatus === 'connected' ? 'var(--green-500)' : 'var(--red-500)' }}>
+                            {(portStatus || 'disconnected').toUpperCase()}
+                        </span>
+                    </div>
+                    <Button label="Accept" onClick={handleAccept}></Button>
+                </div>
+            </Sidebar>
         </React.Fragment>
     );
 }
