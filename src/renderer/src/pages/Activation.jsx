@@ -65,7 +65,8 @@ export default function Activation({ onProceed, isActive, onActivate }) {
                 <ScrollPanel style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     {inactive ? (
                         <div className="flex flex-column justify-content-center align-items-center text-center">
-                            <p className="surface-card py-2 px-3">This device is not activated. Please activate your device to continue.</p>
+                            <p className="surface-card py-2 px-3">This device is not activated.</p>
+                            <P>Please press activate button to continue.</P>
                         </div>
                     ) : (
                         <div className="surface-card py-2 px-3 flex flex-column justify-content-center align-items-center">
