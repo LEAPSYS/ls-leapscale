@@ -16,68 +16,47 @@ Connect.propTypes = {
 
 export default function Connect({ ports, selectedPort, onSelectPort, onConnect, onRefresh, onBack }) {
     const startContent = <Brand></Brand>;
-    // const startContent = (
-    //   <React.Fragment>
-    //     <Button label="Logout" disabled="true" className="p-button-plain" />
-    //   </React.Fragment>
-    // );
-
-    // const centerContent = <span style={{ textAlign: 'center', marginTop: 0 }}>Connect to scale</span>;
 
     const endContent = (
         <React.Fragment>
             <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
-            <Button label="Refresh" onClick={onRefresh} className="p-button-warning" />
+            <Button label="Continue" onClick={onConnect} disabled={!selectedPort} className="p-button-success p-2" />
         </React.Fragment>
     );
 
+    const getPortStyle = (port) => {
+        if (selectedPort === port) {
+            return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)' };
+        }
+
+        return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px dashed var(--surface-500)' };
+    };
+
     return (
         <React.Fragment>
-            {/* <Toolbar start={startContent} center={centerContent} end={endContent} />
-      <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
-        <div x>
-          <div className="p-field p-mb-3">
-            <label htmlFor="ports">Available Ports</label>
-            <select id="ports" value={selectedPort} onChange={(e) => onSelectPort(e.target.value)} className="p-inputtext p-mt-2" style={{ width: '100%', padding: '10px', borderRadius: 6 }}>
-              <option value="">-- select a port --</option>
-              {ports.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="p-d-flex p-jc-center p-ai-center p-gap-3" style={{ marginTop: 8 }}>
-            <Button label="Connect" onClick={onConnect} className="p-button-success w-full" />
-          </div>
-        </div>
-      </div> */}
             <header className="p-0 flex-shrink-0">
                 <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
             </header>
             <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
                 <ScrollPanel style={{ width: '100%', height: '100%' }}>
                     <div className="surface-card py-2 px-3 ">
-                        <div className="flex flex-wrap align-items-center justify-content-center" style={{ height: '100%' }}>
-                            <div>
-                                <div className="p-field p-mb-3">
-                                    <label htmlFor="ports">Available Ports</label>
-                                    <select id="ports" value={selectedPort} onChange={(e) => onSelectPort(e.target.value)} className="p-inputtext p-mt-2" style={{ width: '100%', padding: '10px', borderRadius: 6 }}>
-                                        <option value="">-- select a port --</option>
-                                        {ports.map((p) => (
-                                            <option key={p} value={p}>
-                                                {p}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="p-d-flex p-jc-center p-ai-center p-gap-3" style={{ marginTop: 8 }}>
-                                    <Button label="Connect" onClick={onConnect} className="p-button-success w-full" />
-                                </div>
-                            </div>
+                        <div className="flex align-items-center justify-content-between">
+                            <h3 className="my-1">Choose Port</h3>
+                            <Button label="Refresh" onClick={onRefresh} className="p-button-outlined p-2" />
                         </div>
+                        {ports.length === 0 ? (
+                            <p className="p-4">No ports available.</p>
+                        ) : (
+                            <div className="grid p-2">
+                                {ports.map((port) => (
+                                    <div className="col-4" key={port}>
+                                        <div style={getPortStyle(port)} className="text-center p-3 border-round-sm font-bold" onClick={() => onSelectPort(port)} role="button" tabIndex={0}>
+                                            {port}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </ScrollPanel>
             </main>
