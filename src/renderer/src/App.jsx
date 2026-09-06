@@ -11,7 +11,7 @@ import StatusBar from './components/StatusBar';
 import apiService from './services/apiService';
 
 export default function App() {
-    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'workorderitems' | 'connect' | 'dashboard'
+    const [route, setRoute] = useState('activate'); // 'login' | 'operation' | 'workstation' | 'jobcard' | 'connect' | 'workorderitems' | 'dashboard'
     const [ports, setPorts] = useState([]);
     const [hwId, setHwId] = useState('');
     const [hwCode, setHwCode] = useState(null);
@@ -115,7 +115,7 @@ export default function App() {
     };
 
     const onBackFromConnect = async () => {
-        setRoute('workstation');
+        setRoute('jobcard');
     };
 
     const onProceedFromActivate = () => {
@@ -123,14 +123,14 @@ export default function App() {
     };
 
     const onBackFromDashboard = () => {
-        setRoute('connect');
+        setRoute('workorderitems');
     };
 
     const handleConnect = async () => {
         if (!selectedPort) return;
         try {
             await window.api.connectPort(selectedPort);
-            setRoute('dashboard');
+            setRoute('workorderitems');
         } catch (e) {
             console.error('connect error', e);
         }
@@ -170,7 +170,7 @@ export default function App() {
     const handleSelectJobCard = (selectedJobCard) => {
         if (selectedJobCard) {
             setJobCard(selectedJobCard);
-            setRoute('workorderitems');
+            setRoute('connect');
         }
     };
 
@@ -180,13 +180,13 @@ export default function App() {
     };
 
     const handleBackFromWorkOrderItems = () => {
-        setRoute('jobcard');
+        setRoute('connect');
     };
 
     const handleSelectWorkOrderItems = (selectedJobCard) => {
         if (selectedJobCard) {
             setJobCard(selectedJobCard);
-            setRoute('connect');
+            setRoute('dashboard');
         }
     };
 
