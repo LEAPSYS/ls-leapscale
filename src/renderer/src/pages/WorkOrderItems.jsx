@@ -4,9 +4,13 @@ import { Button } from 'primereact/button';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
+import apiService from '../services/apiService';
 
 WorkOrderItems.propTypes = {
     jobCard: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    operation: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    hwId: PropTypes.string.isRequired,
+    activationKey: PropTypes.string.isRequired,
     onSelect: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired
 };
@@ -21,20 +25,6 @@ const getValue = (jobCard, keys, fallback = '-') => {
     }
 
     return fallback;
-};
-
-const getItems = (jobCard) => {
-    if (typeof jobCard === 'object') {
-        const items = jobCard.items || jobCard.workOrderItems;
-        if (Array.isArray(items) && items.length > 0) return items;
-    }
-
-    return [
-        {
-            item: getValue(jobCard, ['production_item', 'item', 'item_code'], 'Work Order Item'),
-            quantity: getValue(jobCard, ['for_quantity', 'quantity', 'qty'])
-        }
-    ];
 };
 
 const getItemName = (item) => {
@@ -52,10 +42,57 @@ const getItemKey = (item, index) => {
     return item?.id || item?._id || item?.item_code || item?.item || index;
 };
 
-export default function WorkOrderItems({ jobCard, onSelect, onBack }) {
+export default function WorkOrderItems({ jobCard, operation, hwId, activationKey, onSelect, onBack }) {
+    const [items, setItems] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
     const jobCardName = typeof jobCard === 'string' ? jobCard : getValue(jobCard, ['name', 'jobCardNo', 'jobCardNumber', 'id'], 'Job Card');
     const workOrder = getValue(jobCard, ['work_order', 'workOrder']);
-    const items = getItems(jobCard);
+    const operationName = typeof operation === 'string' ? operation : getValue(operation, ['name', 'operationName', 'operationCode'], '');
+
+    React.useEffect(() => {
+        const fetchWorkOrderItems = async () => {
+            if (!operationName || workOrder === '-') {
+                setItems([]);
+                setError('Operation or work order is missing.');
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError('');
+                const response = await apiService.getHmiData({
+                    spRequest: {
+                        paramFor: 'GET_WO_ITEMS',
+                        param1: operationName,
+                        param2: workOrder,
+                        param3: 'string',
+                        param4: 'string',
+                        param5: 'string',
+                        param6: 'string',
+                        param7: 'string',
+                        param8: 'string',
+                        param9: 'string',
+                        param10: 'string'
+                    },
+                    hmiDeviceRequest: {
+                        hwId,
+                        activationKey
+                    }
+                });
+                const data = response?.data?.data || response?.data || response;
+                setItems(Array.isArray(data) ? data : []);
+            } catch (fetchError) {
+                console.error('Error fetching work order items:', fetchError);
+                setItems([]);
+                setError('Unable to load work order items.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWorkOrderItems();
+    }, [operationName, workOrder, hwId, activationKey]);
 
     const endContent = (
         <React.Fragment>
@@ -78,22 +115,30 @@ export default function WorkOrderItems({ jobCard, onSelect, onBack }) {
                             <div className="text-lg font-bold">{jobCardName}</div>
                             <div className="text-sm text-color-secondary mt-1">Work Order: {workOrder}</div>
                         </div>
-                        <div className="grid p-2">
-                            {items.map((item, index) => (
-                                <div className="col-12 md:col-6 lg:col-4" key={getItemKey(item, index)}>
-                                    <div className="border-round-lg p-3" style={{ backgroundColor: 'var(--surface-card)', border: '2px dashed var(--surface-300)' }}>
-                                        <div className="flex align-items-center gap-2 mb-2">
-                                            <span className="flex align-items-center justify-content-center border-round-md" style={{ width: '28px', height: '28px', backgroundColor: '#dcfce7', color: '#16a34a' }}>
-                                                <i className="pi pi-box text-sm" />
-                                            </span>
-                                            <span className="text-xs font-medium text-color-secondary uppercase">Item</span>
+                        {loading ? (
+                            <p className="p-4">Loading work order items...</p>
+                        ) : error ? (
+                            <p className="p-4">{error}</p>
+                        ) : items.length === 0 ? (
+                            <p className="p-4">No work order items available.</p>
+                        ) : (
+                            <div className="grid p-2">
+                                {items.map((item, index) => (
+                                    <div className="col-12 md:col-6 lg:col-4" key={getItemKey(item, index)}>
+                                        <div className="border-round-lg p-3" style={{ backgroundColor: 'var(--surface-card)', border: '2px dashed var(--surface-300)' }}>
+                                            <div className="flex align-items-center gap-2 mb-2">
+                                                <span className="flex align-items-center justify-content-center border-round-md" style={{ width: '28px', height: '28px', backgroundColor: '#dcfce7', color: '#16a34a' }}>
+                                                    <i className="pi pi-box text-sm" />
+                                                </span>
+                                                <span className="text-xs font-medium text-color-secondary uppercase">Item</span>
+                                            </div>
+                                            <div className="text-lg font-bold">{getItemName(item)}</div>
+                                            <div className="text-sm mt-2">Quantity: <span className="font-semibold">{getItemQuantity(item)}</span></div>
                                         </div>
-                                        <div className="text-lg font-bold">{getItemName(item)}</div>
-                                        <div className="text-sm mt-2">Quantity: <span className="font-semibold">{getItemQuantity(item)}</span></div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </ScrollPanel>
             </main>
