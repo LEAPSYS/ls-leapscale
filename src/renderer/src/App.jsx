@@ -26,6 +26,7 @@ export default function App() {
     const [mangingStatus, setMangingStatus] = useState(null);
     const [syncing, setSyncing] = useState(false);
     const [activationStatus, setActivationStatus] = useState(0);
+    const [activationMessage, setActivationMessage] = useState('');
     const [activated, setActivated] = useState(false);
     const [networkConnected, setNetworkConnected] = useState(false);
 
@@ -65,6 +66,7 @@ export default function App() {
     const handleActivate = async () => {
         try {
             setActivationStatus(0);
+            setActivationMessage('');
             setActivated(false);
             setSyncing(true);
             await apiService
@@ -73,6 +75,7 @@ export default function App() {
                     console.log(result.data);
                     setHwCode(result.data?.hwCode);
                     setActivationStatus(result.data?.activationStatus);
+                    setActivationMessage(result.data?.message || '');
 
                     if (result.data?.activationStatus === 1) {
                         setActivated(true);
@@ -185,6 +188,7 @@ export default function App() {
     useEffect(() => {
         (async () => {
             setActivationStatus(0);
+            setActivationMessage('');
             setActivated(false);
             setNetworkConnected(navigator.onLine);
             await loadPorts();
@@ -224,7 +228,7 @@ export default function App() {
     return (
         <>
             <div className="flex flex-column h-screen">
-                {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} />}
+                {route === 'activate' && <Activation onProceed={onProceedFromActivate} isActive={activated} onActivate={handleActivate} activationMessage={activationMessage} />}
                 {route === 'login' && <Login onProceed={onProceedFromLogin} onBack={onBackFromLogin} hwId={hwId} />}
                 {route === 'operation' && <Operation onSelect={handleSelectOperation} onLogout={handleLogout} hwId={hwId} />}
                 {route === 'workstation' && <WorkStation onSelect={handleSelectWorkStation} onBack={handleBackFromWorkStation} hwId={hwId} operation={operation} />}

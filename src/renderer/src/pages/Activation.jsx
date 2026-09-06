@@ -11,10 +11,11 @@ import { useRef } from 'react';
 Activation.propTypes = {
     onActivate: PropTypes.func.isRequired,
     onProceed: PropTypes.func.isRequired,
-    isActive: PropTypes.bool.isRequired
+    isActive: PropTypes.bool.isRequired,
+    activationMessage: PropTypes.string
 };
 
-export default function Activation({ onProceed, isActive, onActivate }) {
+export default function Activation({ onProceed, isActive, onActivate, activationMessage }) {
     const startContent = <Brand></Brand>;
     const [loading, setLoading] = useState(false);
     const [inactive, setInactive] = useState(false);
@@ -65,7 +66,7 @@ export default function Activation({ onProceed, isActive, onActivate }) {
                 <ScrollPanel style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     {inactive ? (
                         <div className="flex flex-column justify-content-center align-items-center text-center">
-                            <p className="surface-card py-2 px-3">This device is not activated.</p>
+                            <p className="surface-card py-2 px-3">{activationMessage || 'This device is not activated.'}</p>
                             <p>Please press activate button to continue.</p>
                         </div>
                     ) : (
