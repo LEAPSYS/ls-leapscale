@@ -207,7 +207,10 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                         ) : (
                             <DataTable
                                 className="w-12 pt-2 pb-2 wo-items-table"
-                                value={items.map((item, index) => ({ key: getItemKey(item, index), idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty, status: item?.status }))}
+                                value={items.map((item, index) => {
+                                    const key = getItemKey(item, index);
+                                    return { key, idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty, status: item?.status, measuredWeight: weighedItems[key] };
+                                })}
                                 size="small"
                                 dataKey="key"
                                 onRowClick={(e) => handleRowClick(e.data)}
@@ -216,11 +219,11 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                                 onRowToggle={(e) => setExpandedRows(e.data)}
                                 rowExpansionTemplate={rowExpansionTemplate}
                             >
-                                <Column header="" style={{ width: '40px', textAlign: 'center' }} body={(rowData) => <i className="pi pi-circle-fill" aria-label={rowData.status || (weighedItems[rowData.key] !== undefined ? 'Complete' : 'Pending')} style={{ color: getStatusColor(rowData.status, weighedItems[rowData.key] !== undefined), fontSize: '0.7rem' }}></i>}></Column>
+                                <Column header="" style={{ width: '40px', textAlign: 'center' }} body={(rowData) => <i className="pi pi-circle-fill" aria-label={rowData.status || (rowData.measuredWeight !== undefined ? 'Complete' : 'Pending')} style={{ color: getStatusColor(rowData.status, rowData.measuredWeight !== undefined), fontSize: '0.7rem' }}></i>}></Column>
                                 <Column field="idx" header="#" style={{ width: '60px' }}></Column>
                                 <Column field="itemCode" header="Item Code"></Column>
                                 <Column field="requiredQty" header="Required Qty" headerStyle={{ textAlign: 'right' }} bodyStyle={{ textAlign: 'right' }} body={(rowData) => formatQuantity(rowData.requiredQty)}></Column>
-                                <Column header="Measured Weight" body={(rowData) => weighedItems[rowData.key] ?? '-'}></Column>
+                                <Column field="measuredWeight" header="Measured Weight" body={(rowData) => rowData.measuredWeight ?? '-'}></Column>
                                 <Column header="Actions" style={{ width: '80px', textAlign: 'center' }} body={(rowData) => <Button icon={expandedRows[rowData.key] ? 'pi pi-times' : 'pi pi-list'} aria-label={expandedRows[rowData.key] ? 'Hide batches' : 'View batches'} className="p-button-sm p-button-outlined" onClick={(e) => handleBatchClick(e, rowData)} />}></Column>
                             </DataTable>
                         )}
