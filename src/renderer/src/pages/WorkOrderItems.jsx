@@ -37,6 +37,11 @@ const getItemKey = (item, index) => {
     return item?.idx ?? item?.item_code ?? index;
 };
 
+const formatQuantity = (value) => {
+    const quantity = Number(value);
+    return Number.isFinite(quantity) ? quantity.toFixed(3) : '-';
+};
+
 export default function WorkOrderItems({ jobCard, operation, hwId, live, stable, portStatus, onSelect, onBack }) {
     const [items, setItems] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -134,13 +139,9 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                             >
                                 <Column field="idx" header="#" style={{ width: '60px' }}></Column>
                                 <Column field="itemCode" header="Item Code"></Column>
-                                <Column field="requiredQty" header="Required Qty"></Column>
+                                <Column field="requiredQty" header="Required Qty" headerStyle={{ textAlign: 'right' }} bodyStyle={{ textAlign: 'right' }} body={(rowData) => formatQuantity(rowData.requiredQty)}></Column>
                                 <Column header="Measured Weight" body={(rowData) => weighedItems[rowData.key] ?? '-'}></Column>
-                                <Column
-                                    header="Status"
-                                    style={{ width: '80px', textAlign: 'center' }}
-                                    body={(rowData) => (weighedItems[rowData.key] !== undefined ? <i className="pi pi-check-circle" style={{ color: 'var(--green-500)', fontSize: '1.1rem' }}></i> : <i className="pi pi-circle" style={{ color: 'var(--surface-400)', fontSize: '1.1rem' }}></i>)}
-                                ></Column>
+                                <Column header="Status" style={{ width: '80px', textAlign: 'center' }} body={(rowData) => (weighedItems[rowData.key] !== undefined ? <i className="pi pi-check-circle" style={{ color: 'var(--green-500)', fontSize: '1.1rem' }}></i> : <i className="pi pi-circle" style={{ color: 'var(--surface-400)', fontSize: '1.1rem' }}></i>)}></Column>
                             </DataTable>
                         )}
                     </div>
