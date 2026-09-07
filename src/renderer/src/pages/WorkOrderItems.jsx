@@ -22,13 +22,11 @@ WorkOrderItems.propTypes = {
 
 const getValue = (jobCard, keys, fallback = '-') => {
     if (typeof jobCard === 'string') return fallback;
-
     for (const key of keys) {
         if (jobCard?.[key] !== undefined && jobCard?.[key] !== null && jobCard[key] !== '') {
             return jobCard[key];
         }
     }
-
     return fallback;
 };
 
@@ -42,12 +40,22 @@ const formatQuantity = (value) => {
     return Number.isFinite(quantity) ? quantity.toFixed(3) : '-';
 };
 
+const getStatusColor = (status, isWeighed) => {
+    if (!isWeighed) return 'var(--surface-400)';
+
+    const normalizedStatus = String(status || '').toLowerCase();
+    return ['red', 'failed', 'rejected', 'error'].includes(normalizedStatus) ? 'var(--red-500)' : 'var(--green-500)';
+};
+
 export default function WorkOrderItems({ jobCard, operation, hwId, live, stable, portStatus, onSelect, onBack }) {
     const [items, setItems] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
     const [selectedItem, setSelectedItem] = React.useState(null);
     const [weighedItems, setWeighedItems] = React.useState({});
+    const [expandedRows, setExpandedRows] = React.useState({});
+    const [batchesByItem, setBatchesByItem] = React.useState({});
+    const [batchLoading, setBatchLoading] = React.useState({});
     const jobCardName = typeof jobCard === 'string' ? jobCard : getValue(jobCard, ['name', 'jobCardNo', 'jobCardNumber', 'id'], 'Job Card');
     const workOrder = getValue(jobCard, ['work_order', 'workOrder']);
     const operationName = typeof operation === 'string' ? operation : getValue(operation, ['name', 'operationName', 'operationCode'], '');
@@ -105,6 +113,73 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
 
     const handleRowClick = (rowData) => setSelectedItem((prev) => (prev?.key === rowData.key ? prev : rowData));
 
+    const fetchBatches = async (rowData) => {
+        if (batchesByItem[rowData.key]) return;
+
+        try {
+            setBatchLoading((prev) => ({ ...prev, [rowData.key]: true }));
+            const response = await apiService.getHmiData({
+                spRequest: {
+                    paramFor: 'GET_BATCH_NO',
+                    param1: workOrder,
+                    param2: operationName,
+                    param3: rowData.itemCode,
+                    param4: 'string',
+                    param5: 'string',
+                    param6: 'string',
+                    param7: 'string',
+                    param8: 'string',
+                    param9: 'string',
+                    param10: 'string'
+                },
+                hmiDeviceRequest: {
+                    hwId
+                }
+            });
+            const data = response?.data?.data || response?.data || response;
+            setBatchesByItem((prev) => ({ ...prev, [rowData.key]: Array.isArray(data) ? data : [] }));
+        } catch (fetchError) {
+            console.error('Error fetching batches:', fetchError);
+            setBatchesByItem((prev) => ({ ...prev, [rowData.key]: [] }));
+        } finally {
+            setBatchLoading((prev) => ({ ...prev, [rowData.key]: false }));
+        }
+    };
+
+    const handleBatchClick = (event, rowData) => {
+        event.stopPropagation();
+        setExpandedRows((prev) => {
+            const next = { ...prev };
+            if (next[rowData.key]) {
+                delete next[rowData.key];
+            } else {
+                next[rowData.key] = true;
+            }
+            return next;
+        });
+        fetchBatches(rowData);
+    };
+
+    const rowExpansionTemplate = (rowData) => {
+        const batches = batchesByItem[rowData.key];
+        const loading = batchLoading[rowData.key];
+
+        return (
+            <div className="p-2">
+                {loading ? (
+                    <p className="m-0">Loading batches...</p>
+                ) : batches && batches.length > 0 ? (
+                    <DataTable value={batches} size="small">
+                        <Column field="item_code" header="Item Code"></Column>
+                        <Column field="batch_no" header="Batch No"></Column>
+                    </DataTable>
+                ) : (
+                    <p className="m-0">No batches found.</p>
+                )}
+            </div>
+        );
+    };
+
     const endContent = (
         <React.Fragment>
             <Button label="Back" onClick={onBack} className="p-button-primary p-2 mr-1" />
@@ -132,16 +207,21 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                         ) : (
                             <DataTable
                                 className="w-12 pt-2 pb-2 wo-items-table"
-                                value={items.map((item, index) => ({ key: getItemKey(item, index), idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty }))}
+                                value={items.map((item, index) => ({ key: getItemKey(item, index), idx: item?.idx, itemCode: item?.item_code, itemName: item?.item_name, requiredQty: item?.required_qty, status: item?.status }))}
                                 size="small"
+                                dataKey="key"
                                 onRowClick={(e) => handleRowClick(e.data)}
                                 rowClassName={(rowData) => (rowData.key === selectedItem?.key ? 'cursor-pointer p-highlight' : 'cursor-pointer')}
+                                expandedRows={expandedRows}
+                                onRowToggle={(e) => setExpandedRows(e.data)}
+                                rowExpansionTemplate={rowExpansionTemplate}
                             >
+                                <Column header="" style={{ width: '40px', textAlign: 'center' }} body={(rowData) => <i className="pi pi-circle-fill" aria-label={rowData.status || (weighedItems[rowData.key] !== undefined ? 'Complete' : 'Pending')} style={{ color: getStatusColor(rowData.status, weighedItems[rowData.key] !== undefined), fontSize: '0.7rem' }}></i>}></Column>
                                 <Column field="idx" header="#" style={{ width: '60px' }}></Column>
                                 <Column field="itemCode" header="Item Code"></Column>
                                 <Column field="requiredQty" header="Required Qty" headerStyle={{ textAlign: 'right' }} bodyStyle={{ textAlign: 'right' }} body={(rowData) => formatQuantity(rowData.requiredQty)}></Column>
                                 <Column header="Measured Weight" body={(rowData) => weighedItems[rowData.key] ?? '-'}></Column>
-                                <Column header="Status" style={{ width: '80px', textAlign: 'center' }} body={(rowData) => (weighedItems[rowData.key] !== undefined ? <i className="pi pi-check-circle" style={{ color: 'var(--green-500)', fontSize: '1.1rem' }}></i> : <i className="pi pi-circle" style={{ color: 'var(--surface-400)', fontSize: '1.1rem' }}></i>)}></Column>
+                                <Column header="Actions" style={{ width: '80px', textAlign: 'center' }} body={(rowData) => <Button icon={expandedRows[rowData.key] ? 'pi pi-times' : 'pi pi-list'} aria-label={expandedRows[rowData.key] ? 'Hide batches' : 'View batches'} className="p-button-sm p-button-outlined" onClick={(e) => handleBatchClick(e, rowData)} />}></Column>
                             </DataTable>
                         )}
                     </div>

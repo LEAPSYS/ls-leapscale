@@ -7,5 +7,11 @@
     },
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "chat.tools.terminal.autoApprove": {
+        "/^node_modules/\\.bin/eslint --fix src/renderer/src/pages/WorkOrderItems\\.jsx && node_modules/\\.bin/eslint src/renderer/src/pages/WorkOrderItems\\.jsx$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }
