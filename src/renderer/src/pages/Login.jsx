@@ -301,18 +301,8 @@ export default function Login({ onProceed, onBack, hwId }) {
                                             )
                                         ) : (
                                             <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2">
-                                                <h5 className="text-center">
-                                                    {selected === 'LoginSuccess' ? (
-                                                        <>
-                                                            <div>✔️ Login Successful!</div>
-                                                            <div>Please set your PIN to continue.</div>
-                                                        </>
-                                                    ) : (
-                                                        selected?.name
-                                                    )}
-                                                </h5>
                                                 <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
-                                                <div className="flex flex-column gap-2 w-full m-3">
+                                                <div className="flex flex-column gap-2 w-full mx-auto my-3" style={{ maxWidth: '220px' }}>
                                                     <div className="flex flex-row gap-2 justify-content-around">
                                                         <div className="flex-1 text-center" style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
                                                             1
