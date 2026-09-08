@@ -26,14 +26,18 @@ function createWindow() {
     const isFullscreen = process.env.FULLSCREEN !== undefined ? process.env.FULLSCREEN === 'true' : false;
 
     mainWindow = new BrowserWindow({
+        kiosk: true,
         fullscreen: true,
         frame: false,
-        kiosk: true,
-        alwaysOnTop: true,
-        width: 800,
-        height: 600,
-        show: false,
+        resizable: false,
+        movable: false,
+        minimizable: false,
+        maximizable: false,
+        closable: false,
         autoHideMenuBar: true,
+        skipTaskbar: true,
+        
+        show: false,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/preload.js'),
