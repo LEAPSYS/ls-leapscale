@@ -32,5 +32,7 @@ html {
 .wo-items-table .p-datatable-thead > tr > th,
 .wo-items-table .p-datatable-tbody > tr > td {
     font-size: 1rem;
+    font-weight: 600;
 }
+
 
