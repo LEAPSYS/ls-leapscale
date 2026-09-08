@@ -26,8 +26,8 @@ function createWindow() {
     const isFullscreen = process.env.FULLSCREEN !== undefined ? process.env.FULLSCREEN === 'true' : false;
 
     mainWindow = new BrowserWindow({
-        fullscreen: isFullscreen,
-        frame: !isFullscreen,
+        fullscreen: true,
+        frame: false,
         alwaysOnTop: false,
         width: 800,
         height: 600,
