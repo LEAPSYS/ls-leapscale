@@ -165,10 +165,32 @@ export default function Login({ onProceed, onBack, hwId }) {
     };
 
     const keyPadStyle = (wo) => {
+        const baseStyle = {
+            aspectRatio: '1 / 1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            userSelect: 'none',
+            fontSize: '1.5rem',
+            fontWeight: '600'
+        };
+
         if (String(keySelected) === String(wo)) {
-            return { backgroundColor: 'var(--primary-color)', color: 'var(--primary-color-text)', border: '2px solid var(--primary-color)', borderRadius: '8px', paddingBlock: '0.25rem' };
+            return {
+                ...baseStyle,
+                backgroundColor: 'var(--primary-color)',
+                color: 'var(--primary-color-text)',
+                border: '2px solid var(--primary-color)'
+            };
         } else {
-            return { backgroundColor: 'var(--tertiary-color)', color: 'var(--tertiary-color-text)', border: '2px solid var(--surface-500)', borderRadius: '8px', paddingBlock: '0.25rem' };
+            return {
+                ...baseStyle,
+                backgroundColor: 'var(--tertiary-color)',
+                color: 'var(--tertiary-color-text)',
+                border: '2px solid var(--surface-500)'
+            };
         }
     };
 
@@ -331,7 +353,7 @@ export default function Login({ onProceed, onBack, hwId }) {
                                                         <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
                                                             0
                                                         </div>
-                                                        <Button disabled={token.length !== 4} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
+                                                        <Button disabled={token.length !== 4} style={{ aspectRatio: '1 / 1' }} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
                                                             <img src={ArrowLeft} alt="submit" />
                                                         </Button>
                                                     </div>
