@@ -113,6 +113,64 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
 
     const handleRowClick = (rowData) => setSelectedItem((prev) => (prev?.key === rowData.key ? prev : rowData));
 
+    React.useEffect(() => {
+        let keyBuffer = '';
+        let timeoutId = null;
+
+        const handleKeyDown = (e) => {
+            // Ignore if typing inside input / textarea
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                const query = keyBuffer.trim();
+                keyBuffer = '';
+                if (timeoutId) clearTimeout(timeoutId);
+
+                if (query) {
+                    alert(`Typed text: ${query}`);
+                }
+
+                if (query && items.length > 0) {
+                    const normalizedQuery = query.toLowerCase();
+                    const foundIndex = items.findIndex((item) => {
+                        const code = String(item?.item_code || '').toLowerCase();
+                        return code === normalizedQuery;
+                    });
+
+                    if (foundIndex !== -1) {
+                        const targetItem = items[foundIndex];
+                        const key = getItemKey(targetItem, foundIndex);
+                        setSelectedItem({
+                            key,
+                            idx: targetItem?.idx,
+                            itemCode: targetItem?.item_code,
+                            itemName: targetItem?.item_name,
+                            requiredQty: targetItem?.required_qty,
+                            status: targetItem?.status,
+                            measuredWeight: weighedItems[key]
+                        });
+                    }
+                }
+            } else if (e.key.length === 1) {
+                keyBuffer += e.key;
+                if (timeoutId) clearTimeout(timeoutId);
+                // Clear buffer after 1.5 seconds of inactivity to avoid stale buffer
+                timeoutId = setTimeout(() => {
+                    keyBuffer = '';
+                }, 1500);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [items, weighedItems]);
+
+
     const fetchBatches = async (rowData) => {
         if (batchesByItem[rowData.key]) return;
 
