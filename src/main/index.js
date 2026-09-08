@@ -29,7 +29,7 @@ function createWindow() {
         fullscreen: true,
         frame: false,
         kiosk: true,
-        alwaysOnTop: false,
+        alwaysOnTop: true,
         width: 800,
         height: 600,
         show: false,
