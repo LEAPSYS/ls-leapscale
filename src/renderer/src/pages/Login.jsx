@@ -245,149 +245,147 @@ export default function Login({ onProceed, onBack, hwId }) {
                 <Toolbar start={startContent} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
             </header>
             <main className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-                <ScrollPanel style={{ width: '100%', height: '100%' }}>
-                    <div className="surface-card py-2 px-3 ">
-                        <div className="flex flex-row justify-content-center gap-1 ">
-                            <div className="w-5">
-                                {invalidUser ? (
-                                    <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                                        <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
-                                                <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
-                                            </div>
-                                            <p className="py-1 px-1 text-center">Invalid PIN. Please enter your PIN again.</p>
-                                        </Card>
-                                    </div>
-                                ) : (
-                                    <>
-                                        {selected === 'new' ? (
-                                            userPinSaved === null ? (
-                                                showQr ? (
-                                                    <div className="flex flex-column align-items-center justify-content-center m-2">
-                                                        <p>Scan QR via phone to login</p>
-                                                        <img src={qrImage} alt="QR Code" style={{ width: 200, height: 200 }} />
-                                                        <div className="m-0">
-                                                            <Knob value={(seconds / 300) * 100} valueTemplate={`${seconds}s`} readOnly size={80} />
-                                                        </div>
+                <div className="surface-card py-2 px-3 h-full flex flex-column">
+                    <div className="flex flex-row justify-content-center gap-1 flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+                        <div className="w-5 overflow-y-auto">
+                            {invalidUser ? (
+                                <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                                    <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                                            <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
+                                        </div>
+                                        <p className="py-1 px-1 text-center">Invalid PIN. Please enter your PIN again.</p>
+                                    </Card>
+                                </div>
+                            ) : (
+                                <>
+                                    {selected === 'new' ? (
+                                        userPinSaved === null ? (
+                                            showQr ? (
+                                                <div className="flex flex-column align-items-center justify-content-center m-2">
+                                                    <p>Scan QR via phone to login</p>
+                                                    <img src={qrImage} alt="QR Code" style={{ width: 200, height: 200 }} />
+                                                    <div className="m-0">
+                                                        <Knob value={(seconds / 300) * 100} valueTemplate={`${seconds}s`} readOnly size={80} />
                                                     </div>
-                                                ) : (
-                                                    <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                                                        <Button onClick={getDeviceSessionQr}>Show QR</Button>
-                                                    </div>
-                                                )
-                                            ) : userPinSaved === false ? (
-                                                <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                                                    <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
-                                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
-                                                            <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
-                                                        </div>
-                                                        <p className="py-1 px-1 text-center">QR Code Expired</p>
-                                                        <Button onClick={getDeviceSessionQr}>Regenerate QR</Button>
-                                                    </Card>
                                                 </div>
                                             ) : (
                                                 <div className="flex flex-wrap align-items-center justify-content-center h-full">
-                                                    <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
-                                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
-                                                            <i className="pi pi-check-circle" style={{ fontSize: '3rem', color: '#40f105', width: '70px', fontWeight: 'bold' }}></i>
-                                                        </div>
-                                                        <p className="text-center">
-                                                            User Added
-                                                            <br />
-                                                            Successfully
-                                                        </p>
-                                                    </Card>
+                                                    <Button onClick={getDeviceSessionQr}>Show QR</Button>
                                                 </div>
                                             )
+                                        ) : userPinSaved === false ? (
+                                            <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                                                <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                                                        <i className="pi pi-exclamation-circle" style={{ fontSize: '3rem', color: '#ffbb00', width: '70px', fontWeight: 'bold' }}></i>
+                                                    </div>
+                                                    <p className="py-1 px-1 text-center">QR Code Expired</p>
+                                                    <Button onClick={getDeviceSessionQr}>Regenerate QR</Button>
+                                                </Card>
+                                            </div>
                                         ) : (
-                                            <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2">
-                                                <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
-                                                <div className="flex flex-column gap-2 w-full mx-auto my-3" style={{ maxWidth: '220px' }}>
-                                                    <div className="flex flex-row gap-2 justify-content-around">
-                                                        <div className="flex-1 text-center" style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
-                                                            1
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(2)} onClick={() => handleKeypadClick('2')}>
-                                                            2
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(3)} onClick={() => handleKeypadClick('3')}>
-                                                            3
-                                                        </div>
+                                            <div className="flex flex-wrap align-items-center justify-content-center h-full">
+                                                <Card style={{ background: '#ffffff', boxShadow: 'none' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+                                                        <i className="pi pi-check-circle" style={{ fontSize: '3rem', color: '#40f105', width: '70px', fontWeight: 'bold' }}></i>
                                                     </div>
-                                                    <div className="flex flex-row gap-2 justify-content-evenly">
-                                                        <div className="flex-1 text-center" style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
-                                                            4
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(5)} onClick={() => handleKeypadClick('5')}>
-                                                            5
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(6)} onClick={() => handleKeypadClick('6')}>
-                                                            6
-                                                        </div>
+                                                    <p className="text-center">
+                                                        User Added
+                                                        <br />
+                                                        Successfully
+                                                    </p>
+                                                </Card>
+                                            </div>
+                                        )
+                                    ) : (
+                                        <div className="flex flex-column flex-wrap align-items-center justify-content-center m-2">
+                                            <InputOtp value={token} mask readOnly onChange={(e) => setTokens(e.value)} />
+                                            <div className="flex flex-column gap-2 w-full mx-auto my-3" style={{ maxWidth: '220px' }}>
+                                                <div className="flex flex-row gap-2 justify-content-around">
+                                                    <div className="flex-1 text-center" style={keyPadStyle(1)} onClick={() => handleKeypadClick('1')}>
+                                                        1
                                                     </div>
-                                                    <div className="flex flex-row gap-2 justify-content-evenly">
-                                                        <div className="flex-1 text-center" style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
-                                                            7
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(8)} onClick={() => handleKeypadClick('8')}>
-                                                            8
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(9)} onClick={() => handleKeypadClick('9')}>
-                                                            9
-                                                        </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(2)} onClick={() => handleKeypadClick('2')}>
+                                                        2
                                                     </div>
-                                                    <div className="flex flex-row gap-2 justify-content-evenly">
-                                                        <div className="flex flex-1 p-0 justify-content-center align-items-center hover:bg-gray-100" style={keyPadStyle('back')} onClick={handleBackspace}>
-                                                            <img src={BackspaceIcon} alt="backspace" />
-                                                        </div>
-                                                        <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
-                                                            0
-                                                        </div>
-                                                        <Button disabled={token.length !== 4} style={{ aspectRatio: '1 / 1' }} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
-                                                            <img src={ArrowLeft} alt="submit" />
-                                                        </Button>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(3)} onClick={() => handleKeypadClick('3')}>
+                                                        3
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                            <div className="w-1">
-                                <Divider layout="vertical" />
-                            </div>
-                            <div className="w-6 py-2 ">
-                                <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-                                    <ScrollPanel style={{ width: '100%', height: '410px' }}>
-                                        <div className="surface-card">
-                                            <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" style={getStyle('new')} onClick={() => clickHandler('new')} role="button" tabIndex={0}>
-                                                <Avatar icon="pi pi-user-plus" shape="circle" style={selected === 'new' ? { backgroundColor: 'white', color: 'black' } : {}} />
-                                                <div>
-                                                    <h5 className="m-0 p-0">New User</h5>
-                                                    <p className="m-0 p-0 text-sm">Click here to add new user</p>
+                                                <div className="flex flex-row gap-2 justify-content-evenly">
+                                                    <div className="flex-1 text-center" style={keyPadStyle(4)} onClick={() => handleKeypadClick('4')}>
+                                                        4
+                                                    </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(5)} onClick={() => handleKeypadClick('5')}>
+                                                        5
+                                                    </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(6)} onClick={() => handleKeypadClick('6')}>
+                                                        6
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-row gap-2 justify-content-evenly">
+                                                    <div className="flex-1 text-center" style={keyPadStyle(7)} onClick={() => handleKeypadClick('7')}>
+                                                        7
+                                                    </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(8)} onClick={() => handleKeypadClick('8')}>
+                                                        8
+                                                    </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(9)} onClick={() => handleKeypadClick('9')}>
+                                                        9
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-row gap-2 justify-content-evenly">
+                                                    <div className="flex flex-1 p-0 justify-content-center align-items-center hover:bg-gray-100" style={keyPadStyle('back')} onClick={handleBackspace}>
+                                                        <img src={BackspaceIcon} alt="backspace" />
+                                                    </div>
+                                                    <div className="flex-1 text-center" style={keyPadStyle(0)} onClick={() => handleKeypadClick('0')}>
+                                                        0
+                                                    </div>
+                                                    <Button disabled={token.length !== 4} style={{ aspectRatio: '1 / 1' }} className={token.length === 4 ? 'p-button-success p-0 flex-1 justify-content-center align-items-center' : 'p-button-secondary p-0 flex-1 justify-content-center align-items-center'} onClick={() => handleLogin(token)}>
+                                                        <img src={ArrowLeft} alt="submit" />
+                                                    </Button>
                                                 </div>
                                             </div>
-
-                                            {savedUsers.length > 0 ? (
-                                                savedUsers.map((user) => (
-                                                    <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user.name} style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
-                                                        <Avatar label={getInitials(user.name)} shape="circle" size="medium" />
-                                                        <div>
-                                                            <h5 className="m-0 p-0">{user.name}</h5>
-                                                            <p className="m-0 p-0 text-sm">{user.email}</p>
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <p></p>
-                                            )}
                                         </div>
-                                    </ScrollPanel>
-                                </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                        <div className="w-1">
+                            <Divider layout="vertical" />
+                        </div>
+                        <div className="w-6 py-2 flex flex-column overflow-hidden" style={{ minHeight: 0 }}>
+                            <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+                                <ScrollPanel id="userList" style={{ width: '100%', height: '100%' }}>
+                                    <div className="surface-card">
+                                        <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" style={getStyle('new')} onClick={() => clickHandler('new')} role="button" tabIndex={0}>
+                                            <Avatar icon="pi pi-user-plus" shape="circle" style={selected === 'new' ? { backgroundColor: 'white', color: 'black' } : {}} />
+                                            <div>
+                                                <h5 className="m-0 p-0">New User</h5>
+                                                <p className="m-0 p-0 text-sm">Click here to add new user</p>
+                                            </div>
+                                        </div>
+
+                                        {savedUsers.length > 0 ? (
+                                            savedUsers.map((user) => (
+                                                <div className="flex align-items-center border-2 border-300 gap-2 border-round-lg p-2 mb-2" key={user.name} style={getStyle(user)} onClick={() => clickHandler(user)} role="button" tabIndex={0}>
+                                                    <Avatar label={getInitials(user.name)} shape="circle" size="medium" />
+                                                    <div>
+                                                        <h5 className="m-0 p-0">{user.name}</h5>
+                                                        <p className="m-0 p-0 text-sm">{user.email}</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p></p>
+                                        )}
+                                    </div>
+                                </ScrollPanel>
                             </div>
                         </div>
                     </div>
-                </ScrollPanel>
+                </div>
             </main>
         </React.Fragment>
     );
