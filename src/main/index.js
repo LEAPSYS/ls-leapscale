@@ -23,20 +23,20 @@ const fs = require('fs/promises');
 const path = require('path');
 
 function createWindow() {
-    const isFullscreen = process.env.FULLSCREEN !== undefined ? process.env.FULLSCREEN === 'true' : false;
+    const isFullscreen = true;
 
     mainWindow = new BrowserWindow({
         show: false,
         fullscreen: isFullscreen,
-        frame: false,
-        resizable: true,
-        movable: false,
-        minimizable: false,
-        maximizable: false,
-        closable: false,
-        fullscreenable: true,
-        autoHideMenuBar: true,
-        skipTaskbar: true,
+        frame: !isFullscreen,
+        resizable: isFullscreen,
+        movable: !isFullscreen,
+        minimizable: !isFullscreen,
+        maximizable: !isFullscreen,
+        closable: !isFullscreen,
+        fullscreenable: isFullscreen,
+        autoHideMenuBar: isFullscreen,
+        skipTaskbar: isFullscreen,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/preload.js'),
