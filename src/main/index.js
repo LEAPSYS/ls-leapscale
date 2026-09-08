@@ -26,6 +26,7 @@ function createWindow() {
     const isFullscreen = process.env.FULLSCREEN !== undefined ? process.env.FULLSCREEN === 'true' : false;
 
     mainWindow = new BrowserWindow({
+        show: false,
         kiosk: true,
         fullscreen: true,
         frame: false,
@@ -34,10 +35,9 @@ function createWindow() {
         minimizable: false,
         maximizable: false,
         closable: false,
+        fullscreenable: true,
         autoHideMenuBar: true,
         skipTaskbar: true,
-        
-        show: false,
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/preload.js'),
@@ -48,6 +48,8 @@ function createWindow() {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
+        mainWindow.setKiosk(true);
+        mainWindow.setFullScreen(true);
     });
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
