@@ -5,6 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { Sidebar } from 'primereact/sidebar';
+import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import Brand from '../components/Brand';
 import apiService from '../services/apiService';
@@ -56,6 +57,7 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
     const [expandedRows, setExpandedRows] = React.useState({});
     const [batchesByItem, setBatchesByItem] = React.useState({});
     const [batchLoading, setBatchLoading] = React.useState({});
+    const toast = React.useRef(null);
     const jobCardName = typeof jobCard === 'string' ? jobCard : getValue(jobCard, ['name', 'jobCardNo', 'jobCardNumber', 'id'], 'Job Card');
     const workOrder = getValue(jobCard, ['work_order', 'workOrder']);
     const operationName = typeof operation === 'string' ? operation : getValue(operation, ['name', 'operationName', 'operationCode'], '');
@@ -129,7 +131,12 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                 if (timeoutId) clearTimeout(timeoutId);
 
                 if (query) {
-                    alert(`Typed text: ${query}`);
+                    toast.current?.show({
+                        severity: 'info',
+                        summary: 'Scanned / Typed Text',
+                        detail: query,
+                        life: 3000
+                    });
                 }
 
                 if (query && items.length > 0) {
@@ -247,6 +254,7 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
 
     return (
         <React.Fragment>
+            <Toast ref={toast} />
             <header className="p-0 flex-shrink-0">
                 <Toolbar start={<Brand />} end={endContent} style={{ backgroundImage: 'linear-gradient(to left, var(--blue-50), var(--blue-100))' }} />
             </header>
