@@ -27,8 +27,7 @@ function createWindow() {
 
     mainWindow = new BrowserWindow({
         show: false,
-        //kiosk: true,
-        fullscreen: true,
+        fullscreen: isFullscreen,
         frame: false,
         resizable: true,
         movable: false,
@@ -48,7 +47,6 @@ function createWindow() {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
-        //mainWindow.setKiosk(true);
         mainWindow.setFullScreen(true);
     });
 
