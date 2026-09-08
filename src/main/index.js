@@ -30,7 +30,7 @@ function createWindow() {
         //kiosk: true,
         fullscreen: true,
         frame: false,
-        resizable: false,
+        resizable: true,
         movable: false,
         minimizable: false,
         maximizable: false,
