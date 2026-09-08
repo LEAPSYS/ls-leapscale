@@ -256,7 +256,16 @@ export default function WorkOrderItems({ jobCard, operation, hwId, live, stable,
                             {(portStatus || 'disconnected').toUpperCase()}
                         </span>
                     </div>
-                    <Button label="Accept" onClick={handleAccept}></Button>
+                    <Button
+                        label="Accept"
+                        onClick={handleAccept}
+                        disabled={
+                            !selectedItem ||
+                            Number.isNaN(Number(stable)) ||
+                            Number.isNaN(Number(selectedItem?.requiredQty)) ||
+                            Math.abs(Number(stable) - Number(selectedItem.requiredQty)) > 0.01
+                        }
+                    ></Button>
                 </div>
             </Sidebar>
         </React.Fragment>
